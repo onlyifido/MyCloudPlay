@@ -119,12 +119,12 @@
     <script>
         const msalConfig = {
             auth: {
-                clientId: "8a7108a1-d00c-4f7c-bbed-f4a4df25b81a", 
+                clientId: "여기에_Azure_클라이언트ID_입력", 
                 authority: "https://login.microsoftonline.com/common",
-                redirectUri: "https://cloudstreaming.vercel.app/",
+                redirectUri: "https://본인주소.vercel.app", // SPA에 등록한 주소와 완벽히 일치해야 함
             },
             cache: {
-                cacheLocation: "sessionStorage", // 세션 유지 설정
+                cacheLocation: "localStorage", // <-- 이 부분을 sessionStorage에서 localStorage로 변경
                 storeAuthStateInCookie: false,
             }
         };
