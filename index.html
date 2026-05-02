@@ -117,14 +117,11 @@
     </main>
 
     <script>
-        // ==========================================
-        // [필독] 아래 CLIENT_ID를 본인의 값으로 변경하세요!
-        // ==========================================
         const msalConfig = {
             auth: {
-                clientId: "여기에_Azure_클라이언트ID_입력", 
+                clientId: "8a7108a1-d00c-4f7c-bbed-f4a4df25b81a", 
                 authority: "https://login.microsoftonline.com/common",
-                redirectUri: "http://localhost:5500", // 본인의 Live Server 주소 (또는 호스팅 주소)
+                redirectUri: "https://cloudstreaming.vercel.app/",
             },
             cache: {
                 cacheLocation: "sessionStorage", // 세션 유지 설정
