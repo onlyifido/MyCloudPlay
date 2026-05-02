@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Drive Music Player</title>
+    <title>OneDrive Music Player</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script>
@@ -11,11 +11,13 @@
             theme: {
                 extend: {
                     fontFamily: { sans: ['Inter', 'sans-serif'] },
-                    colors: { brand: '#1c4ed8', background: '#f9fafb', surface: '#ffffff', border: '#e5e7eb' }
+                    colors: { brand: '#0078d4', background: '#f9fafb', surface: '#ffffff', border: '#e5e7eb' }
                 }
             }
         }
     </script>
+    <!-- Microsoft Authentication Library (MSAL) -->
+    <script type="text/javascript" src="https://alcdn.msauth.net/browser/2.30.0/js/msal-browser.min.js"></script>
     <style>
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -28,17 +30,18 @@
     <header class="sticky top-0 z-50 bg-white border-b border-border shadow-sm">
         <div class="flex items-center justify-between px-4 sm:px-6 py-3 max-w-[1400px] mx-auto">
             <div class="font-bold text-xl tracking-tight flex items-center gap-2">
-                <div class="w-6 h-6 bg-brand rounded-full"></div>
-                DrivePlayer
+                <!-- OneDrive 톤업 블루 로고 -->
+                <div class="w-6 h-6 bg-[#0078d4] rounded-[4px] flex items-center justify-center">
+                    <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5v-9l6 4.5-6 4.5z"/></svg>
+                </div>
+                OneDrive Player
             </div>
             
             <div class="flex items-center gap-3">
-                <!-- 로그인 전 버튼 -->
-                <button id="authorize_button" onclick="handleAuthClick()" class="bg-brand text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700 transition shadow-sm">
-                    구글 로그인
+                <button id="login_button" onclick="signIn()" class="bg-[#0078d4] text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700 transition shadow-sm">
+                    Microsoft 로그인
                 </button>
-                <!-- 로그인 후 로그아웃 버튼 -->
-                <button id="signout_button" style="display: none;" onclick="handleSignoutClick()" class="text-red-500 bg-red-50 hover:bg-red-100 border border-red-100 px-4 py-2 rounded-lg text-sm font-semibold transition">
+                <button id="logout_button" style="display: none;" onclick="signOut()" class="text-red-500 bg-red-50 hover:bg-red-100 border border-red-100 px-4 py-2 rounded-lg text-sm font-semibold transition">
                     로그아웃
                 </button>
             </div>
@@ -61,8 +64,8 @@
                 </div>
 
                 <div class="flex items-start gap-4 mt-2">
-                    <div class="w-16 h-16 bg-gray-100 rounded-xl flex items-center justify-center shrink-0 border border-border">
-                        <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path></svg>
+                    <div class="w-16 h-16 bg-blue-50 rounded-xl flex items-center justify-center shrink-0 border border-blue-100">
+                        <svg class="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path></svg>
                     </div>
                     <div class="flex-1 min-w-0 pr-20 lg:pr-0">
                         <div class="text-xs text-brand mb-1 font-semibold uppercase tracking-wider" id="status_info">대기 중</div>
@@ -75,13 +78,20 @@
                 </div>
             </div>
 
-            <!-- 앱 내부에 심어진 구글 드라이브 폴더 목록 -->
+            <!-- OneDrive 폴더 목록 -->
             <div id="folders_section" style="display: none;" class="flex flex-col gap-4">
-                <div class="flex items-center gap-2">
-                    <h2 class="text-lg font-bold">내 드라이브 폴더</h2>
-                    <span class="text-xs text-gray-500 bg-gray-200 px-2 py-0.5 rounded-full">최근 50개</span>
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <h2 class="text-lg font-bold">OneDrive 폴더</h2>
+                        <span class="text-xs text-gray-500 bg-gray-200 px-2 py-0.5 rounded-full">루트 경로</span>
+                    </div>
+                    <!-- 상위 폴더로 이동 버튼 -->
+                    <button id="back_btn" onclick="fetchMyFolders('root')" style="display: none;" class="text-sm text-brand font-semibold hover:underline">
+                        ← 처음으로
+                    </button>
                 </div>
-<div id="folder_list" class="grid grid-cols-2 md:grid-cols-3 gap-3 max-h-[130px] md:max-h-[300px] overflow-y-auto no-scrollbar p-1">                    <!-- 폴더들이 여기에 렌더링됩니다 -->
+                <div id="folder_list" class="grid grid-cols-2 md:grid-cols-3 gap-3 max-h-[130px] md:max-h-[300px] overflow-y-auto no-scrollbar p-1">
+                    <!-- 폴더 렌더링 영역 -->
                 </div>
             </div>
 
@@ -106,155 +116,135 @@
 
     </main>
 
-    <!-- Google Identity Services (로그인 전용, 못생긴 Picker 라이브러리 삭제됨!) -->
-    <script async defer src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
-
     <script>
-        const CLIENT_ID = '463416064121-o1ml3pjnp6bgu9tgb7cnbm2bou43u071.apps.googleusercontent.com';
-        const SCOPES = 'https://www.googleapis.com/auth/drive';
+        // ==========================================
+        // [필독] 아래 CLIENT_ID를 본인의 값으로 변경하세요!
+        // ==========================================
+        const msalConfig = {
+            auth: {
+                clientId: "여기에_Azure_클라이언트ID_입력", 
+                authority: "https://login.microsoftonline.com/common",
+                redirectUri: "http://localhost:5500", // 본인의 Live Server 주소 (또는 호스팅 주소)
+            },
+            cache: {
+                cacheLocation: "sessionStorage", // 세션 유지 설정
+                storeAuthStateInCookie: false,
+            }
+        };
 
-        let tokenClient;
-        let accessToken = null;
+        const loginRequest = {
+            scopes: ["Files.ReadWrite.All"] // 파일 읽기/쓰기/삭제 권한
+        };
+
+        const msalInstance = new msal.PublicClientApplication(msalConfig);
         
+        let accountId = "";
         let playlist = [];
         let currentIndex = -1;
         let currentObjectUrl = null;
         let playMode = 0; 
         const modeLabels = ['모드: 끄기', '모드: 전곡 반복', '모드: 한곡 반복', '모드: 랜덤 재생'];
 
-        // 1. 초기화 및 로컬 스토리지 확인 (업데이트됨)
-        function gisLoaded() {
-            tokenClient = google.accounts.oauth2.initTokenClient({
-                client_id: CLIENT_ID,
-                scope: SCOPES,
-                callback: (tokenResponse) => {
-                    if (tokenResponse && tokenResponse.access_token) {
-                        handleLoginSuccess(tokenResponse.access_token, tokenResponse.expires_in);
-                    }
-                },
-            });
+        // 페이지 로드 시 로그인 상태 확인
+        msalInstance.handleRedirectPromise().then(handleResponse).catch(err => { console.error(err); });
 
-            // 페이지 로드 시 저장된 토큰이 있는지, 만료되지는 않았는지 확인
-            const savedToken = localStorage.getItem('drive_token');
-            const expiresAt = localStorage.getItem('drive_token_expires');
-
-            if (savedToken && expiresAt && Date.now() < parseInt(expiresAt)) {
-                // 아직 만료되지 않았다면 자동 로그인 처리
-                accessToken = savedToken;
+        function handleResponse(response) {
+            if (response !== null) {
+                accountId = response.account.homeAccountId;
                 showMainUI();
-                fetchMyFolders();
+                fetchMyFolders('root'); // 초기에는 루트 폴더 불러오기
+            } else {
+                const currentAccounts = msalInstance.getAllAccounts();
+                if (currentAccounts.length > 0) {
+                    accountId = currentAccounts[0].homeAccountId;
+                    showMainUI();
+                    fetchMyFolders('root');
+                }
             }
         }
 
-        // 로그인 성공 처리 및 저장 (업데이트됨)
-        function handleLoginSuccess(token, expiresIn) {
-            accessToken = token;
-            
-            // 토큰과 만료 시간(현재시간 + 유효초)을 로컬 스토리지에 저장
-            const expireTime = Date.now() + (expiresIn * 1000);
-            localStorage.setItem('drive_token', token);
-            localStorage.setItem('drive_token_expires', expireTime);
-
-            showMainUI();
-            fetchMyFolders();
+        function signIn() {
+            msalInstance.loginPopup(loginRequest).then(handleResponse).catch(error => { console.error(error); });
         }
 
-        // UI 전환 함수 (새로 추가)
+        function signOut() {
+            const logoutRequest = { account: msalInstance.getAccountByHomeId(accountId) };
+            msalInstance.logoutPopup(logoutRequest).then(() => {
+                location.reload();
+            });
+        }
+
         function showMainUI() {
-            document.getElementById('authorize_button').style.display = 'none';
-            document.getElementById('signout_button').style.display = 'inline-block';
+            document.getElementById('login_button').style.display = 'none';
+            document.getElementById('logout_button').style.display = 'inline-block';
             document.getElementById('folders_section').style.display = 'flex';
         }
 
-        function handleAuthClick() { tokenClient.requestAccessToken({prompt: 'consent'}); }
-
-        // 로그아웃 시 저장소 비우기 (업데이트됨)
-        function handleSignoutClick() {
-            if (accessToken) {
-                google.accounts.oauth2.revoke(accessToken, () => {
-                    // 저장된 토큰 정보 삭제
-                    localStorage.removeItem('drive_token');
-                    localStorage.removeItem('drive_token_expires');
-                    accessToken = null;
-                    location.reload(); 
-                });
-            } else {
-                localStorage.removeItem('drive_token');
-                localStorage.removeItem('drive_token_expires');
-                location.reload(); 
+        // 토큰 발급 래퍼 함수 (MSAL이 만료 관리를 자동 처리)
+        async function getToken() {
+            const request = { scopes: ["Files.ReadWrite.All"], account: msalInstance.getAccountByHomeId(accountId) };
+            try {
+                const response = await msalInstance.acquireTokenSilent(request);
+                return response.accessToken;
+            } catch (error) {
+                console.warn("Silent token acquisition failed. Acquiring token using popup");
+                if (error instanceof msal.InteractionRequiredAuthError) {
+                    const response = await msalInstance.acquireTokenPopup(request);
+                    return response.accessToken;
+                }
             }
         }
 
-        function fetchMyFolders() {
+        // 1. OneDrive 특정 경로의 폴더와 오디오 파일 가져오기
+        async function fetchMyFolders(folderId) {
             const container = document.getElementById('folder_list');
-            container.innerHTML = '<div class="col-span-2 md:col-span-3 text-sm text-gray-500 py-4">폴더를 불러오는 중입니다...</div>';
+            container.innerHTML = '<div class="col-span-2 md:col-span-3 text-sm text-gray-500 py-4">불러오는 중...</div>';
             
-            const query = encodeURIComponent(`mimeType = 'application/vnd.google-apps.folder' and trashed = false`);
-            const url = `https://www.googleapis.com/drive/v3/files?q=${query}&fields=files(id,name)&orderBy=name&pageSize=50`;
+            const token = await getToken();
+            const endpoint = folderId === 'root' 
+                ? "https://graph.microsoft.com/v1.0/me/drive/root/children?$select=id,name,folder,file"
+                : `https://graph.microsoft.com/v1.0/me/drive/items/${folderId}/children?$select=id,name,folder,file`;
 
-            fetch(url, { method: 'GET', headers: { 'Authorization': 'Bearer ' + accessToken } })
-            .then(res => {
-                // 토큰이 만료되어 거절당한 경우(401 에러) 처리
-                if (res.status === 401) {
-                    throw new Error('TOKEN_EXPIRED');
-                }
-                return res.json();
-            })
+            fetch(endpoint, { headers: { Authorization: `Bearer ${token}` } })
+            .then(res => res.json())
             .then(data => {
                 container.innerHTML = '';
-                if (data.files && data.files.length > 0) {
-                    data.files.forEach(folder => {
-                        const btn = document.createElement('button');
-                        btn.className = 'flex items-center gap-3 p-3 border border-border rounded-xl hover:border-brand hover:bg-blue-50 transition cursor-pointer bg-white shadow-sm text-left';
-                        btn.innerHTML = `
-                            <svg class="w-6 h-6 text-brand shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path></svg>
-                            <span class="text-sm font-semibold truncate text-gray-700">${folder.name}</span>
-                        `;
-                        btn.onclick = () => fetchFolderContents(folder.id, folder.name);
-                        container.appendChild(btn);
-                    });
-                } else {
-                    container.innerHTML = '<div class="col-span-2 text-sm text-gray-500">드라이브에 폴더가 없습니다.</div>';
-                }
-            })
-            .catch(err => {
-                if (err.message === 'TOKEN_EXPIRED') {
-                    alert('세션이 만료되었습니다. 다시 로그인해주세요.');
-                    handleSignoutClick(); // 저장소 비우고 새로고침
-                } else {
-                    container.innerHTML = '<div class="col-span-2 text-sm text-red-500">폴더를 불러오지 못했습니다.</div>';
-                }
-            });
-        }
+                
+                // 루트가 아니면 뒤로가기 버튼 표시
+                document.getElementById('back_btn').style.display = folderId === 'root' ? 'none' : 'block';
 
-        function fetchFolderContents(folderId, folderName) {
-            document.getElementById('status_info').innerText = '음악 검색 중...';
-            document.getElementById('playlist_title').innerText = folderName; 
-            
-            const query = encodeURIComponent(`'${folderId}' in parents and mimeType contains 'audio/' and trashed = false`);
-            const url = `https://www.googleapis.com/drive/v3/files?q=${query}&fields=files(id,name)&orderBy=name`;
+                const folders = data.value.filter(item => item.folder);
+                const audios = data.value.filter(item => item.file && item.file.mimeType && item.file.mimeType.includes('audio'));
 
-            fetch(url, { method: 'GET', headers: { 'Authorization': 'Bearer ' + accessToken } })
-            .then(res => {
-                if (res.status === 401) throw new Error('TOKEN_EXPIRED');
-                return res.json();
-            })
-            .then(data => {
-                if (data.files && data.files.length > 0) {
-                    playlist = data.files;
+                // 폴더 먼저 렌더링
+                folders.forEach(folder => {
+                    const btn = document.createElement('button');
+                    btn.className = 'flex items-center gap-3 p-3 border border-border rounded-xl hover:border-brand hover:bg-blue-50 transition cursor-pointer bg-white shadow-sm text-left';
+                    btn.innerHTML = `
+                        <svg class="w-6 h-6 text-[#0078d4] shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>
+                        <span class="text-sm font-semibold truncate text-gray-700">${folder.name}</span>
+                    `;
+                    // 폴더 클릭 시 해당 폴더 진입 (탐색)
+                    btn.onclick = () => {
+                        fetchMyFolders(folder.id);
+                        document.getElementById('playlist_title').innerText = folder.name;
+                    };
+                    container.appendChild(btn);
+                });
+
+                // 같은 경로 내에 오디오 파일이 있으면 플레이리스트에 즉시 추가
+                if (audios.length > 0) {
+                    playlist = audios;
                     currentIndex = 0;
                     updatePlaylistUI();
                     playTrack(0);
-                } else {
-                    alert(`'${folderName}' 폴더 안에는 오디오 파일이 없습니다.`);
-                    document.getElementById('status_info').innerText = '대기 중';
+                } else if (folders.length === 0) {
+                    container.innerHTML = '<div class="col-span-2 text-sm text-gray-500">빈 폴더입니다.</div>';
                 }
             })
             .catch(err => {
-                if (err.message === 'TOKEN_EXPIRED') {
-                    alert('세션이 만료되었습니다. 다시 로그인해주세요.');
-                    handleSignoutClick();
-                }
+                console.error(err);
+                container.innerHTML = '<div class="col-span-2 text-sm text-red-500">데이터를 불러오지 못했습니다.</div>';
             });
         }
 
@@ -271,7 +261,7 @@
             }
         }
 
-        function playTrack(index) {
+        async function playTrack(index) {
             if (index < 0 || index >= playlist.length) return;
             currentIndex = index;
             updatePlaylistUI(); 
@@ -282,12 +272,13 @@
             const audioPlayer = document.getElementById('audio_player');
             audioPlayer.style.display = 'block';
 
-            fetch(`https://www.googleapis.com/drive/v3/files/${file.id}?alt=media`, {
-                method: 'GET',
-                headers: { 'Authorization': 'Bearer ' + accessToken }
+            const token = await getToken();
+            
+            // Microsoft Graph API는 파일 다운로드를 위해 '@microsoft.graph.downloadUrl' 속성이나 '/content' 엔드포인트를 사용합니다.
+            fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${file.id}/content`, {
+                headers: { Authorization: `Bearer ${token}` }
             })
             .then(response => {
-                if (response.status === 401) throw new Error('TOKEN_EXPIRED');
                 if (!response.ok) throw new Error('다운로드 실패');
                 return response.blob();
             })
@@ -299,18 +290,13 @@
                 audioPlayer.play();
             })
             .catch(error => {
-                if (error.message === 'TOKEN_EXPIRED') {
-                    alert('세션이 만료되었습니다. 다시 로그인해주세요.');
-                    audioPlayer.pause();
-                    handleSignoutClick();
-                } else {
-                    document.getElementById('status_info').innerText = '재생 오류';
-                    document.getElementById('status_info').classList.add('text-red-500');
-                    setTimeout(() => {
-                        document.getElementById('status_info').classList.remove('text-red-500');
-                        playNextTrack();
-                    }, 2000); 
-                }
+                console.error(error);
+                document.getElementById('status_info').innerText = '재생 오류';
+                document.getElementById('status_info').classList.add('text-red-500');
+                setTimeout(() => {
+                    document.getElementById('status_info').classList.remove('text-red-500');
+                    playNextTrack();
+                }, 2000); 
             });
         }
 
@@ -381,7 +367,7 @@
                 
                 const trashLink = document.createElement('a');
                 trashLink.className = 'block px-4 py-2 text-sm text-red-600 hover:bg-red-50 cursor-pointer transition';
-                trashLink.innerText = '삭제 (휴지통)';
+                trashLink.innerText = '삭제';
                 trashLink.onclick = () => { trashFile(index); closeAllDropdowns(); };
                 
                 dropdown.appendChild(renameLink);
@@ -414,60 +400,50 @@
             }
         }
 
-        function renameFile(index) {
+        async function renameFile(index) {
             const file = playlist[index];
             const newName = prompt('새 파일 이름을 입력하세요:', file.name);
             
             if (newName && newName !== file.name) {
-                fetch(`https://www.googleapis.com/drive/v3/files/${file.id}`, {
+                const token = await getToken();
+                fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${file.id}`, {
                     method: 'PATCH',
-                    headers: { 'Authorization': 'Bearer ' + accessToken, 'Content-Type': 'application/json' },
+                    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
                     body: JSON.stringify({ name: newName })
-                }).then(res => {
-                    if (res.status === 401) throw new Error('TOKEN_EXPIRED');
-                    return res.json();
-                }).then(data => {
+                }).then(res => res.json()).then(data => {
                     playlist[index].name = data.name;
                     updatePlaylistUI(); 
                     if(index === currentIndex) document.getElementById('file_info').innerText = data.name;
-                }).catch(err => {
-                    if (err.message === 'TOKEN_EXPIRED') {
-                        alert('세션이 만료되었습니다. 다시 로그인해주세요.');
-                        handleSignoutClick();
-                    }
                 });
             }
         }
 
-        function trashFile(index) {
+        async function trashFile(index) {
             const file = playlist[index];
-            if (confirm(`'${file.name}'을(를) 휴지통으로 버리시겠습니까?`)) {
-                fetch(`https://www.googleapis.com/drive/v3/files/${file.id}`, {
-                    method: 'PATCH',
-                    headers: { 'Authorization': 'Bearer ' + accessToken, 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ trashed: true })
+            if (confirm(`'${file.name}'을(를) 삭제하시겠습니까?`)) {
+                const token = await getToken();
+                fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${file.id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
                 }).then(res => {
-                    if (res.status === 401) throw new Error('TOKEN_EXPIRED');
-                    
-                    playlist.splice(index, 1);
-                    if (index === currentIndex) {
-                        if (playlist.length > 0) {
-                            if (currentIndex >= playlist.length) currentIndex = 0;
-                            playTrack(currentIndex); 
-                        } else {
-                            document.getElementById('audio_player').pause();
-                            document.getElementById('file_info').innerText = '목록이 비었습니다.';
-                            document.getElementById('status_info').innerText = '대기 중';
-                            currentIndex = -1;
+                    if (res.ok || res.status === 204) {
+                        playlist.splice(index, 1);
+                        if (index === currentIndex) {
+                            if (playlist.length > 0) {
+                                if (currentIndex >= playlist.length) currentIndex = 0;
+                                playTrack(currentIndex); 
+                            } else {
+                                document.getElementById('audio_player').pause();
+                                document.getElementById('file_info').innerText = '목록이 비었습니다.';
+                                document.getElementById('status_info').innerText = '대기 중';
+                                currentIndex = -1;
+                            }
+                        } else if (index < currentIndex) {
+                            currentIndex--;
                         }
-                    } else if (index < currentIndex) {
-                        currentIndex--;
-                    }
-                    updatePlaylistUI();
-                }).catch(err => {
-                    if (err.message === 'TOKEN_EXPIRED') {
-                        alert('세션이 만료되었습니다. 다시 로그인해주세요.');
-                        handleSignoutClick();
+                        updatePlaylistUI();
+                    } else {
+                        alert("파일 삭제에 실패했습니다.");
                     }
                 });
             }
