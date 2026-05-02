@@ -160,9 +160,10 @@
             }
         }
 
-        function signIn() {
-            msalInstance.loginPopup(loginRequest).then(handleResponse).catch(error => { console.error(error); });
-        }
+function signIn() {
+    // 팝업 창을 띄우는 대신 전체 페이지 이동 방식으로 변경
+    msalInstance.loginRedirect(loginRequest);
+}
 
         function signOut() {
             const logoutRequest = { account: msalInstance.getAccountByHomeId(accountId) };
@@ -183,13 +184,14 @@
             try {
                 const response = await msalInstance.acquireTokenSilent(request);
                 return response.accessToken;
-            } catch (error) {
-                console.warn("Silent token acquisition failed. Acquiring token using popup");
-                if (error instanceof msal.InteractionRequiredAuthError) {
-                    const response = await msalInstance.acquireTokenPopup(request);
-                    return response.accessToken;
-                }
+           // ... 기존 코드 중략 ...
+        } catch (error) {
+            console.warn("Silent token acquisition failed. Acquiring token using redirect");
+            if (error instanceof msal.InteractionRequiredAuthError) {
+                // 팝업 대신 리디렉트로 토큰 재발급 요청
+                msalInstance.acquireTokenRedirect(request);
             }
+        }
         }
 
         // 1. OneDrive 특정 경로의 폴더와 오디오 파일 가져오기
