@@ -71,8 +71,8 @@
             </div>
             
             <div class="flex items-center gap-2 sm:gap-4">
-                <!-- 🔥 심플하고 직관적인 '빛나는 휴대폰 화면' 아이콘으로 교체 완료 -->
-                <div id="wake_lock_indicator" class="opacity-0 scale-95 transition-all duration-500 flex items-center justify-center p-1 text-yellow-500 dark:text-yellow-400 drop-shadow-[0_0_8px_rgba(234,179,8,0.6)]" title="Screen keeps awake">
+                <!-- 🔥 PC(md 이상)에서는 숨김, 클릭 시 설명창(Alert) 발생, 톤다운된 은은한 아이콘 적용 -->
+                <div id="wake_lock_indicator" onclick="alert('Screen auto-lock is disabled while playing to prevent playback from stopping.')" class="opacity-0 scale-95 transition-all duration-500 flex md:hidden items-center justify-center p-1 text-yellow-600/60 dark:text-yellow-500/60 cursor-pointer" title="Screen keeps awake">
                     <svg class="w-5 h-5 sm:w-6 sm:h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <rect x="5" y="2" width="14" height="20" rx="3" stroke="currentColor" stroke-width="1.5"/>
                         <rect x="7" y="5" width="10" height="13" rx="1" fill="currentColor"/>
@@ -251,7 +251,7 @@
             catch (error) { msalInstance.acquireTokenRedirect({ scopes: ["Files.ReadWrite.All"] }); }
         }
 
-        // 🔥 Wake Lock 활성화 함수 (아이콘 애니메이션 포함)
+        // 🔥 Wake Lock 활성화 함수
         async function requestWakeLock() {
             try {
                 if ('wakeLock' in navigator) {
@@ -276,7 +276,6 @@
             }
         }
 
-        // 화면 밖으로 나갔다가 다시 돌아왔을 때 재생 중이면 Wake Lock 다시 요청
         document.addEventListener('visibilitychange', async () => {
             if (wakeLock !== null && document.visibilityState === 'visible' && !audio.paused) {
                 requestWakeLock();
@@ -372,6 +371,7 @@
             });
         }
 
+        // 🔥 4. 폴더/파일 불러올 때 원드라이브 API 정렬 알고리즘 강제 지정 (인덱스 꼬임 완벽 해결)
         async function fetchMyFolders(folderId, folderName, isNewNavigation = true) {
             const container = document.getElementById('file_list_container');
             container.innerHTML = '<div class="h-full flex flex-col items-center justify-center text-sm text-gray-400"><svg class="animate-spin w-8 h-8 text-gray-300 dark:text-gray-700 mb-3" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Loading...</div>';
@@ -380,7 +380,8 @@
             else if (folderId === 'root') pathHistory = [{ id: 'root', name: 'My Drive' }];
             renderBreadcrumbs();
 
-            fetch(folderId === 'root' ? "https://graph.microsoft.com/v1.0/me/drive/root/children?$select=id,name,folder,file" : `https://graph.microsoft.com/v1.0/me/drive/items/${folderId}/children?$select=id,name,folder,file`, { headers: { Authorization: `Bearer ${await getToken()}` } })
+            // API 주소 끝에 ?$orderby=name 추가
+            fetch(folderId === 'root' ? "https://graph.microsoft.com/v1.0/me/drive/root/children?$orderby=name" : `https://graph.microsoft.com/v1.0/me/drive/items/${folderId}/children?$orderby=name`, { headers: { Authorization: `Bearer ${await getToken()}` } })
             .then(res => res.json()).then(data => {
                 container.innerHTML = '';
                 const folders = data.value.filter(i => i.folder);
@@ -390,9 +391,10 @@
                 
                 document.getElementById('shuffle_folder_btn').style.display = audios.length > 0 ? 'flex' : 'none';
 
+                // 🔥 3. 모바일에서 굳어버리던 폴더의 group-hover 스타일을 모두 PC 전용(md:)으로 분리
                 folders.forEach(folder => {
                     const item = document.createElement('div');
-                    item.className = 'flex items-center justify-between p-3 sm:p-4 mb-2 border border-gray-100 dark:border-gray-800/80 rounded-[1.2rem] bg-gray-50/50 dark:bg-gray-900/30 hover:bg-blue-50/50 dark:hover:bg-blue-900/20 shadow-sm group transition cursor-pointer';
+                    item.className = 'flex items-center justify-between p-3 sm:p-4 mb-2 border border-gray-100 dark:border-gray-800/80 rounded-[1.2rem] bg-gray-50/50 dark:bg-gray-900/30 active:bg-blue-50/50 dark:active:bg-blue-900/20 md:hover:bg-blue-50/50 md:dark:hover:bg-blue-900/20 shadow-sm group transition cursor-pointer';
                     item.onclick = () => fetchMyFolders(folder.id, folder.name, true);
                     
                     const infoDiv = document.createElement('div');
@@ -401,11 +403,11 @@
                         <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center shrink-0 pointer-events-none">
                             <svg class="w-5 h-5 sm:w-6 sm:h-6 text-[#0078d4] dark:text-blue-400" fill="currentColor" viewBox="0 0 24 24"><path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>
                         </div>
-                        <span class="text-sm sm:text-base font-semibold truncate text-gray-800 dark:text-gray-200 group-hover:text-[#0078d4] dark:group-hover:text-blue-400 transition pointer-events-none">${folder.name}</span>
+                        <span class="text-sm sm:text-base font-semibold truncate text-gray-800 dark:text-gray-200 md:group-hover:text-[#0078d4] md:dark:group-hover:text-blue-400 transition pointer-events-none">${folder.name}</span>
                     `;
 
                     const actionsDiv = document.createElement('div');
-                    actionsDiv.className = 'relative shrink-0 opacity-100 lg:opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition flex items-center';
+                    actionsDiv.className = 'relative shrink-0 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 focus-within:opacity-100 transition flex items-center';
                     actionsDiv.innerHTML = `
                         <button onclick="toggleMenu(event, 'drop-f-${folder.id}')" class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-700 dark:hover:text-white rounded-full transition font-bold">⋮</button>
                         <div id="drop-f-${folder.id}" class="dropdown-content absolute right-0 mt-8 w-28 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 py-1 z-20 hidden">
@@ -445,7 +447,7 @@
                     infoDiv.append(numSpan, textP);
 
                     const actionsDiv = document.createElement('div');
-                    actionsDiv.className = 'relative shrink-0 opacity-100 lg:opacity-0 group-hover/item:opacity-100 focus-within:opacity-100 transition flex items-center';
+                    actionsDiv.className = 'relative shrink-0 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 focus-within:opacity-100 transition flex items-center';
                     actionsDiv.innerHTML = `
                         <button onclick="toggleMenu(event, 'drop-m-${file.id}')" class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-700 dark:hover:text-white rounded-full transition font-bold">⋮</button>
                         <div id="drop-m-${file.id}" class="dropdown-content absolute right-0 mt-8 w-28 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 py-1 z-20 hidden">
@@ -462,6 +464,7 @@
             });
         }
 
+        // 🔥 3. 모바일에서의 악질적인 Sticky Hover 완벽 분리 적용 구역
         function updateActiveTrackUI() {
             const currentPlayingId = playingQueue[currentIndex]?.id;
             
@@ -473,7 +476,7 @@
                 if(!row || !icon || !text) return;
                 
                 if (isActive) {
-                    row.className = `flex items-center justify-between p-3 sm:p-3.5 mb-1.5 group/item hover:bg-gray-50 dark:hover:bg-gray-800/50 transition cursor-pointer rounded-2xl bg-blue-50/80 dark:bg-blue-900/30 border border-blue-100 dark:border-blue-900/40 shadow-sm`;
+                    row.className = `flex items-center justify-between p-3 sm:p-3.5 mb-1.5 cursor-pointer rounded-2xl bg-blue-50/80 dark:bg-blue-900/30 border border-blue-100 dark:border-blue-900/40 shadow-sm transition group`;
                     icon.className = `w-10 h-10 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center shrink-0 bg-white dark:bg-gray-800 text-[#0078d4] dark:text-blue-400 shadow-sm transition`;
                     
                     if(!audio.paused && audio.src) {
@@ -483,10 +486,11 @@
                     }
                     text.className = `text-sm sm:text-[15px] leading-tight truncate text-[#0078d4] dark:text-blue-300 font-bold transition`;
                 } else {
-                    row.className = `flex items-center justify-between p-3 sm:p-3.5 mb-1.5 group/item hover:bg-gray-50 dark:hover:bg-gray-800/50 transition cursor-pointer rounded-2xl border border-transparent`;
-                    icon.className = `w-10 h-10 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center shrink-0 text-gray-400 dark:text-gray-500 font-medium text-sm group-hover/item:text-[#0078d4] dark:group-hover/item:text-blue-400 bg-gray-100 dark:bg-gray-900 transition`;
+                    // 비활성 곡에는 모바일용 active: 효과와 PC 전용(md:) hover 효과를 분리하여 적용합니다.
+                    row.className = `flex items-center justify-between p-3 sm:p-3.5 mb-1.5 cursor-pointer rounded-2xl border border-transparent active:bg-gray-100 dark:active:bg-gray-800/50 md:hover:bg-gray-50 md:dark:hover:bg-gray-800/50 transition group`;
+                    icon.className = `w-10 h-10 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center shrink-0 text-gray-400 dark:text-gray-500 font-medium text-sm bg-gray-100 dark:bg-gray-900 md:group-hover:text-[#0078d4] md:dark:group-hover:text-blue-400 transition`;
                     icon.innerHTML = index + 1;
-                    text.className = `text-sm sm:text-[15px] leading-tight truncate text-gray-800 dark:text-gray-200 font-medium group-hover/item:text-[#0078d4] dark:group-hover/item:text-blue-400 transition`;
+                    text.className = `text-sm sm:text-[15px] leading-tight truncate text-gray-800 dark:text-gray-200 font-medium md:group-hover:text-[#0078d4] md:dark:group-hover:text-blue-400 transition`;
                 }
             });
         }
@@ -510,7 +514,6 @@
             iconPlay.classList.add('hidden'); iconPause.classList.remove('hidden'); 
             setStatus('NOW PLAYING', 'play'); 
             updateActiveTrackUI(); 
-            // 🔥 재생이 시작되면 화면 켜짐 유지
             requestWakeLock();
         });
         audio.addEventListener('pause', () => { 
@@ -518,7 +521,6 @@
             const currentStatus = document.getElementById('status_info').innerText;
             if(currentStatus !== 'BUFFERING...' && currentStatus !== 'ERROR') setStatus('PAUSED', 'standby'); 
             updateActiveTrackUI(); 
-            // 🔥 일시정지하면 화면 꺼지도록 허용
             releaseWakeLock();
         });
 
