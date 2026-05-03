@@ -3,38 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-    
-    <!-- 🔥 브라우저 탭 및 앱 이름 Music으로 변경 -->
     <title>Music</title>
     <meta name="apple-mobile-web-app-title" content="Music">
     
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#000000">
-    
-    <!-- 🔥 홈화면 아이콘 8분음표 로고로 교체 -->
     <link rel="apple-touch-icon" href="data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3ClinearGradient id='grad' x1='0%25' y1='100%25' x2='100%25' y2='0%25'%3E%3Cstop offset='0%25' style='stop-color:%230078d4;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%2360a5fa;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='512' height='512' rx='112' fill='url(%23grad)' /%3E%3Cpath d='M210 370V130l210-40v230' fill='none' stroke='%23ffffff' stroke-width='32' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='160' cy='370' r='50' fill='none' stroke='%23ffffff' stroke-width='32'/%3E%3Ccircle cx='370' cy='330' r='50' fill='none' stroke='%23ffffff' stroke-width='32'/%3E%3C/svg%3E">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script>
-        tailwind.config = {
-            darkMode: 'class', 
-            theme: {
-                extend: {
-                    fontFamily: { sans: ['Inter', 'sans-serif'] },
-                    colors: { 
-                        brand: '#0078d4',
-                        gray: { 900: '#121212', 950: '#0a0a0a' }
-                    }
-                }
-            }
-        }
+        tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'] }, colors: { brand: '#0078d4', gray: { 900: '#121212', 950: '#0a0a0a' } } } } }
     </script>
     <script type="text/javascript" src="https://alcdn.msauth.net/browser/2.30.0/js/msal-browser.min.js"></script>
     
     <style>
         body { touch-action: manipulation; }
-
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(156, 163, 175, 0.4); border-radius: 10px; }
@@ -66,13 +50,7 @@
 
         .shimmer-active::before { content: ''; position: absolute; inset: 0; background: rgba(255, 255, 255, 0.3); z-index: 40; pointer-events: none; }
         .dark .shimmer-active::before { background: rgba(0, 0, 0, 0.5); }
-        .shimmer-active::after {
-            content: ''; position: absolute; top: 0; bottom: 0; left: 0; right: 0;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
-            transform: translateX(-100%);
-            animation: shimmerMove 1.2s infinite linear;
-            z-index: 50; pointer-events: none;
-        }
+        .shimmer-active::after { content: ''; position: absolute; top: 0; bottom: 0; left: 0; right: 0; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent); transform: translateX(-100%); animation: shimmerMove 1.2s infinite linear; z-index: 50; pointer-events: none; }
         .dark .shimmer-active::after { background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12), transparent); }
         @keyframes shimmerMove { 100% { transform: translateX(100%); } }
     </style>
@@ -98,18 +76,15 @@
                     <svg id="theme_icon_dark" class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
                 </button>
 
-                <button id="login_button" onclick="signIn()" class="bg-[#0078d4] text-white px-4 py-1.5 sm:px-5 sm:py-2 rounded-full text-sm font-semibold hover:opacity-90 transition shadow-md">
-                    Sign In
-                </button>
-                <button id="logout_button" style="display: none;" onclick="signOut()" class="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white px-2 py-1.5 text-sm font-medium transition">
-                    Sign Out
-                </button>
+                <button id="login_button" onclick="signIn()" class="bg-[#0078d4] text-white px-4 py-1.5 sm:px-5 sm:py-2 rounded-full text-sm font-semibold hover:opacity-90 transition shadow-md">Sign In</button>
+                <button id="logout_button" style="display: none;" onclick="signOut()" class="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white px-2 py-1.5 text-sm font-medium transition">Sign Out</button>
             </div>
         </div>
     </header>
 
     <main class="flex-1 max-w-[1400px] w-full mx-auto px-4 sm:px-6 py-4 sm:py-6 flex flex-col lg:flex-row gap-4 sm:gap-8 overflow-hidden">
         
+        <!-- Player Area -->
         <div class="w-full lg:w-[45%] flex flex-col shrink-0">
             <div id="player_card" class="h-auto lg:h-full border border-gray-100 dark:border-gray-800 rounded-[2rem] p-5 sm:p-10 bg-white dark:bg-gray-900 shadow-xl shadow-gray-200/50 dark:shadow-none flex flex-col justify-center gap-6 sm:gap-10 relative overflow-hidden transition-colors duration-300">
                 <div class="absolute -top-32 -right-32 w-64 h-64 bg-blue-400/20 dark:bg-blue-900/20 rounded-full blur-[80px] pointer-events-none"></div>
@@ -177,6 +152,7 @@
             </div>
         </div>
 
+        <!-- Explorer Area -->
         <div class="w-full lg:w-[55%] flex flex-col flex-1 min-h-0">
             <div class="border border-gray-100 dark:border-gray-800 rounded-[2rem] bg-white dark:bg-gray-950 shadow-sm overflow-hidden flex flex-col h-full transition-colors duration-300">
                 
@@ -245,6 +221,9 @@
         let accountId = "", currentFolderAudios = [], playingQueue = [], currentIndex = -1, playingFolderId = '';
         let currentObjectUrl = null, playMode = 0, currentFolderId = 'root';
         let pathHistory = [{ id: 'root', name: 'My Drive' }];
+        
+        // 🔥 스파이 작전용 전역 변수
+        let preloadedNextTrack = null; 
 
         msalInstance.handleRedirectPromise().then(handleResponse).catch(console.error);
 
@@ -369,7 +348,6 @@
                 const audios = data.value.filter(i => i.file && i.file.mimeType?.includes('audio'));
                 
                 currentFolderAudios = audios; 
-                
                 document.getElementById('shuffle_folder_btn').style.display = audios.length > 0 ? 'flex' : 'none';
 
                 folders.forEach(folder => {
@@ -404,7 +382,6 @@
                     
                     const infoDiv = document.createElement('div');
                     infoDiv.className = 'flex items-center gap-3 sm:gap-4 flex-1 min-w-0 pr-4';
-                    
                     infoDiv.onclick = () => {
                         const currentPlayingId = playingQueue[currentIndex]?.id;
                         if (file.id === currentPlayingId && audio.src) {
@@ -446,23 +423,16 @@
 
         function updateActiveTrackUI() {
             const currentPlayingId = playingQueue[currentIndex]?.id;
-            
             currentFolderAudios.forEach((file, index) => {
                 const isActive = (file.id === currentPlayingId && audio.src !== "");
-                const row = document.getElementById(`track_row_${file.id}`);
-                const icon = document.getElementById(`track_icon_${file.id}`);
-                const text = document.getElementById(`track_text_${file.id}`);
+                const row = document.getElementById(`track_row_${file.id}`), icon = document.getElementById(`track_icon_${file.id}`), text = document.getElementById(`track_text_${file.id}`);
                 if(!row || !icon || !text) return;
                 
                 if (isActive) {
                     row.className = `flex items-center justify-between p-3 sm:p-3.5 mb-1.5 group/item hover:bg-gray-50 dark:hover:bg-gray-800/50 transition cursor-pointer rounded-2xl bg-blue-50/80 dark:bg-blue-900/30 border border-blue-100 dark:border-blue-900/40 shadow-sm`;
                     icon.className = `w-10 h-10 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center shrink-0 bg-white dark:bg-gray-800 text-[#0078d4] dark:text-blue-400 shadow-sm transition`;
-                    
-                    if(!audio.paused && audio.src) {
-                        icon.innerHTML = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>`;
-                    } else {
-                        icon.innerHTML = `<svg class="w-5 h-5 ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>`;
-                    }
+                    if(!audio.paused && audio.src) icon.innerHTML = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>`;
+                    else icon.innerHTML = `<svg class="w-5 h-5 ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>`;
                     text.className = `text-sm sm:text-[15px] leading-tight truncate text-[#0078d4] dark:text-blue-300 font-bold transition`;
                 } else {
                     row.className = `flex items-center justify-between p-3 sm:p-3.5 mb-1.5 group/item hover:bg-gray-50 dark:hover:bg-gray-800/50 transition cursor-pointer rounded-2xl border border-transparent`;
@@ -504,106 +474,114 @@
         function updateRepeatBtnUI() {
             const btn = document.getElementById('repeat_btn'), btnMobile = document.getElementById('repeat_btn_mobile');
             let svgContent = '';
-            
-            if (playMode === 0 || playMode === 1) {
-                svgContent = `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>`;
-            } else if (playMode === 2) {
-                svgContent = `<svg class="w-6 h-6 relative" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path><text x="12" y="15" font-family="sans-serif" font-size="9" font-weight="bold" fill="currentColor" text-anchor="middle" stroke="none">1</text></svg>`;
-            } else if (playMode === 3) {
-                svgContent = `<svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M2 18h1.4c1.3 0 2.5-.6 3.3-1.7l6.1-8.6c.7-1.1 2-1.7 3.3-1.7H22"/><path d="m18 2 4 4-4 4"/><path d="M2 6h1.9c1.5 0 2.9.9 3.6 2.2"/><path d="M22 18h-5.9c-1.3 0-2.6-.7-3.3-1.8l-.5-.8"/><path d="m18 14 4 4-4 4"/></svg>`;
-            }
+            if (playMode === 0 || playMode === 1) svgContent = `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>`;
+            else if (playMode === 2) svgContent = `<svg class="w-6 h-6 relative" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path><text x="12" y="15" font-family="sans-serif" font-size="9" font-weight="bold" fill="currentColor" text-anchor="middle" stroke="none">1</text></svg>`;
+            else if (playMode === 3) svgContent = `<svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M2 18h1.4c1.3 0 2.5-.6 3.3-1.7l6.1-8.6c.7-1.1 2-1.7 3.3-1.7H22"/><path d="m18 2 4 4-4 4"/><path d="M2 6h1.9c1.5 0 2.9.9 3.6 2.2"/><path d="M22 18h-5.9c-1.3 0-2.6-.7-3.3-1.8l-.5-.8"/><path d="m18 14 4 4-4 4"/></svg>`;
 
             [btn, btnMobile].forEach(el => {
                 el.innerHTML = svgContent;
-                if(playMode > 0) { 
-                    el.className = `hidden sm:flex items-center justify-center w-12 h-12 rounded-full transition hover:text-[#0078d4] text-[#0078d4] dark:text-blue-400`;
-                    if(el.id === 'repeat_btn_mobile') el.className = `sm:hidden flex items-center justify-center w-10 h-10 rounded-full transition ml-4 hover:text-[#0078d4] text-[#0078d4] dark:text-blue-400`;
-                } else { 
-                    el.className = `hidden sm:flex items-center justify-center w-12 h-12 rounded-full transition hover:text-[#0078d4] dark:hover:text-blue-400 text-gray-400`;
-                    if(el.id === 'repeat_btn_mobile') el.className = `sm:hidden flex items-center justify-center w-10 h-10 rounded-full transition ml-4 hover:text-[#0078d4] dark:hover:text-blue-400 text-gray-400`;
-                }
+                if(playMode > 0) { el.className = `hidden sm:flex items-center justify-center w-12 h-12 rounded-full transition hover:text-[#0078d4] text-[#0078d4] dark:text-blue-400`; if(el.id === 'repeat_btn_mobile') el.className = `sm:hidden flex items-center justify-center w-10 h-10 rounded-full transition ml-4 hover:text-[#0078d4] text-[#0078d4] dark:text-blue-400`; } 
+                else { el.className = `hidden sm:flex items-center justify-center w-12 h-12 rounded-full transition hover:text-[#0078d4] dark:hover:text-blue-400 text-gray-400`; if(el.id === 'repeat_btn_mobile') el.className = `sm:hidden flex items-center justify-center w-10 h-10 rounded-full transition ml-4 hover:text-[#0078d4] dark:hover:text-blue-400 text-gray-400`; }
             });
         }
 
         function playRandomFromFolder() {
             if(currentFolderAudios.length === 0) return;
-            playMode = 3; 
-            updateRepeatBtnUI();
-            playingQueue = [...currentFolderAudios];
-            playingFolderId = currentFolderId;
+            playMode = 3; updateRepeatBtnUI();
+            playingQueue = [...currentFolderAudios]; playingFolderId = currentFolderId;
             currentIndex = Math.floor(Math.random() * playingQueue.length);
             playTrack(currentIndex);
         }
 
-        async function playTrack(index, autoPlay = true) {
+        // 🔥 스파이 작전 (다음 곡 미리 가져오기) 함수
+        async function preloadNextTrackInfo() {
+            if (playingQueue.length === 0) return;
+            let nextIdx = currentIndex;
+            
+            if (playMode === 2) nextIdx = currentIndex; 
+            else if (playMode === 3) { if (playingQueue.length > 1) { while (nextIdx === currentIndex) nextIdx = Math.floor(Math.random() * playingQueue.length); } } 
+            else if (currentIndex + 1 < playingQueue.length) nextIdx = currentIndex + 1;
+            else if (playMode === 1) nextIdx = 0; 
+            else return; 
+
+            try {
+                const token = await getToken();
+                const res = await fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${playingQueue[nextIdx].id}`, { headers: { Authorization: `Bearer ${token}` } });
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data['@microsoft.graph.downloadUrl']) { preloadedNextTrack = { index: nextIdx, url: data['@microsoft.graph.downloadUrl'] }; }
+                }
+            } catch(e) { console.log("Preload error", e); }
+        }
+
+        // 🔥 실제 재생 함수 (동기 실행으로 아이폰의 터치 권한을 유지시킴)
+        function playTrack(index, autoPlay = true) {
             if (index < 0 || index >= playingQueue.length) return;
+            
             audio.pause(); audio.removeAttribute('src'); 
-            
-            currentIndex = index; 
-            updateActiveTrackUI(); 
-            updateMarqueeText(playingQueue[index].name);
-            
+            currentIndex = index; updateActiveTrackUI(); updateMarqueeText(playingQueue[index].name);
             setStatus('BUFFERING...', 'load'); progressBar.value = 0; currentTimeEl.innerText = "0:00"; progressBar.disabled = true;
 
             const playerCard = document.getElementById('player_card'); playerCard.classList.add('shimmer-active');
 
+            if ('mediaSession' in navigator) {
+                navigator.mediaSession.metadata = new MediaMetadata({
+                    title: playingQueue[index].name.replace(/\.[^/.]+$/, ""), artist: 'OneDrive Streaming', album: 'Music Player',
+                    artwork: [ { src: 'data:image/svg+xml;charset=utf-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 512 512%22%3E%3Cdefs%3E%3ClinearGradient id=%22grad%22 x1=%220%25%22 y1=%22100%25%22 x2=%22100%25%22 y2=%220%25%22%3E%3Cstop offset=%220%25%22 style=%22stop-color:%230078d4;stop-opacity:1%22 /%3E%3Cstop offset=%22100%25%22 style=%22stop-color:%2360a5fa;stop-opacity:1%22 /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width=%22512%22 height=%22512%22 rx=%22112%22 fill=%22url(%23grad)%22 /%3E%3Cpath d=%22M210 370V130l210-40v230%22 fill=%22none%22 stroke=%22%23ffffff%22 stroke-width=%2232%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22/%3E%3Ccircle cx=%22160%22 cy=%22370%22 r=%2250%22 fill=%22none%22 stroke=%22%23ffffff%22 stroke-width=%2232%22/%3E%3Ccircle cx=%22370%22 cy=%22330%22 r=%2250%22 fill=%22none%22 stroke=%22%23ffffff%22 stroke-width=%2232%22/%3E%3C/svg%3E', sizes: '512x512', type: 'image/svg+xml' } ]
+                });
+                navigator.mediaSession.setActionHandler('play', () => { togglePlayPause(); });
+                navigator.mediaSession.setActionHandler('pause', () => { togglePlayPause(); });
+                navigator.mediaSession.setActionHandler('previoustrack', () => { playPrevTrack(); });
+                navigator.mediaSession.setActionHandler('nexttrack', () => { playNextTrack(true); });
+            }
+
+            // 🔥 핵심: 주머니에 숨겨둔 다음 곡 주소가 있으면 기다림(await) 없이 바로 재생!!
+            if (preloadedNextTrack && preloadedNextTrack.index === index) {
+                const url = preloadedNextTrack.url;
+                preloadedNextTrack = null; 
+                executePlay(url, autoPlay, playerCard);
+            } else {
+                fetchAndPlay(index, autoPlay, playerCard);
+            }
+        }
+
+        // 🔥 동기 재생 실행기 (아이폰 백그라운드 우회용)
+        function executePlay(url, autoPlay, playerCard) {
+            audio.src = url;
+            playerCard.classList.remove('shimmer-active');
+            if(autoPlay) {
+                const playPromise = audio.play();
+                if(playPromise !== undefined) {
+                    playPromise.then(() => { preloadNextTrackInfo(); }).catch(e => { console.log("Play blocked", e); setStatus('READY', 'standby'); });
+                }
+            } else { setStatus('READY', 'standby'); preloadNextTrackInfo(); }
+        }
+
+        // 처음 재생하거나 주소가 없을 때만 비동기 통신
+        async function fetchAndPlay(index, autoPlay, playerCard) {
             try {
                 const token = await getToken();
-                const res = await fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${playingQueue[index].id}`, {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
-
+                const res = await fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${playingQueue[index].id}`, { headers: { Authorization: `Bearer ${token}` } });
                 if (!res.ok) throw new Error("API Request Failed");
-
                 const data = await res.json();
-                const downloadUrl = data['@microsoft.graph.downloadUrl'];
-
-                if (downloadUrl) {
-                    audio.src = downloadUrl;
-                } else {
-                    const contentRes = await fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${playingQueue[index].id}/content`, {
-                        headers: { Authorization: `Bearer ${token}` }
-                    });
+                let downloadUrl = data['@microsoft.graph.downloadUrl'];
+                
+                if (!downloadUrl) {
+                    const contentRes = await fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${playingQueue[index].id}/content`, { headers: { Authorization: `Bearer ${token}` } });
                     const blob = await contentRes.blob();
                     if (currentObjectUrl) URL.revokeObjectURL(currentObjectUrl);
                     currentObjectUrl = URL.createObjectURL(blob);
-                    audio.src = currentObjectUrl;
+                    downloadUrl = currentObjectUrl;
                 }
-
-                playerCard.classList.remove('shimmer-active');
-
-                if ('mediaSession' in navigator) {
-                    navigator.mediaSession.metadata = new MediaMetadata({
-                        title: playingQueue[index].name.replace(/\.[^/.]+$/, ""), 
-                        artist: 'OneDrive Streaming',
-                        album: 'Music Player',
-                        artwork: [ { src: 'data:image/svg+xml;charset=utf-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 512 512%22%3E%3Cdefs%3E%3ClinearGradient id=%22grad%22 x1=%220%25%22 y1=%22100%25%22 x2=%22100%25%22 y2=%220%25%22%3E%3Cstop offset=%220%25%22 style=%22stop-color:%230078d4;stop-opacity:1%22 /%3E%3Cstop offset=%22100%25%22 style=%22stop-color:%2360a5fa;stop-opacity:1%22 /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width=%22512%22 height=%22512%22 rx=%22112%22 fill=%22url(%23grad)%22 /%3E%3Cpath d=%22M210 370V130l210-40v230%22 fill=%22none%22 stroke=%22%23ffffff%22 stroke-width=%2232%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22/%3E%3Ccircle cx=%22160%22 cy=%22370%22 r=%2250%22 fill=%22none%22 stroke=%22%23ffffff%22 stroke-width=%2232%22/%3E%3Ccircle cx=%22370%22 cy=%22330%22 r=%2250%22 fill=%22none%22 stroke=%22%23ffffff%22 stroke-width=%2232%22/%3E%3C/svg%3E', sizes: '512x512', type: 'image/svg+xml' } ]
-                    });
-                    navigator.mediaSession.setActionHandler('play', () => { togglePlayPause(); });
-                    navigator.mediaSession.setActionHandler('pause', () => { togglePlayPause(); });
-                    navigator.mediaSession.setActionHandler('previoustrack', () => { playPrevTrack(); });
-                    navigator.mediaSession.setActionHandler('nexttrack', () => { playNextTrack(true); });
-                }
-
-                if(autoPlay) audio.play(); else setStatus('READY', 'standby');
-
-            } catch(err) {
-                console.error(err);
-                playerCard.classList.remove('shimmer-active'); 
-                setStatus('ERROR', 'err');
-            }
+                executePlay(downloadUrl, autoPlay, playerCard);
+            } catch(err) { console.error(err); playerCard.classList.remove('shimmer-active'); setStatus('ERROR', 'err'); }
         }
 
         function playNextTrack(isManual = false) {
             if (playingQueue.length === 0) return;
             if (playMode === 2 && !isManual) playTrack(currentIndex);
-            else if (playMode === 3) {
-                let next = currentIndex; 
-                if (playingQueue.length > 1) {
-                    while (next === currentIndex) next = Math.floor(Math.random() * playingQueue.length);
-                }
-                playTrack(next);
-            } else if (currentIndex + 1 < playingQueue.length) playTrack(currentIndex + 1);
+            else if (playMode === 3) { let next = currentIndex; if (playingQueue.length > 1) { while (next === currentIndex) next = Math.floor(Math.random() * playingQueue.length); } playTrack(next); } 
+            else if (currentIndex + 1 < playingQueue.length) playTrack(currentIndex + 1);
             else if (playMode === 1) playTrack(0);
             else { setStatus('FINISHED', 'standby'); iconPause.classList.add('hidden'); iconPlay.classList.remove('hidden'); updateActiveTrackUI(); }
         }
