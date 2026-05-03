@@ -24,6 +24,7 @@
         }
     </script>
     <script type="text/javascript" src="https://alcdn.msauth.net/browser/2.30.0/js/msal-browser.min.js"></script>
+    
     <style>
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -31,13 +32,53 @@
         .breadcrumb-item:hover { color: #0078d4; text-decoration: underline; cursor: pointer; }
         .breadcrumb-separator { color: #9ca3af; margin: 0 4px; }
         .dark audio { filter: invert(0.9) hue-rotate(180deg); opacity: 0.8; }
+        
+        /* 
+         * 무한 연속 스크롤 (Seamless Marquee) CSS 
+         * 부모(.marquee-container)는 넘치는 것을 숨기고, 자식(.marquee-content)이 애니메이션 됨
+         */
+        .marquee-container {
+            width: 100%;
+            overflow: hidden;
+            white-space: nowrap;
+            position: relative;
+            /* 긴 텍스트 우측 페이드아웃 효과 (선택) */
+            mask-image: linear-gradient(to right, black 90%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to right, black 90%, transparent 100%);
+        }
+        
+        .marquee-content {
+            display: inline-block;
+            padding-left: 100%; /* 처음 시작할 때 우측 끝에서 나오게 함 */
+            animation: marquee 15s linear infinite;
+        }
+
+        /* 호버 시 스크롤 일시정지 (선택 사항) */
+        .marquee-container:hover .marquee-content {
+            animation-play-state: paused;
+        }
+
+        @keyframes marquee {
+            0%   { transform: translate(0, 0); }
+            100% { transform: translate(-100%, 0); }
+        }
+
+        /* 텍스트가 짧을 때는 스크롤하지 않도록 처리하는 클래스 */
+        .marquee-content.short {
+            padding-left: 0;
+            animation: none;
+            display: block;
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 font-sans antialiased min-h-screen flex flex-col transition-colors duration-300">
 
     <header class="sticky top-0 z-50 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm transition-colors duration-300">
         <div class="flex items-center justify-between px-4 sm:px-6 py-3 max-w-[1400px] mx-auto">
-            <div class="font-bold text-xl tracking-tight flex items-center gap-2 text-gray-800 dark:text-white">
+            <!-- 로고 클릭 시 새로고침 되도록 cursor-pointer와 onclick 추가 -->
+            <div onclick="window.location.reload()" class="font-bold text-xl tracking-tight flex items-center gap-2 text-gray-800 dark:text-white cursor-pointer hover:opacity-80 transition">
                 <div class="w-7 h-7 bg-[#0078d4] rounded-md flex items-center justify-center shadow-inner">
                     <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5v-9l6 4.5-6 4.5z"/></svg>
                 </div>
@@ -63,31 +104,38 @@
     <main class="flex-1 max-w-[1400px] w-full mx-auto px-4 sm:px-6 py-8 flex flex-col lg:flex-row gap-8">
         
         <div class="flex-1 flex flex-col gap-8 min-w-0">
-            <div class="border border-gray-200 dark:border-gray-800 rounded-2xl p-6 sm:p-8 bg-white dark:bg-gray-800 shadow-sm flex flex-col gap-6 relative overflow-hidden transition-colors duration-300">
+            <div class="border border-gray-200 dark:border-gray-800 rounded-2xl p-4 sm:p-8 bg-white dark:bg-gray-800 shadow-sm flex flex-col gap-6 relative overflow-hidden transition-colors duration-300">
                 <div class="absolute -top-24 -right-24 w-48 h-48 bg-blue-50 dark:bg-blue-900/20 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
 
-                <div class="flex justify-between items-start z-10">
-                    <div class="flex items-center gap-4">
-                        <div class="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-700 dark:to-gray-800 rounded-2xl flex items-center justify-center shrink-0 border border-blue-100/50 dark:border-gray-700 shadow-inner">
+                <!-- 모바일 UI 최적화를 위해 flex-wrap 및 gap 조정 -->
+                <div class="flex flex-wrap sm:flex-nowrap justify-between items-start z-10 gap-4">
+                    <div class="flex items-center gap-3 sm:gap-4 w-full sm:w-auto overflow-hidden">
+                        <div class="w-14 h-14 sm:w-20 sm:h-20 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-700 dark:to-gray-800 rounded-2xl flex items-center justify-center shrink-0 border border-blue-100/50 dark:border-gray-700 shadow-inner">
                             <svg class="w-8 h-8 sm:w-10 sm:h-10 text-[#0078d4] dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path></svg>
                         </div>
-                        <div class="flex-1 min-w-0 pr-4">
-                            <div class="flex items-center gap-2 mb-1.5">
+                        <div class="flex-1 min-w-0 pr-2">
+                            <div class="flex items-center gap-2 mb-1">
                                 <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse" id="status_dot" style="display: none;"></span>
-                                <span class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest" id="status_info">STANDBY</span>
+                                <span class="text-[10px] sm:text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest" id="status_info">STANDBY</span>
                             </div>
-                            <h1 id="file_info" class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 truncate tracking-tight">Select a track</h1>
+                            
+                            <!-- 무한 Marquee 텍스트 컨테이너 -->
+                            <div class="marquee-container text-lg sm:text-2xl font-bold text-gray-900 dark:text-gray-100">
+                                <div id="file_info" class="marquee-content short">Select a track</div>
+                            </div>
+                            
                         </div>
                     </div>
                     
-                    <button id="repeat_btn" onclick="toggleRepeat()" class="shrink-0 flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white bg-gray-50 dark:bg-gray-700/50 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 transition">
+                    <!-- 모바일에서도 잘리지 않도록 버튼 스타일 조정 -->
+                    <button id="repeat_btn" onclick="toggleRepeat()" class="shrink-0 flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white bg-gray-50 dark:bg-gray-700/50 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 transition ml-auto sm:ml-0">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                         <span id="mode_text">Off</span>
                     </button>
                 </div>
 
-                <div class="z-10 mt-2">
-                    <audio id="audio_player" controls class="w-full h-12 rounded-lg outline-none" style="display: none;"></audio>
+                <div class="z-10 mt-2 w-full">
+                    <audio id="audio_player" controls class="w-full h-10 sm:h-12 rounded-lg outline-none" style="display: none;"></audio>
                 </div>
             </div>
 
@@ -97,21 +145,20 @@
                         <span class="breadcrumb-item font-bold text-gray-800 dark:text-gray-200" onclick="fetchMyFolders('root', 'My Drive')">My Drive</span>
                     </div>
                     
-                    <!-- Folder & Upload Actions -->
                     <div class="flex items-center gap-2">
-                        <button onclick="createFolder()" class="flex items-center gap-1.5 text-xs font-bold text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 px-3 py-1.5 rounded-md transition border border-gray-200 dark:border-gray-700">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"></path></svg>
-                            New Folder
+                        <button onclick="createFolder()" class="flex items-center gap-1 text-[11px] sm:text-xs font-bold text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 px-2 sm:px-3 py-1.5 rounded-md transition border border-gray-200 dark:border-gray-700">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"></path></svg>
+                            <span class="hidden sm:inline">New Folder</span><span class="sm:hidden">New</span>
                         </button>
                         <input type="file" id="file_upload" accept="audio/*" multiple class="hidden" onchange="handleFileUpload(event)">
-                        <button id="upload_btn" onclick="document.getElementById('file_upload').click()" class="flex items-center gap-1.5 text-xs font-bold text-[#0078d4] dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 px-3 py-1.5 rounded-md transition border border-blue-200 dark:border-blue-800">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                        <button id="upload_btn" onclick="document.getElementById('file_upload').click()" class="flex items-center gap-1 text-[11px] sm:text-xs font-bold text-[#0078d4] dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 px-2 sm:px-3 py-1.5 rounded-md transition border border-blue-200 dark:border-blue-800">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
                             Upload
                         </button>
                     </div>
                 </div>
                 
-                <div id="folder_list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 max-h-[130px] md:max-h-[350px] overflow-y-auto no-scrollbar py-1">
+                <div id="folder_list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 max-h-[150px] md:max-h-[350px] overflow-y-auto no-scrollbar py-1">
                     <!-- Folder items render here -->
                 </div>
             </div>
@@ -126,7 +173,7 @@
                 <span class="text-xs font-bold text-[#0078d4] dark:text-blue-300 bg-blue-50 dark:bg-blue-900/30 px-2.5 py-1 rounded-full border border-blue-100 dark:border-blue-800" id="playlist_count">0 Tracks</span>
             </div>
             
-            <div class="border border-gray-200 dark:border-gray-800 rounded-2xl bg-white dark:bg-gray-800 shadow-sm overflow-hidden flex flex-col h-[500px] lg:h-[calc(100vh-200px)] transition-colors duration-300">
+            <div class="border border-gray-200 dark:border-gray-800 rounded-2xl bg-white dark:bg-gray-800 shadow-sm overflow-hidden flex flex-col h-[400px] lg:h-[calc(100vh-200px)] transition-colors duration-300">
                 <div class="bg-gray-50 dark:bg-gray-800/50 border-b border-gray-200 dark:border-gray-700 px-4 py-3">
                     <p id="playlist_title" class="text-sm font-semibold text-gray-500 dark:text-gray-400 truncate text-center">Select a folder</p>
                 </div>
@@ -197,7 +244,34 @@
             catch (error) { msalInstance.acquireTokenRedirect(request); }
         }
 
-        // Folder Operations (Create, Rename, Delete)
+        // ==========================================
+        // UI Helpers
+        // ==========================================
+        
+        // 텍스트 길이에 따라 Marquee 클래스 토글하는 함수
+        function updateMarqueeText(text) {
+            const fileInfoEl = document.getElementById('file_info');
+            const containerEl = fileInfoEl.parentElement;
+            
+            fileInfoEl.innerText = text;
+            
+            // 텍스트 렌더링 후 길이 비교
+            setTimeout(() => {
+                // 부모 컨테이너보다 텍스트 길이가 길면 스크롤 애니메이션 활성화
+                if (fileInfoEl.scrollWidth > containerEl.clientWidth) {
+                    fileInfoEl.classList.remove('short');
+                    // 길이에 따라 속도 조절 (선택)
+                    const speed = fileInfoEl.scrollWidth / 20; 
+                    fileInfoEl.style.animationDuration = `${speed}s`;
+                } else {
+                    fileInfoEl.classList.add('short');
+                    fileInfoEl.style.animationDuration = '';
+                }
+            }, 50);
+        }
+
+
+        // Folder Operations
         async function createFolder() {
             const folderName = prompt("Enter new folder name:");
             if (!folderName) return;
@@ -246,7 +320,7 @@
 
             const uploadBtn = document.getElementById('upload_btn');
             const originalHTML = uploadBtn.innerHTML;
-            uploadBtn.innerHTML = `<svg class="animate-spin w-4 h-4 mr-1" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Uploading...`;
+            uploadBtn.innerHTML = `<svg class="animate-spin w-4 h-4 mr-1" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> <span class="hidden sm:inline">Uploading...</span>`;
             uploadBtn.disabled = true;
 
             try {
@@ -319,7 +393,6 @@
                 const folders = data.value.filter(item => item.folder);
                 const audios = data.value.filter(item => item.file && item.file.mimeType && item.file.mimeType.includes('audio'));
 
-                // Render Folders with Edit/Delete inline icons
                 folders.forEach(folder => {
                     const item = document.createElement('div');
                     item.className = 'flex items-center justify-between p-3 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 shadow-sm group';
@@ -394,7 +467,8 @@
             updatePlaylistUI(); 
             
             const file = playlist[index];
-            document.getElementById('file_info').innerText = file.name;
+            updateMarqueeText(file.name); // 무한 스크롤 텍스트 업데이트
+            
             document.getElementById('status_info').innerText = 'BUFFERING...';
             document.getElementById('status_info').classList.add('text-[#0078d4]', 'dark:text-blue-400');
             document.getElementById('status_dot').style.display = 'none';
@@ -513,7 +587,7 @@
                 }).then(res => res.json()).then(data => {
                     playlist[index].name = data.name;
                     updatePlaylistUI(); 
-                    if(index === currentIndex) document.getElementById('file_info').innerText = data.name;
+                    if(index === currentIndex) updateMarqueeText(data.name);
                 });
             }
         }
@@ -531,7 +605,7 @@
                                 playTrack(currentIndex); 
                             } else {
                                 document.getElementById('audio_player').pause();
-                                document.getElementById('file_info').innerText = 'Queue is empty.';
+                                updateMarqueeText('Queue is empty.');
                                 document.getElementById('status_info').innerText = 'STANDBY';
                                 document.getElementById('status_dot').style.display = 'none';
                                 currentIndex = -1;
