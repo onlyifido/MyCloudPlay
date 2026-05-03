@@ -2,7 +2,6 @@
 <html lang="en" class="light">
 <head>
     <meta charset="UTF-8">
-    <!-- 🔥 더블 탭 줌 방지 메타태그 완벽 적용 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <title>Music Player</title>
     
@@ -29,7 +28,6 @@
     <script type="text/javascript" src="https://alcdn.msauth.net/browser/2.30.0/js/msal-browser.min.js"></script>
     
     <style>
-        /* 터치 액션 제어로 더블 탭 확대 완전 방지 */
         body { touch-action: manipulation; }
 
         ::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -61,7 +59,6 @@
         input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: #e5e7eb; border-radius: 2px; }
         .dark input[type=range]::-webkit-slider-runnable-track { background: #374151; }
 
-        /* 🔥 Shimmer 애니메이션 딜레이 제거 및 부드러운 무한 반복 처리 */
         .shimmer-active::before { content: ''; position: absolute; inset: 0; background: rgba(255, 255, 255, 0.3); z-index: 40; pointer-events: none; }
         .dark .shimmer-active::before { background: rgba(0, 0, 0, 0.5); }
         .shimmer-active::after {
@@ -92,7 +89,7 @@
                     <svg id="theme_icon_dark" class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
                 </button>
 
-                <button id="login_button" onclick="signIn()" class="bg-[#0078d4] text-white px-4 py-1.5 sm:px-5 sm:py-2 rounded-full text-sm font-semibold hover:opacity-90 transition shadow-md">
+                <button id="login_button" onclick="signIn()" class="bg-blue-600 text-white px-4 py-1.5 sm:px-5 sm:py-2 rounded-full text-sm font-semibold hover:bg-blue-700 transition shadow-md">
                     Sign In
                 </button>
                 <button id="logout_button" style="display: none;" onclick="signOut()" class="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white px-2 py-1.5 text-sm font-medium transition">
@@ -137,26 +134,26 @@
                     </div>
 
                     <div class="flex items-center justify-center sm:justify-between w-full mt-1 sm:mt-4">
-                        <button id="repeat_btn" onclick="toggleRepeat()" class="hidden sm:flex items-center justify-center w-12 h-12 rounded-full text-gray-400 hover:text-[#0078d4] dark:hover:text-blue-400 transition">
+                        <button id="repeat_btn" onclick="toggleRepeat()" class="hidden sm:flex items-center justify-center w-12 h-12 rounded-full text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                         </button>
 
                         <div class="flex items-center gap-5 sm:gap-8">
-                            <button onclick="playPrevTrack()" class="w-12 h-12 sm:w-14 sm:h-14 neumorphic rounded-full flex items-center justify-center text-gray-500 dark:text-gray-400 hover:text-[#0078d4] dark:hover:text-blue-400 transition-all">
+                            <button onclick="playPrevTrack()" class="w-12 h-12 sm:w-14 sm:h-14 neumorphic rounded-full flex items-center justify-center text-gray-500 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition-all">
                                 <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
                             </button>
                             
-                            <button id="play_pause_btn" onclick="togglePlayPause()" class="w-14 h-14 sm:w-20 sm:h-20 bg-gradient-to-tr from-[#0078d4] to-blue-500 text-white rounded-full flex items-center justify-center hover:scale-105 active:scale-95 transition shadow-lg shadow-blue-500/30">
+                            <button id="play_pause_btn" onclick="togglePlayPause()" class="w-14 h-14 sm:w-20 sm:h-20 bg-gradient-to-tr from-blue-600 to-blue-400 text-white rounded-full flex items-center justify-center hover:scale-105 active:scale-95 transition shadow-lg shadow-blue-500/30">
                                 <svg id="icon_play" class="w-7 h-7 sm:w-10 sm:h-10 ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                                 <svg id="icon_pause" class="w-7 h-7 sm:w-10 sm:h-10 hidden" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
                             </button>
 
-                            <button onclick="playNextTrack(true)" class="w-12 h-12 sm:w-14 sm:h-14 neumorphic rounded-full flex items-center justify-center text-gray-500 dark:text-gray-400 hover:text-[#0078d4] dark:hover:text-blue-400 transition-all">
+                            <button onclick="playNextTrack(true)" class="w-12 h-12 sm:w-14 sm:h-14 neumorphic rounded-full flex items-center justify-center text-gray-500 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition-all">
                                 <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
                             </button>
                         </div>
                         
-                        <button id="repeat_btn_mobile" onclick="toggleRepeat()" class="sm:hidden flex items-center justify-center w-10 h-10 rounded-full text-gray-400 hover:text-[#0078d4] dark:hover:text-blue-400 transition ml-4">
+                        <button id="repeat_btn_mobile" onclick="toggleRepeat()" class="sm:hidden flex items-center justify-center w-10 h-10 rounded-full text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition ml-4">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                         </button>
                         
@@ -178,10 +175,9 @@
                     </div>
                     
                     <div class="flex items-center gap-1 sm:gap-2 relative" id="action_buttons" style="display: none;">
-                        <!-- 🔥 6번: 현재 폴더 무작위 재생 버튼 (Shuffle Play) -->
-                        <button onclick="playRandomFromFolder()" class="flex items-center gap-1.5 text-xs font-bold text-[#0078d4] dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 px-3 py-1.5 rounded-full transition mr-1">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
-                            Shuffle
+                        <!-- 🔥 2. 현재 폴더 무작위 셔플 버튼 (텍스트 제거, 뫼비우스 아이콘) -->
+                        <button id="shuffle_folder_btn" onclick="playRandomFromFolder()" title="Shuffle Play" style="display: none;" class="flex items-center justify-center text-blue-500 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 w-8 h-8 sm:w-9 sm:h-9 rounded-full transition mr-1">
+                            <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7h-3a4 4 0 00-4 4l-2 2M4 7h3a4 4 0 014 4l2 2m0 0l2 2a4 4 0 004 4h3M20 7l-4-4m4 4l-4 4M20 21l-4-4m4 4l-4 4"></path></svg>
                         </button>
                         
                         <button onclick="toggleMenu(event, 'main_action_drop')" class="p-1.5 sm:p-2 text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-gray-800 rounded-full transition bg-gray-100 dark:bg-gray-800/50">
@@ -230,7 +226,6 @@
         const msalConfig = { auth: { clientId: "8a7108a1-d00c-4f7c-bbed-f4a4df25b81a", authority: "https://login.microsoftonline.com/common", redirectUri: "https://cloudstreaming.vercel.app/" }, cache: { cacheLocation: "localStorage", storeAuthStateInCookie: false } };
         const msalInstance = new msal.PublicClientApplication(msalConfig);
         
-        // 🔥 핵심 로직: 보여지는 파일(currentFolderAudios)과 실제 재생중인 큐(playingQueue) 분리
         let accountId = "", currentFolderAudios = [], playingQueue = [], currentIndex = -1, playingFolderId = '';
         let currentObjectUrl = null, playMode = 0, currentFolderId = 'root';
         let pathHistory = [{ id: 'root', name: 'My Drive' }];
@@ -272,11 +267,10 @@
         function setStatus(text, type) {
             const el = document.getElementById('status_info'), dot = document.getElementById('status_dot');
             el.innerText = text;
-            el.className = `text-[10px] sm:text-xs font-semibold tracking-[0.2em] uppercase ${type === 'play' ? 'text-green-500' : type === 'load' ? 'text-[#0078d4] dark:text-blue-400' : type === 'err' ? 'text-red-500' : 'text-gray-500 dark:text-gray-400'}`;
-            dot.className = `w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full ${type === 'play' ? 'bg-green-500' : type === 'load' ? 'bg-[#0078d4] dark:bg-blue-400 animate-pulse' : type === 'err' ? 'bg-red-500' : 'bg-gray-300 dark:bg-gray-600'}`;
+            el.className = `text-[10px] sm:text-xs font-semibold tracking-[0.2em] uppercase ${type === 'play' ? 'text-green-500' : type === 'load' ? 'text-blue-500 dark:text-blue-400' : type === 'err' ? 'text-red-500' : 'text-gray-500 dark:text-gray-400'}`;
+            dot.className = `w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full ${type === 'play' ? 'bg-green-500' : type === 'load' ? 'bg-blue-500 dark:bg-blue-400 animate-pulse' : type === 'err' ? 'bg-red-500' : 'bg-gray-300 dark:bg-gray-600'}`;
         }
 
-        // 🔥 드롭다운 메뉴 안전 닫기 헬퍼
         function toggleMenu(e, id) {
             e.stopPropagation();
             const target = document.getElementById(id);
@@ -359,6 +353,9 @@
                 const audios = data.value.filter(i => i.file && i.file.mimeType?.includes('audio'));
                 
                 currentFolderAudios = audios; 
+                
+                // 🔥 2. 현재 폴더에 오디오 파일이 있으면 셔플 버튼 보이기
+                document.getElementById('shuffle_folder_btn').style.display = audios.length > 0 ? 'flex' : 'none';
 
                 folders.forEach(folder => {
                     const item = document.createElement('div');
@@ -369,7 +366,7 @@
                     infoDiv.className = 'flex items-center gap-3 sm:gap-4 flex-1 min-w-0 pr-2';
                     infoDiv.innerHTML = `
                         <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center shrink-0 pointer-events-none">
-                            <svg class="w-5 h-5 sm:w-6 sm:h-6 text-[#0078d4] dark:text-blue-400" fill="currentColor" viewBox="0 0 24 24"><path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>
+                            <svg class="w-5 h-5 sm:w-6 sm:h-6 text-blue-500 dark:text-blue-400" fill="currentColor" viewBox="0 0 24 24"><path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>
                         </div>
                         <span class="text-sm sm:text-base font-semibold truncate text-gray-800 dark:text-gray-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition pointer-events-none">${folder.name}</span>
                     `;
@@ -393,7 +390,6 @@
                     const infoDiv = document.createElement('div');
                     infoDiv.className = 'flex items-center gap-3 sm:gap-4 flex-1 min-w-0 pr-4';
                     
-                    // 🔥 곡 터치 시 로직 변경: 현재 재생 큐에 이 곡을 반영하고 재생
                     infoDiv.onclick = () => {
                         const currentPlayingId = playingQueue[currentIndex]?.id;
                         if (file.id === currentPlayingId && audio.src) {
@@ -429,17 +425,16 @@
 
                 if (!folders.length && !audios.length) container.innerHTML = '<div class="h-full flex flex-col items-center justify-center text-sm text-gray-400"><div class="text-3xl mb-2 opacity-50">📁</div>Folder is empty.</div>';
                 
-                // 렌더링 후 현재 큐 상태에 맞게 UI 동기화
                 updateActiveTrackUI();
             });
         }
 
-        // 🔥 폴더 이동과 상관없이 정확한 재생 상태를 리스트에 매핑
+        // 🔥 3. 파일의 고유 ID를 비교하여 폴더 이동 시에도 정확한 곡만 선택 처리
         function updateActiveTrackUI() {
             const currentPlayingId = playingQueue[currentIndex]?.id;
             
             currentFolderAudios.forEach((file, index) => {
-                const isActive = (file.id === currentPlayingId);
+                const isActive = (file.id === currentPlayingId && audio.src !== "");
                 const row = document.getElementById(`track_row_${index}`);
                 const icon = document.getElementById(`track_icon_${index}`);
                 const text = document.getElementById(`track_text_${index}`);
@@ -447,19 +442,19 @@
                 
                 if (isActive) {
                     row.className = `flex items-center justify-between p-3 sm:p-3.5 mb-1.5 group/item hover:bg-gray-50 dark:hover:bg-gray-800/50 transition cursor-pointer rounded-2xl bg-blue-50/80 dark:bg-blue-900/30 border border-blue-100 dark:border-blue-900/40 shadow-sm`;
-                    icon.className = `w-10 h-10 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center shrink-0 bg-white dark:bg-gray-800 text-[#0078d4] dark:text-blue-400 shadow-sm transition`;
+                    icon.className = `w-10 h-10 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center shrink-0 bg-white dark:bg-gray-800 text-blue-500 dark:text-blue-400 shadow-sm transition`;
                     
                     if(!audio.paused && audio.src) {
                         icon.innerHTML = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>`;
                     } else {
                         icon.innerHTML = `<svg class="w-5 h-5 ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>`;
                     }
-                    text.className = `text-sm sm:text-[15px] leading-tight truncate text-[#0078d4] dark:text-blue-300 font-bold transition`;
+                    text.className = `text-sm sm:text-[15px] leading-tight truncate text-blue-600 dark:text-blue-300 font-bold transition`;
                 } else {
                     row.className = `flex items-center justify-between p-3 sm:p-3.5 mb-1.5 group/item hover:bg-gray-50 dark:hover:bg-gray-800/50 transition cursor-pointer rounded-2xl border border-transparent`;
-                    icon.className = `w-10 h-10 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center shrink-0 text-gray-400 dark:text-gray-500 font-medium text-sm group-hover/item:text-[#0078d4] dark:group-hover/item:text-blue-400 bg-gray-100 dark:bg-gray-900 transition`;
+                    icon.className = `w-10 h-10 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center shrink-0 text-gray-400 dark:text-gray-500 font-medium text-sm group-hover/item:text-blue-500 dark:group-hover/item:text-blue-400 bg-gray-100 dark:bg-gray-900 transition`;
                     icon.innerHTML = index + 1;
-                    text.className = `text-sm sm:text-[15px] leading-tight truncate text-gray-800 dark:text-gray-200 font-medium group-hover/item:text-[#0078d4] dark:group-hover/item:text-blue-400 transition`;
+                    text.className = `text-sm sm:text-[15px] leading-tight truncate text-gray-800 dark:text-gray-200 font-medium group-hover/item:text-blue-600 dark:group-hover/item:text-blue-400 transition`;
                 }
             });
         }
@@ -487,36 +482,36 @@
             updateActiveTrackUI(); 
         });
 
-        // 🔥 재생 모드 상태에 따른 완벽한 시각적 피드백
         function toggleRepeat() {
             playMode = (playMode + 1) % 4;
             updateRepeatBtnUI();
         }
         
+        // 🔥 1번 & 4번: 재생모드 토글 디자인 안정화 및 명확한 아이콘 변경
         function updateRepeatBtnUI() {
             const btn = document.getElementById('repeat_btn'), btnMobile = document.getElementById('repeat_btn_mobile');
             let svgContent = '';
             
-            // 0: 끄기, 1: 전곡, 2: 한곡, 3: 랜덤
-            if (playMode === 0 || playMode === 1) {
+            if (playMode === 0 || playMode === 1) { // 0: 끄기, 1: 전곡반복
                 svgContent = `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>`;
-            } else if (playMode === 2) {
+            } else if (playMode === 2) { // 2: 한곡반복
                 svgContent = `<svg class="w-6 h-6 relative" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path><text x="12" y="15" font-family="sans-serif" font-size="9" font-weight="bold" fill="currentColor" text-anchor="middle" stroke="none">1</text></svg>`;
-            } else if (playMode === 3) {
-                svgContent = `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>`;
+            } else if (playMode === 3) { // 3: 랜덤재생
+                svgContent = `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7h-3a4 4 0 00-4 4l-2 2M4 7h3a4 4 0 014 4l2 2m0 0l2 2a4 4 0 004 4h3M20 7l-4-4m4 4l-4 4M20 21l-4-4m4 4l-4 4"></path></svg>`;
             }
 
             [btn, btnMobile].forEach(el => {
                 el.innerHTML = svgContent;
                 if(playMode > 0) { 
-                    el.classList.remove('text-gray-400'); el.classList.add('text-[#0078d4]', 'dark:text-blue-400'); 
+                    el.className = `hidden sm:flex items-center justify-center w-12 h-12 rounded-full transition hover:text-blue-600 text-blue-500 dark:text-blue-400`;
+                    if(el.id === 'repeat_btn_mobile') el.className = `sm:hidden flex items-center justify-center w-10 h-10 rounded-full transition ml-4 hover:text-blue-600 text-blue-500 dark:text-blue-400`;
                 } else { 
-                    el.classList.remove('text-[#0078d4]', 'dark:text-blue-400'); el.classList.add('text-gray-400'); 
+                    el.className = `hidden sm:flex items-center justify-center w-12 h-12 rounded-full transition hover:text-blue-500 dark:hover:text-blue-400 text-gray-400`;
+                    if(el.id === 'repeat_btn_mobile') el.className = `sm:hidden flex items-center justify-center w-10 h-10 rounded-full transition ml-4 hover:text-blue-500 dark:hover:text-blue-400 text-gray-400`;
                 }
             });
         }
 
-        // 🔥 6번: 현재 폴더에서 랜덤 재생 기능
         function playRandomFromFolder() {
             if(currentFolderAudios.length === 0) return;
             playMode = 3; 
