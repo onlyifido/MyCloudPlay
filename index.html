@@ -536,7 +536,7 @@
             playTrack(currentIndex);
         }
 
-        async function playTrack(index, autoPlay = true) {
+                async function playTrack(index, autoPlay = true) {
             if (index < 0 || index >= playingQueue.length) return;
             audio.pause(); audio.removeAttribute('src'); 
             
@@ -553,6 +553,26 @@
                 if (currentObjectUrl) URL.revokeObjectURL(currentObjectUrl);
                 currentObjectUrl = URL.createObjectURL(blob);
                 audio.src = currentObjectUrl; playerCard.classList.remove('shimmer-active');
+                
+                // 🔥 잠금화면 미디어 컨트롤(Media Session API) 연동 코드 추가
+                if ('mediaSession' in navigator) {
+                    navigator.mediaSession.metadata = new MediaMetadata({
+                        // .mp3 등 확장자를 정규식으로 지우고 곡 이름만 깔끔하게 표시
+                        title: playingQueue[index].name.replace(/\.[^/.]+$/, ""), 
+                        artist: 'OneDrive Streaming',
+                        album: 'Music Player',
+                        artwork: [
+                            { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Microsoft_OneDrive_icon.svg/512px-Microsoft_OneDrive_icon.svg.png', sizes: '512x512', type: 'image/png' }
+                        ]
+                    });
+
+                    // 잠금화면 버튼에 우리 웹앱의 재생 함수들 연결
+                    navigator.mediaSession.setActionHandler('play', () => { togglePlayPause(); });
+                    navigator.mediaSession.setActionHandler('pause', () => { togglePlayPause(); });
+                    navigator.mediaSession.setActionHandler('previoustrack', () => { playPrevTrack(); });
+                    navigator.mediaSession.setActionHandler('nexttrack', () => { playNextTrack(true); });
+                }
+
                 if(autoPlay) audio.play(); else setStatus('READY', 'standby');
             }).catch(err => { playerCard.classList.remove('shimmer-active'); setStatus('ERROR', 'err'); });
         }
