@@ -71,12 +71,12 @@
             </div>
             
             <div class="flex items-center gap-2 sm:gap-4">
-                <!-- 🔥 화면 켜짐 유지(Wake Lock) 인디케이터 아이콘 -->
-                <div id="wake_lock_indicator" class="opacity-0 scale-95 transition-all duration-500 flex items-center justify-center p-1 text-yellow-500 dark:text-yellow-400 drop-shadow-[0_0_6px_rgba(234,179,8,0.5)]" title="Screen keeps awake">
-                    <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <rect x="7" y="3" width="10" height="18" rx="2" ry="2" stroke-width="1.5" stroke-linecap="round"/>
-                        <path stroke-linecap="round" stroke-width="1.5" d="M12 17h.01"/>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12h1.5M19.5 12H21M5 5l1 1M18 5l-1 1M5 19l1-1M18 19l-1-1"/>
+                <!-- 🔥 심플하고 직관적인 '빛나는 휴대폰 화면' 아이콘으로 교체 완료 -->
+                <div id="wake_lock_indicator" class="opacity-0 scale-95 transition-all duration-500 flex items-center justify-center p-1 text-yellow-500 dark:text-yellow-400 drop-shadow-[0_0_8px_rgba(234,179,8,0.6)]" title="Screen keeps awake">
+                    <svg class="w-5 h-5 sm:w-6 sm:h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="5" y="2" width="14" height="20" rx="3" stroke="currentColor" stroke-width="1.5"/>
+                        <rect x="7" y="5" width="10" height="13" rx="1" fill="currentColor"/>
+                        <path d="M11 20h2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
                     </svg>
                 </div>
 
@@ -169,7 +169,7 @@
                     </div>
                     
                     <div class="flex items-center gap-1 sm:gap-2 relative" id="action_buttons" style="display: none;">
-                        <button id="shuffle_folder_btn" onclick="playRandomFromFolder()" title="Shuffle Play" style="display: none;" class="flex items-center justify-center text-blue-500 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 w-8 h-8 sm:w-9 sm:h-9 rounded-full transition mr-1">
+                        <button id="shuffle_folder_btn" onclick="playRandomFromFolder()" title="Shuffle Play" style="display: none;" class="flex items-center justify-center text-[#0078d4] dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 w-8 h-8 sm:w-9 sm:h-9 rounded-full transition mr-1">
                             <svg class="w-4 h-4 sm:w-4.5 sm:h-4.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
                                 <path d="M2 18h1.4c1.3 0 2.5-.6 3.3-1.7l6.1-8.6c.7-1.1 2-1.7 3.3-1.7H22" />
                                 <path d="m18 2 4 4-4 4" />
