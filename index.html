@@ -77,7 +77,6 @@
     <header class="z-50 glass shrink-0 transition-colors duration-300">
         <div class="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 max-w-[1400px] mx-auto">
             <div onclick="window.location.reload()" class="font-bold text-lg sm:text-xl tracking-tight flex items-center gap-2.5 text-gray-900 dark:text-white cursor-pointer hover:opacity-70 transition">
-                <!-- 🔥 감성적인 8분음표 2개 로고 교체 -->
                 <div class="w-7 h-7 sm:w-8 sm:h-8 bg-gradient-to-tr from-[#0078d4] to-blue-400 rounded-xl flex items-center justify-center shadow-md">
                     <svg class="w-4 h-4 sm:w-4.5 sm:h-4.5 text-white pr-[1px] pb-[1px]" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
                         <path d="M9 18V5l12-2v13" />
@@ -112,7 +111,6 @@
 
                 <div class="flex flex-row items-center sm:flex-col sm:items-start gap-4 sm:gap-8 z-10 w-full text-left">
                     <div class="w-16 h-16 sm:w-48 sm:h-48 sm:mx-auto lg:mx-0 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-950 rounded-2xl sm:rounded-[2rem] flex items-center justify-center shrink-0 shadow-inner relative overflow-hidden border border-white/50 dark:border-gray-700/50">
-                        <!-- 여기도 8분음표 로고로 통일 -->
                         <svg class="w-8 h-8 sm:w-16 sm:h-16 text-gray-400 dark:text-gray-600" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
                             <path d="M9 18V5l12-2v13" />
                             <circle cx="6" cy="18" r="3" />
@@ -183,7 +181,6 @@
                     </div>
                     
                     <div class="flex items-center gap-1 sm:gap-2 relative" id="action_buttons" style="display: none;">
-                        <!-- 🔥 제대로 된 뫼비우스 교차 화살표 셔플 아이콘 적용 -->
                         <button id="shuffle_folder_btn" onclick="playRandomFromFolder()" title="Shuffle Play" style="display: none;" class="flex items-center justify-center text-blue-500 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 w-8 h-8 sm:w-9 sm:h-9 rounded-full transition mr-1">
                             <svg class="w-4 h-4 sm:w-4.5 sm:h-4.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
                                 <path d="M2 18h1.4c1.3 0 2.5-.6 3.3-1.7l6.1-8.6c.7-1.1 2-1.7 3.3-1.7H22" />
@@ -442,7 +439,6 @@
             });
         }
 
-        // 🔥 3번: 현재 재생중인 고유 ID 기준으로 UI 업데이트를 수행하여 다른 폴더에서 버그 발생 방지
         function updateActiveTrackUI() {
             const currentPlayingId = playingQueue[currentIndex]?.id;
             
@@ -500,7 +496,6 @@
             updateRepeatBtnUI();
         }
         
-        // 🔥 4번: 색상 꼬임 현상 해결 (기존 클래스 싹 지우고 새로 할당)
         function updateRepeatBtnUI() {
             const btn = document.getElementById('repeat_btn'), btnMobile = document.getElementById('repeat_btn_mobile');
             let svgContent = '';
@@ -510,7 +505,6 @@
             } else if (playMode === 2) {
                 svgContent = `<svg class="w-6 h-6 relative" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path><text x="12" y="15" font-family="sans-serif" font-size="9" font-weight="bold" fill="currentColor" text-anchor="middle" stroke="none">1</text></svg>`;
             } else if (playMode === 3) {
-                // 뫼비우스 교차 셔플 아이콘 적용
                 svgContent = `<svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M2 18h1.4c1.3 0 2.5-.6 3.3-1.7l6.1-8.6c.7-1.1 2-1.7 3.3-1.7H22"/><path d="m18 2 4 4-4 4"/><path d="M2 6h1.9c1.5 0 2.9.9 3.6 2.2"/><path d="M22 18h-5.9c-1.3 0-2.6-.7-3.3-1.8l-.5-.8"/><path d="m18 14 4 4-4 4"/></svg>`;
             }
 
@@ -536,7 +530,7 @@
             playTrack(currentIndex);
         }
 
-                        async function playTrack(index, autoPlay = true) {
+        async function playTrack(index, autoPlay = true) {
             if (index < 0 || index >= playingQueue.length) return;
             audio.pause(); audio.removeAttribute('src'); 
             
@@ -550,8 +544,6 @@
 
             try {
                 const token = await getToken();
-                
-                // 🔥 1. 파일 전체를 다운받는 대신, 원드라이브에 '직접 다운로드(스트리밍) URL'만 요청합니다.
                 const response = await fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${playingQueue[index].id}?$select=id,@microsoft.graph.downloadUrl`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
@@ -560,11 +552,9 @@
 
                 if (!downloadUrl) throw new Error("No Streaming URL found");
 
-                // 🔥 2. 브라우저 엔진에 URL을 직접 넘겨 네이티브 스트리밍을 맡깁니다. (백그라운드 재생의 핵심)
                 audio.src = downloadUrl; 
                 playerCard.classList.remove('shimmer-active');
 
-                // 미디어 세션 (잠금화면 컨트롤)
                 if ('mediaSession' in navigator) {
                     navigator.mediaSession.metadata = new MediaMetadata({
                         title: playingQueue[index].name.replace(/\.[^/.]+$/, ""), 
@@ -586,7 +576,6 @@
                 setStatus('ERROR', 'err');
             }
         }
-
 
         function playNextTrack(isManual = false) {
             if (playingQueue.length === 0) return;
