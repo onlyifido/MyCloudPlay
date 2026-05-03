@@ -34,18 +34,9 @@
         .breadcrumb-item:hover { color: #0078d4; text-decoration: underline; cursor: pointer; }
         .breadcrumb-separator { color: #6b7280; margin: 0 4px; font-weight: 300; }
         
-        .glass {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.5);
-        }
-        .dark .glass {
-            background: rgba(18, 18, 18, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
+        .glass { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.5); }
+        .dark .glass { background: rgba(18, 18, 18, 0.7); border: 1px solid rgba(255, 255, 255, 0.05); }
 
-        /* Seamless Marquee CSS */
         .marquee-container { width: 100%; overflow: hidden; white-space: nowrap; position: relative; mask-image: linear-gradient(to right, black 90%, transparent 100%); -webkit-mask-image: linear-gradient(to right, black 90%, transparent 100%); }
         .marquee-content { display: inline-block; padding-left: 100%; animation: marquee 15s linear infinite; }
         @keyframes marquee { 0% { transform: translate(0, 0); } 100% { transform: translate(-100%, 0); } }
@@ -56,33 +47,40 @@
         input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: #e5e7eb; border-radius: 2px; }
         .dark input[type=range]::-webkit-slider-runnable-track { background: #374151; }
 
-        /* 🔥 버퍼링 은은한 Shimmer(대각선 빛번짐) 이펙트 추가 */
+        /* 🔥 수정된 확실한 Shimmer(스켈레톤 로딩) 이펙트 */
+        /* 1. 버퍼링 중 내용물을 살짝 뿌옇게 덮어주는 오버레이 */
+        .shimmer-active::before {
+            content: ''; position: absolute; inset: 0;
+            background: rgba(255, 255, 255, 0.4); 
+            z-index: 40; pointer-events: none;
+        }
+        .dark .shimmer-active::before {
+            background: rgba(0, 0, 0, 0.5); /* 다크모드에선 살짝 어둡게 덮음 */
+        }
+        /* 2. 대각선으로 빠르게 지나가는 강한 빛 줄기 */
         .shimmer-active::after {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
+            content: ''; position: absolute; inset: 0;
             background: linear-gradient(
                 105deg,
-                transparent 25%,
-                rgba(0, 120, 212, 0.08) 50%,
-                transparent 75%
+                transparent 15%,
+                rgba(255, 255, 255, 0.9) 50%,
+                transparent 85%
             );
             background-size: 200% 100%;
-            animation: shimmer 1.5s infinite linear;
-            pointer-events: none; /* 마우스 클릭 방해 금지 */
-            z-index: 50;
+            animation: shimmer 1.2s infinite linear;
+            z-index: 50; pointer-events: none;
         }
         .dark .shimmer-active::after {
             background: linear-gradient(
                 105deg,
-                transparent 25%,
-                rgba(255, 255, 255, 0.06) 50%,
-                transparent 75%
+                transparent 15%,
+                rgba(255, 255, 255, 0.15) 50%,
+                transparent 85%
             );
         }
         @keyframes shimmer {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
         }
     </style>
 </head>
@@ -116,7 +114,7 @@
     <main class="flex-1 max-w-[1400px] w-full mx-auto px-4 sm:px-6 py-8 flex flex-col lg:flex-row gap-8">
         
         <div class="flex-1 flex flex-col gap-8 min-w-0">
-            <!-- 감성 플레이어 카드 (ID 부여됨) -->
+            <!-- 감성 플레이어 카드 -->
             <div id="player_card" class="border border-gray-100 dark:border-gray-800 rounded-3xl p-6 sm:p-8 bg-white dark:bg-gray-900 shadow-xl shadow-gray-200/50 dark:shadow-none flex flex-col gap-8 relative overflow-hidden transition-colors duration-300">
                 <div class="absolute -top-32 -right-32 w-64 h-64 bg-blue-400/20 dark:bg-blue-900/30 rounded-full blur-[80px] pointer-events-none"></div>
 
@@ -430,7 +428,7 @@
             setStatus('BUFFERING...', 'load');
             progressBar.value = 0; currentTimeEl.innerText = "0:00"; progressBar.disabled = true;
 
-            // 🔥 플레이어 전체에 Shimmer 이펙트 적용
+            // 🔥 플레이어 전체에 Shimmer 이펙트 켜기
             const playerCard = document.getElementById('player_card');
             playerCard.classList.add('shimmer-active');
 
@@ -440,7 +438,7 @@
                 currentObjectUrl = URL.createObjectURL(blob);
                 audio.src = currentObjectUrl;
                 
-                // 🔥 로딩 완료 시 Shimmer 이펙트 제거
+                // 🔥 로딩 완료 시 Shimmer 이펙트 끄기
                 playerCard.classList.remove('shimmer-active');
                 
                 if(autoPlay) audio.play(); else setStatus('READY', 'standby');
