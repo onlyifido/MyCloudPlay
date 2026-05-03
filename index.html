@@ -70,7 +70,16 @@
                 Music
             </div>
             
-            <div class="flex items-center gap-3 sm:gap-4">
+            <div class="flex items-center gap-2 sm:gap-4">
+                <!-- 🔥 화면 켜짐 유지(Wake Lock) 인디케이터 아이콘 -->
+                <div id="wake_lock_indicator" class="opacity-0 scale-95 transition-all duration-500 flex items-center justify-center p-1 text-yellow-500 dark:text-yellow-400 drop-shadow-[0_0_6px_rgba(234,179,8,0.5)]" title="Screen keeps awake">
+                    <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <rect x="7" y="3" width="10" height="18" rx="2" ry="2" stroke-width="1.5" stroke-linecap="round"/>
+                        <path stroke-linecap="round" stroke-width="1.5" d="M12 17h.01"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12h1.5M19.5 12H21M5 5l1 1M18 5l-1 1M5 19l1-1M18 19l-1-1"/>
+                    </svg>
+                </div>
+
                 <button onclick="toggleDarkMode()" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400 transition" title="Toggle Theme">
                     <svg id="theme_icon_light" class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
                     <svg id="theme_icon_dark" class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
@@ -160,7 +169,7 @@
                     </div>
                     
                     <div class="flex items-center gap-1 sm:gap-2 relative" id="action_buttons" style="display: none;">
-                        <button id="shuffle_folder_btn" onclick="playRandomFromFolder()" title="Shuffle Play" style="display: none;" class="flex items-center justify-center text-[#0078d4] dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 w-8 h-8 sm:w-9 sm:h-9 rounded-full transition mr-1">
+                        <button id="shuffle_folder_btn" onclick="playRandomFromFolder()" title="Shuffle Play" style="display: none;" class="flex items-center justify-center text-blue-500 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 w-8 h-8 sm:w-9 sm:h-9 rounded-full transition mr-1">
                             <svg class="w-4 h-4 sm:w-4.5 sm:h-4.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
                                 <path d="M2 18h1.4c1.3 0 2.5-.6 3.3-1.7l6.1-8.6c.7-1.1 2-1.7 3.3-1.7H22" />
                                 <path d="m18 2 4 4-4 4" />
@@ -220,7 +229,7 @@
         let currentObjectUrl = null, playMode = 0, currentFolderId = 'root';
         let pathHistory = [{ id: 'root', name: 'My Drive' }];
 
-        // 🔥 화면 안 꺼지게 하는 Wake Lock 전역 변수 선언
+        // 🔥 화면 켜짐 유지(Wake Lock) 변수 선언
         let wakeLock = null;
 
         msalInstance.handleRedirectPromise().then(handleResponse).catch(console.error);
@@ -242,18 +251,24 @@
             catch (error) { msalInstance.acquireTokenRedirect({ scopes: ["Files.ReadWrite.All"] }); }
         }
 
-        // 🔥 Wake Lock 요청 함수 (화면 켜두기)
+        // 🔥 Wake Lock 활성화 함수 (아이콘 애니메이션 포함)
         async function requestWakeLock() {
             try {
                 if ('wakeLock' in navigator) {
                     wakeLock = await navigator.wakeLock.request('screen');
-                    wakeLock.addEventListener('release', () => { console.log('Screen Wake Lock released'); });
-                    console.log('Screen Wake Lock acquired');
+                    const indicator = document.getElementById('wake_lock_indicator');
+                    indicator.classList.remove('opacity-0', 'scale-95');
+                    indicator.classList.add('opacity-100', 'scale-100');
+                    
+                    wakeLock.addEventListener('release', () => { 
+                        indicator.classList.remove('opacity-100', 'scale-100');
+                        indicator.classList.add('opacity-0', 'scale-95');
+                    });
                 }
-            } catch (err) { console.error(`Wake Lock error: ${err.name}, ${err.message}`); }
+            } catch (err) { console.error(`Wake Lock error: ${err.name}`); }
         }
 
-        // 🔥 Wake Lock 해제 함수 (화면 자동 꺼짐 허용)
+        // 🔥 Wake Lock 해제 함수
         function releaseWakeLock() {
             if (wakeLock !== null) {
                 wakeLock.release();
@@ -261,7 +276,7 @@
             }
         }
 
-        // 앱이 백그라운드에 갔다가 다시 돌아왔을 때 재생 중이면 다시 화면 켜두기 요청
+        // 화면 밖으로 나갔다가 다시 돌아왔을 때 재생 중이면 Wake Lock 다시 요청
         document.addEventListener('visibilitychange', async () => {
             if (wakeLock !== null && document.visibilityState === 'visible' && !audio.paused) {
                 requestWakeLock();
@@ -491,19 +506,20 @@
             else audio.pause();
         }
 
-        // 🔥 음악 재생/일시정지 시 화면 자동 꺼짐 방지(Wake Lock) 연결
         audio.addEventListener('play', () => { 
             iconPlay.classList.add('hidden'); iconPause.classList.remove('hidden'); 
             setStatus('NOW PLAYING', 'play'); 
             updateActiveTrackUI(); 
-            requestWakeLock(); // 화면 계속 켜두기 요청
+            // 🔥 재생이 시작되면 화면 켜짐 유지
+            requestWakeLock();
         });
         audio.addEventListener('pause', () => { 
             iconPause.classList.add('hidden'); iconPlay.classList.remove('hidden'); 
             const currentStatus = document.getElementById('status_info').innerText;
             if(currentStatus !== 'BUFFERING...' && currentStatus !== 'ERROR') setStatus('PAUSED', 'standby'); 
             updateActiveTrackUI(); 
-            releaseWakeLock(); // 일시정지 시 배터리 보호를 위해 허용
+            // 🔥 일시정지하면 화면 꺼지도록 허용
+            releaseWakeLock();
         });
 
         function toggleRepeat() {
