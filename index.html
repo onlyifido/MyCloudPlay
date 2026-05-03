@@ -47,41 +47,11 @@
         input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: #e5e7eb; border-radius: 2px; }
         .dark input[type=range]::-webkit-slider-runnable-track { background: #374151; }
 
-        /* 🔥 수정된 확실한 Shimmer(스켈레톤 로딩) 이펙트 */
-        /* 1. 버퍼링 중 내용물을 살짝 뿌옇게 덮어주는 오버레이 */
-        .shimmer-active::before {
-            content: ''; position: absolute; inset: 0;
-            background: rgba(255, 255, 255, 0.4); 
-            z-index: 40; pointer-events: none;
-        }
-        .dark .shimmer-active::before {
-            background: rgba(0, 0, 0, 0.5); /* 다크모드에선 살짝 어둡게 덮음 */
-        }
-        /* 2. 대각선으로 빠르게 지나가는 강한 빛 줄기 */
-        .shimmer-active::after {
-            content: ''; position: absolute; inset: 0;
-            background: linear-gradient(
-                105deg,
-                transparent 15%,
-                rgba(255, 255, 255, 0.9) 50%,
-                transparent 85%
-            );
-            background-size: 200% 100%;
-            animation: shimmer 1.2s infinite linear;
-            z-index: 50; pointer-events: none;
-        }
-        .dark .shimmer-active::after {
-            background: linear-gradient(
-                105deg,
-                transparent 15%,
-                rgba(255, 255, 255, 0.15) 50%,
-                transparent 85%
-            );
-        }
-        @keyframes shimmer {
-            0% { background-position: -200% 0; }
-            100% { background-position: 200% 0; }
-        }
+        .shimmer-active::before { content: ''; position: absolute; inset: 0; background: rgba(255, 255, 255, 0.4); z-index: 40; pointer-events: none; }
+        .dark .shimmer-active::before { background: rgba(0, 0, 0, 0.5); }
+        .shimmer-active::after { content: ''; position: absolute; inset: 0; background: linear-gradient(105deg, transparent 15%, rgba(255, 255, 255, 0.9) 50%, transparent 85%); background-size: 200% 100%; animation: shimmer 1.2s infinite linear; z-index: 50; pointer-events: none; }
+        .dark .shimmer-active::after { background: linear-gradient(105deg, transparent 15%, rgba(255, 255, 255, 0.15) 50%, transparent 85%); }
+        @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-900 dark:bg-black dark:text-gray-100 font-sans antialiased min-h-screen flex flex-col transition-colors duration-300">
@@ -114,7 +84,6 @@
     <main class="flex-1 max-w-[1400px] w-full mx-auto px-4 sm:px-6 py-8 flex flex-col lg:flex-row gap-8">
         
         <div class="flex-1 flex flex-col gap-8 min-w-0">
-            <!-- 감성 플레이어 카드 -->
             <div id="player_card" class="border border-gray-100 dark:border-gray-800 rounded-3xl p-6 sm:p-8 bg-white dark:bg-gray-900 shadow-xl shadow-gray-200/50 dark:shadow-none flex flex-col gap-8 relative overflow-hidden transition-colors duration-300">
                 <div class="absolute -top-32 -right-32 w-64 h-64 bg-blue-400/20 dark:bg-blue-900/30 rounded-full blur-[80px] pointer-events-none"></div>
 
@@ -407,7 +376,15 @@
         }
 
         audio.addEventListener('play', () => { iconPlay.classList.add('hidden'); iconPause.classList.remove('hidden'); setStatus('NOW PLAYING', 'play'); });
-        audio.addEventListener('pause', () => { iconPause.classList.add('hidden'); iconPlay.classList.remove('hidden'); setStatus('PAUSED', 'standby'); });
+        
+        // PAUSE 이벤트 시 버퍼링 상태일 때는 글자를 덮어쓰지 않도록 조건부 처리
+        audio.addEventListener('pause', () => { 
+            iconPause.classList.add('hidden'); iconPlay.classList.remove('hidden'); 
+            const currentStatus = document.getElementById('status_info').innerText;
+            if(currentStatus !== 'BUFFERING...' && currentStatus !== 'ERROR') {
+                setStatus('PAUSED', 'standby'); 
+            }
+        });
 
         function toggleRepeat() {
             playMode = (playMode + 1) % 4;
@@ -422,13 +399,17 @@
 
         async function playTrack(index, autoPlay = true) {
             if (index < 0 || index >= playlist.length) return;
+            
+            // 🔥 새로운 곡 선택 시 기존 곡 즉시 완전 정지
+            audio.pause();
+            audio.removeAttribute('src'); 
+            
             currentIndex = index; updatePlaylistUI(); 
             updateMarqueeText(playlist[index].name);
             
             setStatus('BUFFERING...', 'load');
             progressBar.value = 0; currentTimeEl.innerText = "0:00"; progressBar.disabled = true;
 
-            // 🔥 플레이어 전체에 Shimmer 이펙트 켜기
             const playerCard = document.getElementById('player_card');
             playerCard.classList.add('shimmer-active');
 
@@ -438,7 +419,6 @@
                 currentObjectUrl = URL.createObjectURL(blob);
                 audio.src = currentObjectUrl;
                 
-                // 🔥 로딩 완료 시 Shimmer 이펙트 끄기
                 playerCard.classList.remove('shimmer-active');
                 
                 if(autoPlay) audio.play(); else setStatus('READY', 'standby');
