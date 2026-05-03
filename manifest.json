@@ -1,0 +1,17 @@
+{
+  "name": "OneDrive Music Player",
+  "short_name": "OD Player",
+  "description": "Play your OneDrive music directly in the browser.",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0078d4",
+  "icons": [
+    {
+      "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Microsoft_OneDrive_icon.svg/512px-Microsoft_OneDrive_icon.svg.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
