@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en" class="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,10 +8,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
+            darkMode: 'class', // 다크모드 클래스 기반 활성화
             theme: {
                 extend: {
                     fontFamily: { sans: ['Inter', 'sans-serif'] },
-                    colors: { brand: '#0078d4', background: '#f9fafb', surface: '#ffffff', border: '#e5e7eb' }
+                    colors: { brand: '#0078d4' }
                 }
             }
         }
@@ -22,18 +23,19 @@
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         .show { display: block !important; }
-        
-        /* 브레드크럼용 호버 효과 */
         .breadcrumb-item:hover { color: #0078d4; text-decoration: underline; cursor: pointer; }
         .breadcrumb-separator { color: #9ca3af; margin: 0 4px; }
+        
+        /* 다크모드 오디오 플레이어 색상 반전 방지용 */
+        .dark audio { filter: invert(0.9) hue-rotate(180deg); opacity: 0.8; }
     </style>
 </head>
-<body class="bg-background text-gray-900 font-sans antialiased min-h-screen flex flex-col">
+<body class="bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 font-sans antialiased min-h-screen flex flex-col transition-colors duration-300">
 
-    <!-- 상단 네비게이션 -->
-    <header class="sticky top-0 z-50 bg-white border-b border-border shadow-sm">
+    <!-- Header -->
+    <header class="sticky top-0 z-50 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm transition-colors duration-300">
         <div class="flex items-center justify-between px-4 sm:px-6 py-3 max-w-[1400px] mx-auto">
-            <div class="font-bold text-xl tracking-tight flex items-center gap-2 text-gray-800">
+            <div class="font-bold text-xl tracking-tight flex items-center gap-2 text-gray-800 dark:text-white">
                 <div class="w-7 h-7 bg-[#0078d4] rounded-md flex items-center justify-center shadow-inner">
                     <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5v-9l6 4.5-6 4.5z"/></svg>
                 </div>
@@ -41,45 +43,50 @@
             </div>
             
             <div class="flex items-center gap-3">
-                <button id="login_button" onclick="signIn()" class="bg-[#0078d4] text-white px-5 py-2.5 rounded-lg text-sm font-semibold hover:bg-blue-700 transition shadow-sm">
-                    Microsoft 계정으로 로그인
+                <!-- Dark Mode Toggle -->
+                <button onclick="toggleDarkMode()" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 transition" title="Toggle Dark Mode">
+                    <svg id="theme_icon_light" class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                    <svg id="theme_icon_dark" class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
                 </button>
-                <button id="logout_button" style="display: none;" onclick="signOut()" class="text-red-500 bg-red-50 hover:bg-red-100 border border-red-100 px-4 py-2 rounded-lg text-sm font-semibold transition">
-                    로그아웃
+
+                <button id="login_button" onclick="signIn()" class="bg-[#0078d4] text-white px-5 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700 transition shadow-sm">
+                    Sign In with Microsoft
+                </button>
+                <button id="logout_button" style="display: none;" onclick="signOut()" class="text-red-500 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/40 border border-red-100 dark:border-red-900/50 px-4 py-2 rounded-lg text-sm font-semibold transition">
+                    Sign Out
                 </button>
             </div>
         </div>
     </header>
 
-    <!-- 메인 컨텐츠 -->
+    <!-- Main Content -->
     <main class="flex-1 max-w-[1400px] w-full mx-auto px-4 sm:px-6 py-8 flex flex-col lg:flex-row gap-8">
         
-        <!-- 좌측 영역: 플레이어 + 내 폴더 목록 -->
+        <!-- Left Area: Player & Folders -->
         <div class="flex-1 flex flex-col gap-8 min-w-0">
             
-            <!-- 플레이어 카드 (UI 개선) -->
-            <div class="border border-border rounded-2xl p-6 sm:p-8 bg-white shadow-sm flex flex-col gap-6 relative overflow-hidden">
-                <!-- 배경 장식 (선택) -->
-                <div class="absolute -top-24 -right-24 w-48 h-48 bg-blue-50 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
+            <!-- Player Card -->
+            <div class="border border-gray-200 dark:border-gray-800 rounded-2xl p-6 sm:p-8 bg-white dark:bg-gray-800 shadow-sm flex flex-col gap-6 relative overflow-hidden transition-colors duration-300">
+                <div class="absolute -top-24 -right-24 w-48 h-48 bg-blue-50 dark:bg-blue-900/20 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
 
                 <div class="flex justify-between items-start z-10">
                     <div class="flex items-center gap-4">
-                        <div class="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl flex items-center justify-center shrink-0 border border-blue-100/50 shadow-inner">
-                            <svg class="w-8 h-8 sm:w-10 sm:h-10 text-[#0078d4]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path></svg>
+                        <div class="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-700 dark:to-gray-800 rounded-2xl flex items-center justify-center shrink-0 border border-blue-100/50 dark:border-gray-700 shadow-inner">
+                            <svg class="w-8 h-8 sm:w-10 sm:h-10 text-[#0078d4] dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path></svg>
                         </div>
                         <div class="flex-1 min-w-0 pr-4">
                             <div class="flex items-center gap-2 mb-1.5">
                                 <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse" id="status_dot" style="display: none;"></span>
-                                <span class="text-xs font-bold text-gray-500 uppercase tracking-widest" id="status_info">대기 중</span>
+                                <span class="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest" id="status_info">STANDBY</span>
                             </div>
-                            <h1 id="file_info" class="text-xl sm:text-2xl font-bold text-gray-900 truncate tracking-tight">음악을 선택해주세요</h1>
+                            <h1 id="file_info" class="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 truncate tracking-tight">Select a track</h1>
                         </div>
                     </div>
                     
-                    <!-- 재생 모드 버튼 -->
-                    <button id="repeat_btn" onclick="toggleRepeat()" class="shrink-0 flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-gray-500 hover:text-gray-900 bg-gray-50 hover:bg-gray-100 px-3 py-2 rounded-lg border border-gray-200 transition">
+                    <!-- Play Mode Button -->
+                    <button id="repeat_btn" onclick="toggleRepeat()" class="shrink-0 flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white bg-gray-50 dark:bg-gray-700/50 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 transition">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-                        <span id="mode_text">끄기</span>
+                        <span id="mode_text">Off</span>
                     </button>
                 </div>
 
@@ -88,45 +95,50 @@
                 </div>
             </div>
 
-            <!-- OneDrive 폴더 및 브레드크럼 영역 -->
+            <!-- Folder Section -->
             <div id="folders_section" style="display: none;" class="flex flex-col gap-4">
-                <div class="flex items-center justify-between border-b border-gray-100 pb-3">
-                    <!-- 브레드크럼 (Breadcrumb) 네비게이션 -->
-                    <div class="flex items-center flex-wrap text-sm font-medium text-gray-600" id="breadcrumb_container">
-                        <span class="breadcrumb-item font-bold text-gray-800" onclick="fetchMyFolders('root', '루트')">내 드라이브</span>
-                        <!-- 하위 경로가 여기에 동적으로 추가됨 -->
+                <div class="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-3">
+                    <!-- Breadcrumb -->
+                    <div class="flex items-center flex-wrap text-sm font-medium text-gray-600 dark:text-gray-400" id="breadcrumb_container">
+                        <span class="breadcrumb-item font-bold text-gray-800 dark:text-gray-200" onclick="fetchMyFolders('root', 'My Drive')">My Drive</span>
                     </div>
+                    
+                    <!-- Direct Upload Button -->
+                    <input type="file" id="file_upload" accept="audio/*" multiple class="hidden" onchange="handleFileUpload(event)">
+                    <button id="upload_btn" onclick="document.getElementById('file_upload').click()" class="flex items-center gap-1.5 text-xs font-bold text-[#0078d4] dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 px-3 py-1.5 rounded-md transition border border-blue-200 dark:border-blue-800">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                        Upload
+                    </button>
                 </div>
                 
                 <div id="folder_list" class="grid grid-cols-2 md:grid-cols-3 gap-3 max-h-[130px] md:max-h-[350px] overflow-y-auto no-scrollbar py-1">
-                    <!-- 폴더 렌더링 영역 -->
+                    <!-- Folder items render here -->
                 </div>
             </div>
 
         </div>
 
-        <!-- 우측 영역: 플레이리스트 -->
+        <!-- Right Area: Playlist -->
         <div class="w-full lg:w-[420px] flex flex-col gap-4 shrink-0">
             <div class="flex items-center justify-between">
-                <h2 class="text-lg font-bold text-gray-800 flex items-center gap-2">
-                    <svg class="w-5 h-5 text-[#0078d4]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
-                    재생 목록
+                <h2 class="text-lg font-bold text-gray-800 dark:text-gray-100 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-[#0078d4] dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
+                    Playlist
                 </h2>
-                <span class="text-xs font-bold text-[#0078d4] bg-blue-50 px-2.5 py-1 rounded-full border border-blue-100" id="playlist_count">0곡</span>
+                <span class="text-xs font-bold text-[#0078d4] dark:text-blue-300 bg-blue-50 dark:bg-blue-900/30 px-2.5 py-1 rounded-full border border-blue-100 dark:border-blue-800" id="playlist_count">0 Tracks</span>
             </div>
             
-            <div class="border border-border rounded-2xl bg-white shadow-sm overflow-hidden flex flex-col h-[500px] lg:h-[calc(100vh-200px)]">
-                <!-- 폴더 이름 표시줄 -->
-                <div class="bg-gray-50 border-b border-border px-4 py-3">
-                    <p id="playlist_title" class="text-sm font-semibold text-gray-500 truncate text-center">폴더를 선택해주세요</p>
+            <div class="border border-gray-200 dark:border-gray-800 rounded-2xl bg-white dark:bg-gray-800 shadow-sm overflow-hidden flex flex-col h-[500px] lg:h-[calc(100vh-200px)] transition-colors duration-300">
+                <div class="bg-gray-50 dark:bg-gray-800/50 border-b border-gray-200 dark:border-gray-700 px-4 py-3">
+                    <p id="playlist_title" class="text-sm font-semibold text-gray-500 dark:text-gray-400 truncate text-center">Select a folder</p>
                 </div>
 
-                <div id="playlist_container" class="overflow-y-auto no-scrollbar flex-1 divide-y divide-gray-100/80 p-2">
-                    <div class="text-center text-sm text-gray-400 font-medium mt-20 flex flex-col items-center gap-4 px-6">
-                        <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center border border-gray-100">
-                            <svg class="w-8 h-8 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                <div id="playlist_container" class="overflow-y-auto no-scrollbar flex-1 divide-y divide-gray-100/80 dark:divide-gray-700/50 p-2">
+                    <div class="text-center text-sm text-gray-400 dark:text-gray-500 font-medium mt-20 flex flex-col items-center gap-4 px-6">
+                        <div class="w-16 h-16 bg-gray-50 dark:bg-gray-700/30 rounded-full flex items-center justify-center border border-gray-100 dark:border-gray-700">
+                            <svg class="w-8 h-8 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
                         </div>
-                        왼쪽에서 폴더를 선택하면 여기에 음악이 표시됩니다.
+                        Select a folder on the left to see tracks here.
                     </div>
                 </div>
             </div>
@@ -136,7 +148,22 @@
 
     <script>
         // ==========================================
-        // Microsoft Azure 설정 (요청하신 값 자동 반영)
+        // Dark Mode Logic
+        // ==========================================
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+            const isDark = document.documentElement.classList.contains('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        }
+
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+
+        // ==========================================
+        // Microsoft Azure Configuration
         // ==========================================
         const msalConfig = {
             auth: {
@@ -161,37 +188,31 @@
         let currentIndex = -1;
         let currentObjectUrl = null;
         let playMode = 0; 
-        const modeLabels = ['끄기', '전곡 반복', '한곡 반복', '랜덤 재생'];
+        let currentFolderId = 'root'; // Track current folder for uploads
+        
+        const modeLabels = ['Off', 'Repeat All', 'Repeat One', 'Shuffle'];
+        let pathHistory = [{ id: 'root', name: 'My Drive' }];
 
-        // 현재 경로 추적을 위한 배열 (Breadcrumb용)
-        let pathHistory = [{ id: 'root', name: '내 드라이브' }];
-
-        // 페이지 로드 시 로그인 상태 확인
+        // Check Login State
         msalInstance.handleRedirectPromise().then(handleResponse).catch(err => { console.error(err); });
 
         function handleResponse(response) {
             if (response !== null) {
                 accountId = response.account.homeAccountId;
                 showMainUI();
-                fetchMyFolders('root', '내 드라이브', true); 
+                fetchMyFolders('root', 'My Drive', true); 
             } else {
                 const currentAccounts = msalInstance.getAllAccounts();
                 if (currentAccounts.length > 0) {
                     accountId = currentAccounts[0].homeAccountId;
                     showMainUI();
-                    fetchMyFolders('root', '내 드라이브', true);
+                    fetchMyFolders('root', 'My Drive', true);
                 }
             }
         }
 
-        function signIn() {
-            msalInstance.loginRedirect(loginRequest);
-        }
-
-        function signOut() {
-            const logoutRequest = { account: msalInstance.getAccountByHomeId(accountId) };
-            msalInstance.logoutRedirect(logoutRequest);
-        }
+        function signIn() { msalInstance.loginRedirect(loginRequest); }
+        function signOut() { msalInstance.logoutRedirect({ account: msalInstance.getAccountByHomeId(accountId) }); }
 
         function showMainUI() {
             document.getElementById('login_button').style.display = 'none';
@@ -205,32 +226,77 @@
                 const response = await msalInstance.acquireTokenSilent(request);
                 return response.accessToken;
             } catch (error) {
-                console.warn("Silent token acquisition failed. Acquiring token using redirect");
                 if (error instanceof msal.InteractionRequiredAuthError) {
                     msalInstance.acquireTokenRedirect(request);
                 }
             }
         }
 
-        // 브레드크럼 UI 렌더링 함수
+        // ==========================================
+        // Direct Upload Logic (Chunked for large files)
+        // ==========================================
+        async function handleFileUpload(event) {
+            const files = event.target.files;
+            if (!files.length) return;
+
+            const uploadBtn = document.getElementById('upload_btn');
+            const originalHTML = uploadBtn.innerHTML;
+            uploadBtn.innerHTML = `<svg class="animate-spin w-4 h-4 mr-1" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Uploading...`;
+            uploadBtn.disabled = true;
+
+            try {
+                const token = await getToken();
+                for (let file of files) {
+                    // 1. Create Upload Session (Allows files > 4MB up to 60MB per chunk)
+                    const sessionRes = await fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${currentFolderId}:/${encodeURIComponent(file.name)}:/createUploadSession`, {
+                        method: 'POST',
+                        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
+                    });
+                    const sessionData = await sessionRes.json();
+                    
+                    // 2. Upload the file to the session URL
+                    await fetch(sessionData.uploadUrl, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Length': `${file.size}`,
+                            'Content-Range': `bytes 0-${file.size - 1}/${file.size}`
+                        },
+                        body: file
+                    });
+                }
+            } catch (err) {
+                console.error("Upload failed:", err);
+                alert(`Failed to upload file(s). Please try again.`);
+            }
+            
+            uploadBtn.innerHTML = originalHTML;
+            uploadBtn.disabled = false;
+            event.target.value = ''; // Reset input
+            
+            // Refresh Current Folder
+            const currentObj = pathHistory[pathHistory.length - 1];
+            fetchMyFolders(currentObj.id, currentObj.name, false);
+        }
+
+        // ==========================================
+        // Fetch & Navigation Logic
+        // ==========================================
         function renderBreadcrumbs() {
             const container = document.getElementById('breadcrumb_container');
             container.innerHTML = '';
             
             pathHistory.forEach((step, index) => {
                 const span = document.createElement('span');
-                // 현재 위치(마지막 경로)는 검정색 텍스트, 이전 경로는 클릭 가능
                 if (index === pathHistory.length - 1) {
-                    span.className = 'font-bold text-gray-900';
+                    span.className = 'font-bold text-gray-900 dark:text-gray-100';
                     span.innerText = step.name;
                 } else {
-                    span.className = 'breadcrumb-item transition';
+                    span.className = 'breadcrumb-item transition dark:hover:text-blue-400';
                     span.innerText = step.name;
                     span.onclick = () => navigateToPathIndex(index);
                 }
                 container.appendChild(span);
 
-                // 화살표 구분자 추가
                 if (index < pathHistory.length - 1) {
                     const sep = document.createElement('span');
                     sep.className = 'breadcrumb-separator';
@@ -240,26 +306,23 @@
             });
         }
 
-        // 브레드크럼에서 특정 이전 경로를 클릭했을 때
         function navigateToPathIndex(index) {
             const targetStep = pathHistory[index];
-            // 배열 자르기 (클릭한 곳 이후의 경로는 삭제)
             pathHistory = pathHistory.slice(0, index + 1);
             fetchMyFolders(targetStep.id, targetStep.name, false);
         }
 
-        // 1. OneDrive 특정 경로의 폴더와 오디오 파일 가져오기
         async function fetchMyFolders(folderId, folderName, isNewNavigation = true) {
             const container = document.getElementById('folder_list');
-            container.innerHTML = '<div class="col-span-2 md:col-span-3 text-sm text-gray-500 py-6 text-center">폴더를 불러오는 중입니다...</div>';
+            container.innerHTML = '<div class="col-span-2 md:col-span-3 text-sm text-gray-500 py-6 text-center">Loading folders...</div>';
             
-            // 새 네비게이션 진입(폴더 클릭)인 경우에만 pathHistory에 추가
+            currentFolderId = folderId; // Track for upload
+
             if (isNewNavigation && folderId !== 'root') {
                 pathHistory.push({ id: folderId, name: folderName });
             } else if (folderId === 'root') {
-                pathHistory = [{ id: 'root', name: '내 드라이브' }];
+                pathHistory = [{ id: 'root', name: 'My Drive' }];
             }
-            
             renderBreadcrumbs();
 
             const token = await getToken();
@@ -275,41 +338,42 @@
                 const folders = data.value.filter(item => item.folder);
                 const audios = data.value.filter(item => item.file && item.file.mimeType && item.file.mimeType.includes('audio'));
 
-                // 폴더 렌더링
                 folders.forEach(folder => {
                     const btn = document.createElement('button');
-                    btn.className = 'flex items-center gap-3 p-3.5 border border-gray-200 rounded-xl hover:border-[#0078d4] hover:bg-blue-50 transition cursor-pointer bg-white shadow-sm text-left group';
+                    btn.className = 'flex items-center gap-3 p-3.5 border border-gray-200 dark:border-gray-700 rounded-xl hover:border-[#0078d4] dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-gray-700 transition cursor-pointer bg-white dark:bg-gray-800 shadow-sm text-left group';
                     btn.innerHTML = `
-                        <svg class="w-6 h-6 text-[#0078d4] shrink-0 opacity-80 group-hover:opacity-100 transition" fill="currentColor" viewBox="0 0 24 24"><path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>
-                        <span class="text-sm font-semibold truncate text-gray-700 group-hover:text-[#0078d4] transition">${folder.name}</span>
+                        <svg class="w-6 h-6 text-[#0078d4] dark:text-blue-400 shrink-0 opacity-80 group-hover:opacity-100 transition" fill="currentColor" viewBox="0 0 24 24"><path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>
+                        <span class="text-sm font-semibold truncate text-gray-700 dark:text-gray-300 group-hover:text-[#0078d4] dark:group-hover:text-white transition">${folder.name}</span>
                     `;
-                    btn.onclick = () => {
-                        fetchMyFolders(folder.id, folder.name, true);
-                    };
+                    btn.onclick = () => fetchMyFolders(folder.id, folder.name, true);
                     container.appendChild(btn);
                 });
 
-                // 오디오 파일이 있으면 플레이리스트 업데이트
                 if (audios.length > 0) {
                     playlist = audios;
                     currentIndex = 0;
-                    document.getElementById('playlist_title').innerText = `📂 ${folderName}의 음악`;
+                    document.getElementById('playlist_title').innerText = `📂 Tracks in ${folderName}`;
                     updatePlaylistUI();
                     playTrack(0);
                 } else {
                     document.getElementById('playlist_title').innerText = folderName;
+                    playlist = [];
+                    updatePlaylistUI();
                 }
                 
                 if (folders.length === 0 && audios.length === 0) {
-                    container.innerHTML = '<div class="col-span-2 md:col-span-3 text-sm text-gray-400 py-6 text-center">빈 폴더입니다.</div>';
+                    container.innerHTML = '<div class="col-span-2 md:col-span-3 text-sm text-gray-400 py-6 text-center">This folder is empty.</div>';
                 }
             })
             .catch(err => {
                 console.error(err);
-                container.innerHTML = '<div class="col-span-2 text-sm text-red-500">데이터를 불러오지 못했습니다.</div>';
+                container.innerHTML = '<div class="col-span-2 text-sm text-red-500">Failed to load data.</div>';
             });
         }
 
+        // ==========================================
+        // Player Logic
+        // ==========================================
         function toggleRepeat() {
             playMode = (playMode + 1) % 4;
             const btn = document.getElementById('repeat_btn');
@@ -317,11 +381,11 @@
             text.innerText = modeLabels[playMode];
             
             if(playMode > 0) {
-                btn.classList.add('text-[#0078d4]', 'border-blue-200', 'bg-blue-50');
-                btn.classList.remove('text-gray-500', 'border-gray-200', 'bg-gray-50');
+                btn.classList.add('text-[#0078d4]', 'border-blue-200', 'bg-blue-50', 'dark:text-blue-400', 'dark:bg-blue-900/30', 'dark:border-blue-800');
+                btn.classList.remove('text-gray-500', 'border-gray-200', 'bg-gray-50', 'dark:text-gray-400', 'dark:bg-gray-700/50', 'dark:border-gray-600');
             } else {
-                btn.classList.remove('text-[#0078d4]', 'border-blue-200', 'bg-blue-50');
-                btn.classList.add('text-gray-500', 'border-gray-200', 'bg-gray-50');
+                btn.classList.remove('text-[#0078d4]', 'border-blue-200', 'bg-blue-50', 'dark:text-blue-400', 'dark:bg-blue-900/30', 'dark:border-blue-800');
+                btn.classList.add('text-gray-500', 'border-gray-200', 'bg-gray-50', 'dark:text-gray-400', 'dark:bg-gray-700/50', 'dark:border-gray-600');
             }
         }
 
@@ -332,8 +396,8 @@
             
             const file = playlist[index];
             document.getElementById('file_info').innerText = file.name;
-            document.getElementById('status_info').innerText = '가져오는 중...';
-            document.getElementById('status_info').classList.add('text-[#0078d4]');
+            document.getElementById('status_info').innerText = 'BUFFERING...';
+            document.getElementById('status_info').classList.add('text-[#0078d4]', 'dark:text-blue-400');
             document.getElementById('status_dot').style.display = 'none';
             
             const audioPlayer = document.getElementById('audio_player');
@@ -345,24 +409,24 @@
                 headers: { Authorization: `Bearer ${token}` }
             })
             .then(response => {
-                if (!response.ok) throw new Error('다운로드 실패');
+                if (!response.ok) throw new Error('Download failed');
                 return response.blob();
             })
             .then(blob => {
                 if (currentObjectUrl) URL.revokeObjectURL(currentObjectUrl);
                 currentObjectUrl = URL.createObjectURL(blob);
                 
-                document.getElementById('status_info').innerText = '재생 중';
-                document.getElementById('status_info').classList.remove('text-[#0078d4]');
-                document.getElementById('status_info').classList.add('text-green-600');
-                document.getElementById('status_dot').style.display = 'inline-block'; // 초록불 켜기
+                document.getElementById('status_info').innerText = 'NOW PLAYING';
+                document.getElementById('status_info').classList.remove('text-[#0078d4]', 'dark:text-blue-400');
+                document.getElementById('status_info').classList.add('text-green-600', 'dark:text-green-400');
+                document.getElementById('status_dot').style.display = 'inline-block';
                 
                 audioPlayer.src = currentObjectUrl;
                 audioPlayer.play();
             })
             .catch(error => {
                 console.error(error);
-                document.getElementById('status_info').innerText = '재생 오류';
+                document.getElementById('status_info').innerText = 'PLAYBACK ERROR';
                 document.getElementById('status_info').classList.add('text-red-500');
                 setTimeout(() => {
                     document.getElementById('status_info').classList.remove('text-red-500');
@@ -379,16 +443,14 @@
                     let nextIndex = currentIndex;
                     while (nextIndex === currentIndex) nextIndex = Math.floor(Math.random() * playlist.length);
                     playTrack(nextIndex);
-                } else {
-                     playTrack(currentIndex);
-                }
+                } else playTrack(currentIndex);
             } else if (currentIndex + 1 < playlist.length) {
                 playTrack(currentIndex + 1);
             } else if (playMode === 1) {
                 playTrack(0);
             } else {
-                document.getElementById('status_info').innerText = '목록 완료';
-                document.getElementById('status_info').classList.remove('text-green-600');
+                document.getElementById('status_info').innerText = 'QUEUE FINISHED';
+                document.getElementById('status_info').classList.remove('text-green-600', 'dark:text-green-400');
                 document.getElementById('status_dot').style.display = 'none';
             }
         }
@@ -397,30 +459,27 @@
 
         function updatePlaylistUI() {
             const container = document.getElementById('playlist_container');
-            document.getElementById('playlist_count').innerText = `${playlist.length}곡`;
+            document.getElementById('playlist_count').innerText = `${playlist.length} Tracks`;
             container.innerHTML = '';
             
             playlist.forEach((file, index) => {
                 const isActive = index === currentIndex;
                 
                 const item = document.createElement('div');
-                item.className = `p-3.5 flex justify-between items-center group/item hover:bg-gray-50 transition cursor-pointer rounded-xl ${isActive ? 'bg-blue-50/70 border border-blue-100/50 shadow-sm' : 'border border-transparent'}`;
+                item.className = `p-3.5 flex justify-between items-center group/item hover:bg-gray-50 dark:hover:bg-gray-700/50 transition cursor-pointer rounded-xl ${isActive ? 'bg-blue-50/70 dark:bg-blue-900/30 border border-blue-100/50 dark:border-blue-800 shadow-sm' : 'border border-transparent'}`;
                 
                 const infoDiv = document.createElement('div');
                 infoDiv.className = 'flex items-center gap-3.5 flex-1 min-w-0 pr-4';
                 infoDiv.onclick = () => playTrack(index);
                 
-                // 곡 번호 또는 재생 아이콘
                 const numSpan = document.createElement('div');
-                numSpan.className = `w-6 flex items-center justify-center shrink-0 ${isActive ? 'text-[#0078d4]' : 'text-gray-400 font-medium text-sm group-hover/item:text-gray-600 transition'}`;
+                numSpan.className = `w-6 flex items-center justify-center shrink-0 ${isActive ? 'text-[#0078d4] dark:text-blue-400' : 'text-gray-400 dark:text-gray-500 font-medium text-sm group-hover/item:text-gray-600 dark:group-hover/item:text-gray-300 transition'}`;
                 if (isActive) {
                     numSpan.innerHTML = `<svg class="w-4 h-4 animate-pulse" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path></svg>`;
-                } else {
-                    numSpan.innerText = index + 1;
-                }
+                } else numSpan.innerText = index + 1;
                 
                 const nameP = document.createElement('p');
-                nameP.className = `text-[13px] leading-tight truncate ${isActive ? 'text-[#0078d4] font-bold' : 'text-gray-700 font-medium'}`;
+                nameP.className = `text-[13px] leading-tight truncate ${isActive ? 'text-[#0078d4] dark:text-blue-300 font-bold' : 'text-gray-700 dark:text-gray-300 font-medium'}`;
                 nameP.innerText = file.name;
                 
                 infoDiv.appendChild(numSpan);
@@ -430,33 +489,30 @@
                 actionsDiv.className = 'relative shrink-0 opacity-0 group-hover/item:opacity-100 focus-within:opacity-100 transition';
                 
                 const menuBtn = document.createElement('button');
-                menuBtn.className = 'w-7 h-7 flex items-center justify-center text-gray-400 hover:text-gray-700 hover:bg-gray-200 rounded-md menu-btn transition font-bold';
+                menuBtn.className = 'w-7 h-7 flex items-center justify-center text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-md menu-btn transition font-bold';
                 menuBtn.innerHTML = '⋮';
                 menuBtn.onclick = (e) => toggleDropdown(e, index);
                 
                 const dropdown = document.createElement('div');
                 dropdown.id = `dropdown-${index}`;
-                dropdown.className = 'dropdown-content absolute right-0 mt-1 w-28 bg-white rounded-lg shadow-lg border border-border py-1 z-10 hidden';
+                dropdown.className = 'dropdown-content absolute right-0 mt-1 w-28 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-1 z-10 hidden';
                 
                 const renameLink = document.createElement('a');
-                renameLink.className = 'block px-3 py-2 text-xs font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer transition';
-                renameLink.innerText = '이름 변경';
+                renameLink.className = 'block px-3 py-2 text-xs font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer transition';
+                renameLink.innerText = 'Rename';
                 renameLink.onclick = () => { renameFile(index); closeAllDropdowns(); };
                 
                 const trashLink = document.createElement('a');
-                trashLink.className = 'block px-3 py-2 text-xs font-medium text-red-600 hover:bg-red-50 cursor-pointer transition';
-                trashLink.innerText = '삭제';
+                trashLink.className = 'block px-3 py-2 text-xs font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 cursor-pointer transition';
+                trashLink.innerText = 'Delete';
                 trashLink.onclick = () => { trashFile(index); closeAllDropdowns(); };
                 
                 dropdown.appendChild(renameLink);
                 dropdown.appendChild(trashLink);
-                
                 actionsDiv.appendChild(menuBtn);
                 actionsDiv.appendChild(dropdown);
-                
                 item.appendChild(infoDiv);
                 item.appendChild(actionsDiv);
-                
                 container.appendChild(item);
             });
         }
@@ -467,10 +523,7 @@
             document.getElementById(`dropdown-${index}`).classList.toggle("show");
         }
 
-        window.onclick = function(event) {
-            if (!event.target.matches('.menu-btn')) closeAllDropdowns();
-        }
-
+        window.onclick = function(event) { if (!event.target.matches('.menu-btn')) closeAllDropdowns(); }
         function closeAllDropdowns() {
             var dropdowns = document.getElementsByClassName("dropdown-content");
             for (var i = 0; i < dropdowns.length; i++) {
@@ -480,8 +533,7 @@
 
         async function renameFile(index) {
             const file = playlist[index];
-            const newName = prompt('새 파일 이름을 입력하세요:', file.name);
-            
+            const newName = prompt('Enter new file name:', file.name);
             if (newName && newName !== file.name) {
                 const token = await getToken();
                 fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${file.id}`, {
@@ -496,9 +548,11 @@
             }
         }
 
+        // Hard Delete Logic with English Warning
         async function trashFile(index) {
             const file = playlist[index];
-            if (confirm(`'${file.name}'을(를) 삭제하시겠습니까?`)) {
+            // 강력한 경고창 적용
+            if (confirm(`WARNING: Are you sure you want to permanently delete '${file.name}' from your OneDrive? \n\nThis action cannot be undone.`)) {
                 const token = await getToken();
                 fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${file.id}`, {
                     method: 'DELETE',
@@ -512,8 +566,8 @@
                                 playTrack(currentIndex); 
                             } else {
                                 document.getElementById('audio_player').pause();
-                                document.getElementById('file_info').innerText = '목록이 비었습니다.';
-                                document.getElementById('status_info').innerText = '대기 중';
+                                document.getElementById('file_info').innerText = 'Queue is empty.';
+                                document.getElementById('status_info').innerText = 'STANDBY';
                                 document.getElementById('status_dot').style.display = 'none';
                                 currentIndex = -1;
                             }
@@ -522,7 +576,7 @@
                         }
                         updatePlaylistUI();
                     } else {
-                        alert("파일 삭제에 실패했습니다.");
+                        alert("Failed to delete the file from OneDrive.");
                     }
                 });
             }
