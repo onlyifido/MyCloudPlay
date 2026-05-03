@@ -3,11 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-    <title>Music Player</title>
+    
+    <!-- 🔥 브라우저 탭 및 앱 이름 Music으로 변경 -->
+    <title>Music</title>
+    <meta name="apple-mobile-web-app-title" content="Music">
     
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#000000">
-    <link rel="apple-touch-icon" href="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Microsoft_OneDrive_icon.svg/512px-Microsoft_OneDrive_icon.svg.png">
+    
+    <!-- 🔥 홈화면 아이콘 8분음표 로고로 교체 -->
+    <link rel="apple-touch-icon" href="data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3ClinearGradient id='grad' x1='0%25' y1='100%25' x2='100%25' y2='0%25'%3E%3Cstop offset='0%25' style='stop-color:%230078d4;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%2360a5fa;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='512' height='512' rx='112' fill='url(%23grad)' /%3E%3Cpath d='M210 370V130l210-40v230' fill='none' stroke='%23ffffff' stroke-width='32' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='160' cy='370' r='50' fill='none' stroke='%23ffffff' stroke-width='32'/%3E%3Ccircle cx='370' cy='330' r='50' fill='none' stroke='%23ffffff' stroke-width='32'/%3E%3C/svg%3E">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -141,7 +146,7 @@
                     </div>
 
                     <div class="flex items-center justify-center sm:justify-between w-full mt-1 sm:mt-4">
-                        <button id="repeat_btn" onclick="toggleRepeat()" class="hidden sm:flex items-center justify-center w-12 h-12 rounded-full text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition">
+                        <button id="repeat_btn" onclick="toggleRepeat()" class="hidden sm:flex items-center justify-center w-12 h-12 rounded-full text-gray-400 hover:text-[#0078d4] dark:hover:text-blue-400 transition">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                         </button>
 
@@ -160,7 +165,7 @@
                             </button>
                         </div>
                         
-                        <button id="repeat_btn_mobile" onclick="toggleRepeat()" class="sm:hidden flex items-center justify-center w-10 h-10 rounded-full text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition ml-4">
+                        <button id="repeat_btn_mobile" onclick="toggleRepeat()" class="sm:hidden flex items-center justify-center w-10 h-10 rounded-full text-gray-400 hover:text-[#0078d4] dark:hover:text-blue-400 transition ml-4">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                         </button>
                         
@@ -181,7 +186,7 @@
                     </div>
                     
                     <div class="flex items-center gap-1 sm:gap-2 relative" id="action_buttons" style="display: none;">
-                        <button id="shuffle_folder_btn" onclick="playRandomFromFolder()" title="Shuffle Play" style="display: none;" class="flex items-center justify-center text-blue-500 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 w-8 h-8 sm:w-9 sm:h-9 rounded-full transition mr-1">
+                        <button id="shuffle_folder_btn" onclick="playRandomFromFolder()" title="Shuffle Play" style="display: none;" class="flex items-center justify-center text-[#0078d4] dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 w-8 h-8 sm:w-9 sm:h-9 rounded-full transition mr-1">
                             <svg class="w-4 h-4 sm:w-4.5 sm:h-4.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
                                 <path d="M2 18h1.4c1.3 0 2.5-.6 3.3-1.7l6.1-8.6c.7-1.1 2-1.7 3.3-1.7H22" />
                                 <path d="m18 2 4 4-4 4" />
@@ -278,8 +283,8 @@
         function setStatus(text, type) {
             const el = document.getElementById('status_info'), dot = document.getElementById('status_dot');
             el.innerText = text;
-            el.className = `text-[10px] sm:text-xs font-semibold tracking-[0.2em] uppercase ${type === 'play' ? 'text-green-500' : type === 'load' ? 'text-blue-500 dark:text-blue-400' : type === 'err' ? 'text-red-500' : 'text-gray-500 dark:text-gray-400'}`;
-            dot.className = `w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full ${type === 'play' ? 'bg-green-500' : type === 'load' ? 'bg-blue-500 dark:bg-blue-400 animate-pulse' : type === 'err' ? 'bg-red-500' : 'bg-gray-300 dark:bg-gray-600'}`;
+            el.className = `text-[10px] sm:text-xs font-semibold tracking-[0.2em] uppercase ${type === 'play' ? 'text-green-500' : type === 'load' ? 'text-[#0078d4] dark:text-blue-400' : type === 'err' ? 'text-red-500' : 'text-gray-500 dark:text-gray-400'}`;
+            dot.className = `w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full ${type === 'play' ? 'bg-green-500' : type === 'load' ? 'bg-[#0078d4] dark:bg-blue-400 animate-pulse' : type === 'err' ? 'bg-red-500' : 'bg-gray-300 dark:bg-gray-600'}`;
         }
 
         function toggleMenu(e, id) {
@@ -343,7 +348,7 @@
                 const span = document.createElement('span');
                 span.innerText = step.name;
                 if (index === pathHistory.length - 1) span.className = 'font-semibold text-gray-900 dark:text-white';
-                else { span.className = 'breadcrumb-item transition dark:hover:text-blue-400'; span.onclick = () => { pathHistory = pathHistory.slice(0, index + 1); fetchMyFolders(step.id, step.name, false); }; }
+                else { span.className = 'breadcrumb-item transition dark:hover:text-[#0078d4]'; span.onclick = () => { pathHistory = pathHistory.slice(0, index + 1); fetchMyFolders(step.id, step.name, false); }; }
                 container.appendChild(span);
                 if (index < pathHistory.length - 1) { const sep = document.createElement('span'); sep.className = 'breadcrumb-separator'; sep.innerText = '/'; container.appendChild(sep); }
             });
@@ -376,9 +381,9 @@
                     infoDiv.className = 'flex items-center gap-3 sm:gap-4 flex-1 min-w-0 pr-2';
                     infoDiv.innerHTML = `
                         <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center shrink-0 pointer-events-none">
-                            <svg class="w-5 h-5 sm:w-6 sm:h-6 text-blue-500 dark:text-blue-400" fill="currentColor" viewBox="0 0 24 24"><path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>
+                            <svg class="w-5 h-5 sm:w-6 sm:h-6 text-[#0078d4] dark:text-blue-400" fill="currentColor" viewBox="0 0 24 24"><path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>
                         </div>
-                        <span class="text-sm sm:text-base font-semibold truncate text-gray-800 dark:text-gray-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition pointer-events-none">${folder.name}</span>
+                        <span class="text-sm sm:text-base font-semibold truncate text-gray-800 dark:text-gray-200 group-hover:text-[#0078d4] dark:group-hover:text-blue-400 transition pointer-events-none">${folder.name}</span>
                     `;
 
                     const actionsDiv = document.createElement('div');
@@ -451,19 +456,19 @@
                 
                 if (isActive) {
                     row.className = `flex items-center justify-between p-3 sm:p-3.5 mb-1.5 group/item hover:bg-gray-50 dark:hover:bg-gray-800/50 transition cursor-pointer rounded-2xl bg-blue-50/80 dark:bg-blue-900/30 border border-blue-100 dark:border-blue-900/40 shadow-sm`;
-                    icon.className = `w-10 h-10 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center shrink-0 bg-white dark:bg-gray-800 text-blue-500 dark:text-blue-400 shadow-sm transition`;
+                    icon.className = `w-10 h-10 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center shrink-0 bg-white dark:bg-gray-800 text-[#0078d4] dark:text-blue-400 shadow-sm transition`;
                     
                     if(!audio.paused && audio.src) {
                         icon.innerHTML = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>`;
                     } else {
                         icon.innerHTML = `<svg class="w-5 h-5 ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>`;
                     }
-                    text.className = `text-sm sm:text-[15px] leading-tight truncate text-blue-600 dark:text-blue-300 font-bold transition`;
+                    text.className = `text-sm sm:text-[15px] leading-tight truncate text-[#0078d4] dark:text-blue-300 font-bold transition`;
                 } else {
                     row.className = `flex items-center justify-between p-3 sm:p-3.5 mb-1.5 group/item hover:bg-gray-50 dark:hover:bg-gray-800/50 transition cursor-pointer rounded-2xl border border-transparent`;
-                    icon.className = `w-10 h-10 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center shrink-0 text-gray-400 dark:text-gray-500 font-medium text-sm group-hover/item:text-blue-500 dark:group-hover/item:text-blue-400 bg-gray-100 dark:bg-gray-900 transition`;
+                    icon.className = `w-10 h-10 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center shrink-0 text-gray-400 dark:text-gray-500 font-medium text-sm group-hover/item:text-[#0078d4] dark:group-hover/item:text-blue-400 bg-gray-100 dark:bg-gray-900 transition`;
                     icon.innerHTML = index + 1;
-                    text.className = `text-sm sm:text-[15px] leading-tight truncate text-gray-800 dark:text-gray-200 font-medium group-hover/item:text-blue-600 dark:group-hover/item:text-blue-400 transition`;
+                    text.className = `text-sm sm:text-[15px] leading-tight truncate text-gray-800 dark:text-gray-200 font-medium group-hover/item:text-[#0078d4] dark:group-hover/item:text-blue-400 transition`;
                 }
             });
         }
@@ -511,11 +516,11 @@
             [btn, btnMobile].forEach(el => {
                 el.innerHTML = svgContent;
                 if(playMode > 0) { 
-                    el.className = `hidden sm:flex items-center justify-center w-12 h-12 rounded-full transition hover:text-blue-600 text-blue-500 dark:text-blue-400`;
-                    if(el.id === 'repeat_btn_mobile') el.className = `sm:hidden flex items-center justify-center w-10 h-10 rounded-full transition ml-4 hover:text-blue-600 text-blue-500 dark:text-blue-400`;
+                    el.className = `hidden sm:flex items-center justify-center w-12 h-12 rounded-full transition hover:text-[#0078d4] text-[#0078d4] dark:text-blue-400`;
+                    if(el.id === 'repeat_btn_mobile') el.className = `sm:hidden flex items-center justify-center w-10 h-10 rounded-full transition ml-4 hover:text-[#0078d4] text-[#0078d4] dark:text-blue-400`;
                 } else { 
-                    el.className = `hidden sm:flex items-center justify-center w-12 h-12 rounded-full transition hover:text-blue-500 dark:hover:text-blue-400 text-gray-400`;
-                    if(el.id === 'repeat_btn_mobile') el.className = `sm:hidden flex items-center justify-center w-10 h-10 rounded-full transition ml-4 hover:text-blue-500 dark:hover:text-blue-400 text-gray-400`;
+                    el.className = `hidden sm:flex items-center justify-center w-12 h-12 rounded-full transition hover:text-[#0078d4] dark:hover:text-blue-400 text-gray-400`;
+                    if(el.id === 'repeat_btn_mobile') el.className = `sm:hidden flex items-center justify-center w-10 h-10 rounded-full transition ml-4 hover:text-[#0078d4] dark:hover:text-blue-400 text-gray-400`;
                 }
             });
         }
@@ -544,7 +549,6 @@
 
             try {
                 const token = await getToken();
-                // 🔥 1. 파일 정보 요청 (에러 방지를 위해 $select 제거하고 전체 메타데이터 가져오기)
                 const res = await fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${playingQueue[index].id}`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
@@ -555,10 +559,8 @@
                 const downloadUrl = data['@microsoft.graph.downloadUrl'];
 
                 if (downloadUrl) {
-                    // 스트리밍 URL이 있으면 직접 연결
                     audio.src = downloadUrl;
                 } else {
-                    // 스트리밍 URL이 없으면 기존 Blob 방식으로 안전하게 다운로드 (Fallback)
                     const contentRes = await fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${playingQueue[index].id}/content`, {
                         headers: { Authorization: `Bearer ${token}` }
                     });
@@ -575,7 +577,7 @@
                         title: playingQueue[index].name.replace(/\.[^/.]+$/, ""), 
                         artist: 'OneDrive Streaming',
                         album: 'Music Player',
-                        artwork: [ { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Microsoft_OneDrive_icon.svg/512px-Microsoft_OneDrive_icon.svg.png', sizes: '512x512', type: 'image/png' } ]
+                        artwork: [ { src: 'data:image/svg+xml;charset=utf-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 512 512%22%3E%3Cdefs%3E%3ClinearGradient id=%22grad%22 x1=%220%25%22 y1=%22100%25%22 x2=%22100%25%22 y2=%220%25%22%3E%3Cstop offset=%220%25%22 style=%22stop-color:%230078d4;stop-opacity:1%22 /%3E%3Cstop offset=%22100%25%22 style=%22stop-color:%2360a5fa;stop-opacity:1%22 /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width=%22512%22 height=%22512%22 rx=%22112%22 fill=%22url(%23grad)%22 /%3E%3Cpath d=%22M210 370V130l210-40v230%22 fill=%22none%22 stroke=%22%23ffffff%22 stroke-width=%2232%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22/%3E%3Ccircle cx=%22160%22 cy=%22370%22 r=%2250%22 fill=%22none%22 stroke=%22%23ffffff%22 stroke-width=%2232%22/%3E%3Ccircle cx=%22370%22 cy=%22330%22 r=%2250%22 fill=%22none%22 stroke=%22%23ffffff%22 stroke-width=%2232%22/%3E%3C/svg%3E', sizes: '512x512', type: 'image/svg+xml' } ]
                     });
                     navigator.mediaSession.setActionHandler('play', () => { togglePlayPause(); });
                     navigator.mediaSession.setActionHandler('pause', () => { togglePlayPause(); });
