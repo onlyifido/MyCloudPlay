@@ -84,7 +84,6 @@
 
     <main class="flex-1 max-w-[1400px] w-full mx-auto px-4 sm:px-6 py-4 sm:py-6 flex flex-col lg:flex-row gap-4 sm:gap-8 overflow-hidden">
         
-        <!-- Player Area -->
         <div class="w-full lg:w-[45%] flex flex-col shrink-0">
             <div id="player_card" class="h-auto lg:h-full border border-gray-100 dark:border-gray-800 rounded-[2rem] p-5 sm:p-10 bg-white dark:bg-gray-900 shadow-xl shadow-gray-200/50 dark:shadow-none flex flex-col justify-center gap-6 sm:gap-10 relative overflow-hidden transition-colors duration-300">
                 <div class="absolute -top-32 -right-32 w-64 h-64 bg-blue-400/20 dark:bg-blue-900/20 rounded-full blur-[80px] pointer-events-none"></div>
@@ -152,7 +151,6 @@
             </div>
         </div>
 
-        <!-- Explorer Area -->
         <div class="w-full lg:w-[55%] flex flex-col flex-1 min-h-0">
             <div class="border border-gray-100 dark:border-gray-800 rounded-[2rem] bg-white dark:bg-gray-950 shadow-sm overflow-hidden flex flex-col h-full transition-colors duration-300">
                 
@@ -162,7 +160,7 @@
                     </div>
                     
                     <div class="flex items-center gap-1 sm:gap-2 relative" id="action_buttons" style="display: none;">
-                        <button id="shuffle_folder_btn" onclick="playRandomFromFolder()" title="Shuffle Play" style="display: none;" class="flex items-center justify-center text-blue-500 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 w-8 h-8 sm:w-9 sm:h-9 rounded-full transition mr-1">
+                        <button id="shuffle_folder_btn" onclick="playRandomFromFolder()" title="Shuffle Play" style="display: none;" class="flex items-center justify-center text-[#0078d4] dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 w-8 h-8 sm:w-9 sm:h-9 rounded-full transition mr-1">
                             <svg class="w-4 h-4 sm:w-4.5 sm:h-4.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
                                 <path d="M2 18h1.4c1.3 0 2.5-.6 3.3-1.7l6.1-8.6c.7-1.1 2-1.7 3.3-1.7H22" />
                                 <path d="m18 2 4 4-4 4" />
@@ -222,6 +220,9 @@
         let currentObjectUrl = null, playMode = 0, currentFolderId = 'root';
         let pathHistory = [{ id: 'root', name: 'My Drive' }];
 
+        // 🔥 화면 안 꺼지게 하는 Wake Lock 전역 변수 선언
+        let wakeLock = null;
+
         msalInstance.handleRedirectPromise().then(handleResponse).catch(console.error);
 
         function handleResponse(response) {
@@ -241,6 +242,32 @@
             catch (error) { msalInstance.acquireTokenRedirect({ scopes: ["Files.ReadWrite.All"] }); }
         }
 
+        // 🔥 Wake Lock 요청 함수 (화면 켜두기)
+        async function requestWakeLock() {
+            try {
+                if ('wakeLock' in navigator) {
+                    wakeLock = await navigator.wakeLock.request('screen');
+                    wakeLock.addEventListener('release', () => { console.log('Screen Wake Lock released'); });
+                    console.log('Screen Wake Lock acquired');
+                }
+            } catch (err) { console.error(`Wake Lock error: ${err.name}, ${err.message}`); }
+        }
+
+        // 🔥 Wake Lock 해제 함수 (화면 자동 꺼짐 허용)
+        function releaseWakeLock() {
+            if (wakeLock !== null) {
+                wakeLock.release();
+                wakeLock = null;
+            }
+        }
+
+        // 앱이 백그라운드에 갔다가 다시 돌아왔을 때 재생 중이면 다시 화면 켜두기 요청
+        document.addEventListener('visibilitychange', async () => {
+            if (wakeLock !== null && document.visibilityState === 'visible' && !audio.paused) {
+                requestWakeLock();
+            }
+        });
+
         function updateMarqueeText(text) {
             const fileInfoEl = document.getElementById('file_info');
             const containerEl = fileInfoEl.parentElement;
@@ -259,8 +286,8 @@
         function setStatus(text, type) {
             const el = document.getElementById('status_info'), dot = document.getElementById('status_dot');
             el.innerText = text;
-            el.className = `text-[10px] sm:text-xs font-semibold tracking-[0.2em] uppercase ${type === 'play' ? 'text-green-500' : type === 'load' ? 'text-blue-500 dark:text-blue-400' : type === 'err' ? 'text-red-500' : 'text-gray-500 dark:text-gray-400'}`;
-            dot.className = `w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full ${type === 'play' ? 'bg-green-500' : type === 'load' ? 'bg-blue-500 dark:bg-blue-400 animate-pulse' : type === 'err' ? 'bg-red-500' : 'bg-gray-300 dark:bg-gray-600'}`;
+            el.className = `text-[10px] sm:text-xs font-semibold tracking-[0.2em] uppercase ${type === 'play' ? 'text-green-500' : type === 'load' ? 'text-[#0078d4] dark:text-blue-400' : type === 'err' ? 'text-red-500' : 'text-gray-500 dark:text-gray-400'}`;
+            dot.className = `w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full ${type === 'play' ? 'bg-green-500' : type === 'load' ? 'bg-[#0078d4] dark:bg-blue-400 animate-pulse' : type === 'err' ? 'bg-red-500' : 'bg-gray-300 dark:bg-gray-600'}`;
         }
 
         function toggleMenu(e, id) {
@@ -324,7 +351,7 @@
                 const span = document.createElement('span');
                 span.innerText = step.name;
                 if (index === pathHistory.length - 1) span.className = 'font-semibold text-gray-900 dark:text-white';
-                else { span.className = 'breadcrumb-item transition dark:hover:text-blue-400'; span.onclick = () => { pathHistory = pathHistory.slice(0, index + 1); fetchMyFolders(step.id, step.name, false); }; }
+                else { span.className = 'breadcrumb-item transition dark:hover:text-[#0078d4]'; span.onclick = () => { pathHistory = pathHistory.slice(0, index + 1); fetchMyFolders(step.id, step.name, false); }; }
                 container.appendChild(span);
                 if (index < pathHistory.length - 1) { const sep = document.createElement('span'); sep.className = 'breadcrumb-separator'; sep.innerText = '/'; container.appendChild(sep); }
             });
@@ -357,9 +384,9 @@
                     infoDiv.className = 'flex items-center gap-3 sm:gap-4 flex-1 min-w-0 pr-2';
                     infoDiv.innerHTML = `
                         <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center shrink-0 pointer-events-none">
-                            <svg class="w-5 h-5 sm:w-6 sm:h-6 text-blue-500 dark:text-blue-400" fill="currentColor" viewBox="0 0 24 24"><path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>
+                            <svg class="w-5 h-5 sm:w-6 sm:h-6 text-[#0078d4] dark:text-blue-400" fill="currentColor" viewBox="0 0 24 24"><path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>
                         </div>
-                        <span class="text-sm sm:text-base font-semibold truncate text-gray-800 dark:text-gray-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition pointer-events-none">${folder.name}</span>
+                        <span class="text-sm sm:text-base font-semibold truncate text-gray-800 dark:text-gray-200 group-hover:text-[#0078d4] dark:group-hover:text-blue-400 transition pointer-events-none">${folder.name}</span>
                     `;
 
                     const actionsDiv = document.createElement('div');
@@ -432,19 +459,19 @@
                 
                 if (isActive) {
                     row.className = `flex items-center justify-between p-3 sm:p-3.5 mb-1.5 group/item hover:bg-gray-50 dark:hover:bg-gray-800/50 transition cursor-pointer rounded-2xl bg-blue-50/80 dark:bg-blue-900/30 border border-blue-100 dark:border-blue-900/40 shadow-sm`;
-                    icon.className = `w-10 h-10 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center shrink-0 bg-white dark:bg-gray-800 text-blue-500 dark:text-blue-400 shadow-sm transition`;
+                    icon.className = `w-10 h-10 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center shrink-0 bg-white dark:bg-gray-800 text-[#0078d4] dark:text-blue-400 shadow-sm transition`;
                     
                     if(!audio.paused && audio.src) {
                         icon.innerHTML = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>`;
                     } else {
                         icon.innerHTML = `<svg class="w-5 h-5 ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>`;
                     }
-                    text.className = `text-sm sm:text-[15px] leading-tight truncate text-blue-600 dark:text-blue-300 font-bold transition`;
+                    text.className = `text-sm sm:text-[15px] leading-tight truncate text-[#0078d4] dark:text-blue-300 font-bold transition`;
                 } else {
                     row.className = `flex items-center justify-between p-3 sm:p-3.5 mb-1.5 group/item hover:bg-gray-50 dark:hover:bg-gray-800/50 transition cursor-pointer rounded-2xl border border-transparent`;
-                    icon.className = `w-10 h-10 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center shrink-0 text-gray-400 dark:text-gray-500 font-medium text-sm group-hover/item:text-blue-500 dark:group-hover/item:text-blue-400 bg-gray-100 dark:bg-gray-900 transition`;
+                    icon.className = `w-10 h-10 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center shrink-0 text-gray-400 dark:text-gray-500 font-medium text-sm group-hover/item:text-[#0078d4] dark:group-hover/item:text-blue-400 bg-gray-100 dark:bg-gray-900 transition`;
                     icon.innerHTML = index + 1;
-                    text.className = `text-sm sm:text-[15px] leading-tight truncate text-gray-800 dark:text-gray-200 font-medium group-hover/item:text-blue-600 dark:group-hover/item:text-blue-400 transition`;
+                    text.className = `text-sm sm:text-[15px] leading-tight truncate text-gray-800 dark:text-gray-200 font-medium group-hover/item:text-[#0078d4] dark:group-hover/item:text-blue-400 transition`;
                 }
             });
         }
@@ -464,12 +491,19 @@
             else audio.pause();
         }
 
-        audio.addEventListener('play', () => { iconPlay.classList.add('hidden'); iconPause.classList.remove('hidden'); setStatus('NOW PLAYING', 'play'); updateActiveTrackUI(); });
+        // 🔥 음악 재생/일시정지 시 화면 자동 꺼짐 방지(Wake Lock) 연결
+        audio.addEventListener('play', () => { 
+            iconPlay.classList.add('hidden'); iconPause.classList.remove('hidden'); 
+            setStatus('NOW PLAYING', 'play'); 
+            updateActiveTrackUI(); 
+            requestWakeLock(); // 화면 계속 켜두기 요청
+        });
         audio.addEventListener('pause', () => { 
             iconPause.classList.add('hidden'); iconPlay.classList.remove('hidden'); 
             const currentStatus = document.getElementById('status_info').innerText;
             if(currentStatus !== 'BUFFERING...' && currentStatus !== 'ERROR') setStatus('PAUSED', 'standby'); 
             updateActiveTrackUI(); 
+            releaseWakeLock(); // 일시정지 시 배터리 보호를 위해 허용
         });
 
         function toggleRepeat() {
@@ -492,11 +526,11 @@
             [btn, btnMobile].forEach(el => {
                 el.innerHTML = svgContent;
                 if(playMode > 0) { 
-                    el.className = `hidden sm:flex items-center justify-center w-12 h-12 rounded-full transition hover:text-blue-600 text-blue-500 dark:text-blue-400`;
-                    if(el.id === 'repeat_btn_mobile') el.className = `sm:hidden flex items-center justify-center w-10 h-10 rounded-full transition ml-4 hover:text-blue-600 text-blue-500 dark:text-blue-400`;
+                    el.className = `hidden sm:flex items-center justify-center w-12 h-12 rounded-full transition hover:text-[#0078d4] text-[#0078d4] dark:text-blue-400`;
+                    if(el.id === 'repeat_btn_mobile') el.className = `sm:hidden flex items-center justify-center w-10 h-10 rounded-full transition ml-4 hover:text-[#0078d4] text-[#0078d4] dark:text-blue-400`;
                 } else { 
-                    el.className = `hidden sm:flex items-center justify-center w-12 h-12 rounded-full transition hover:text-blue-500 dark:hover:text-blue-400 text-gray-400`;
-                    if(el.id === 'repeat_btn_mobile') el.className = `sm:hidden flex items-center justify-center w-10 h-10 rounded-full transition ml-4 hover:text-blue-500 dark:hover:text-blue-400 text-gray-400`;
+                    el.className = `hidden sm:flex items-center justify-center w-12 h-12 rounded-full transition hover:text-[#0078d4] dark:hover:text-blue-400 text-gray-400`;
+                    if(el.id === 'repeat_btn_mobile') el.className = `sm:hidden flex items-center justify-center w-10 h-10 rounded-full transition ml-4 hover:text-[#0078d4] dark:hover:text-blue-400 text-gray-400`;
                 }
             });
         }
@@ -511,7 +545,6 @@
             playTrack(currentIndex);
         }
 
-        // 🔥 오류를 방지하기 위해 스트리밍 URL 대신 Blob(파일 직접 다운로드) 방식으로 안정화
         async function playTrack(index, autoPlay = true) {
             if (index < 0 || index >= playingQueue.length) return;
             audio.pause(); audio.removeAttribute('src'); 
