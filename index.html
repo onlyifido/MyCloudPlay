@@ -19,7 +19,6 @@
                     fontFamily: { sans: ['Inter', 'sans-serif'] },
                     colors: { 
                         brand: '#0078d4',
-                        // 다크모드를 더 어둡게 만들기 위한 커스텀 그레이
                         gray: { 900: '#121212', 950: '#0a0a0a' }
                     }
                 }
@@ -35,7 +34,6 @@
         .breadcrumb-item:hover { color: #0078d4; text-decoration: underline; cursor: pointer; }
         .breadcrumb-separator { color: #6b7280; margin: 0 4px; font-weight: 300; }
         
-        /* Glassmorphism 효과를 위한 클래스 */
         .glass {
             background: rgba(255, 255, 255, 0.7);
             backdrop-filter: blur(12px);
@@ -53,14 +51,41 @@
         @keyframes marquee { 0% { transform: translate(0, 0); } 100% { transform: translate(-100%, 0); } }
         .marquee-content.short { padding-left: 0; animation: none; display: block; text-overflow: ellipsis; overflow: hidden; }
 
-        /* 커스텀 진행률 바 슬라이더 초기화 */
         input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
         input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 12px; width: 12px; border-radius: 50%; background: #0078d4; cursor: pointer; margin-top: -4px; box-shadow: 0 0 4px rgba(0,0,0,0.2); }
         input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: #e5e7eb; border-radius: 2px; }
         .dark input[type=range]::-webkit-slider-runnable-track { background: #374151; }
+
+        /* 🔥 버퍼링 은은한 Shimmer(대각선 빛번짐) 이펙트 추가 */
+        .shimmer-active::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(
+                105deg,
+                transparent 25%,
+                rgba(0, 120, 212, 0.08) 50%,
+                transparent 75%
+            );
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite linear;
+            pointer-events: none; /* 마우스 클릭 방해 금지 */
+            z-index: 50;
+        }
+        .dark .shimmer-active::after {
+            background: linear-gradient(
+                105deg,
+                transparent 25%,
+                rgba(255, 255, 255, 0.06) 50%,
+                transparent 75%
+            );
+        }
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
     </style>
 </head>
-<!-- 바탕색을 더 어둡게 변경 -->
 <body class="bg-gray-50 text-gray-900 dark:bg-black dark:text-gray-100 font-sans antialiased min-h-screen flex flex-col transition-colors duration-300">
 
     <header class="sticky top-0 z-50 glass transition-colors duration-300">
@@ -91,13 +116,11 @@
     <main class="flex-1 max-w-[1400px] w-full mx-auto px-4 sm:px-6 py-8 flex flex-col lg:flex-row gap-8">
         
         <div class="flex-1 flex flex-col gap-8 min-w-0">
-            <!-- 감성 플레이어 카드 -->
-            <div class="border border-gray-100 dark:border-gray-800 rounded-3xl p-6 sm:p-8 bg-white dark:bg-gray-900 shadow-xl shadow-gray-200/50 dark:shadow-none flex flex-col gap-8 relative overflow-hidden transition-colors duration-300">
-                <!-- 빛번짐 배경 효과 -->
+            <!-- 감성 플레이어 카드 (ID 부여됨) -->
+            <div id="player_card" class="border border-gray-100 dark:border-gray-800 rounded-3xl p-6 sm:p-8 bg-white dark:bg-gray-900 shadow-xl shadow-gray-200/50 dark:shadow-none flex flex-col gap-8 relative overflow-hidden transition-colors duration-300">
                 <div class="absolute -top-32 -right-32 w-64 h-64 bg-blue-400/20 dark:bg-blue-900/30 rounded-full blur-[80px] pointer-events-none"></div>
 
                 <div class="flex flex-col sm:flex-row items-center sm:items-start gap-6 z-10 w-full text-center sm:text-left">
-                    <!-- 앨범 아트 아이콘 -->
                     <div class="w-32 h-32 sm:w-28 sm:h-28 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-950 rounded-[2rem] flex items-center justify-center shrink-0 shadow-inner relative overflow-hidden border border-white/50 dark:border-gray-700/50">
                         <svg class="w-12 h-12 text-gray-400 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path></svg>
                     </div>
@@ -115,52 +138,39 @@
                     </div>
                 </div>
 
-                <!-- 커스텀 오디오 컨트롤러 영역 -->
                 <div class="z-10 w-full flex flex-col gap-4">
-                    <!-- 보이지 않는 실제 오디오 태그 -->
                     <audio id="audio_player" class="hidden"></audio>
                     
-                    <!-- 커스텀 진행바 -->
                     <div class="flex items-center gap-3 w-full text-xs font-medium text-gray-400">
                         <span id="current_time">0:00</span>
                         <input type="range" id="progress_bar" value="0" step="0.1" min="0" max="100" class="flex-1" disabled>
                         <span id="duration_time">0:00</span>
                     </div>
 
-                    <!-- 재생 컨트롤 버튼들 -->
                     <div class="flex items-center justify-center sm:justify-between w-full mt-2">
-                        
-                        <!-- 재생모드 (반복/랜덤) -->
                         <button id="repeat_btn" onclick="toggleRepeat()" class="hidden sm:flex items-center justify-center w-10 h-10 rounded-full text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                         </button>
 
                         <div class="flex items-center gap-6">
-                            <!-- 이전곡 -->
                             <button onclick="playPrevTrack()" class="p-2 text-gray-800 dark:text-white hover:opacity-70 transition">
                                 <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M8.445 14.832A1 1 0 0010 14v-2.798l5.445 3.63A1 1 0 0017 14V6a1 1 0 00-1.555-.832L10 8.798V6a1 1 0 00-1.555-.832l-6 4a1 1 0 000 1.664l6 4z"/></svg>
                             </button>
                             
-                            <!-- 재생/일시정지 (가운데 큰 버튼) -->
                             <button id="play_pause_btn" onclick="togglePlayPause()" class="w-16 h-16 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-full flex items-center justify-center hover:scale-105 active:scale-95 transition shadow-lg">
-                                <!-- 재생 아이콘 (초기) -->
                                 <svg id="icon_play" class="w-8 h-8 ml-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/></svg>
-                                <!-- 일시정지 아이콘 (숨김) -->
                                 <svg id="icon_pause" class="w-8 h-8 hidden" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
                             </button>
 
-                            <!-- 다음곡 -->
                             <button onclick="playNextTrack(true)" class="p-2 text-gray-800 dark:text-white hover:opacity-70 transition">
                                 <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M11.555 14.832A1 1 0 0010 14v-2.798l-5.445 3.63A1 1 0 003 14V6a1 1 0 001.555-.832L10 8.798V6a1 1 0 001.555-.832l6 4a1 1 0 000 1.664l-6 4z"/></svg>
                             </button>
                         </div>
                         
-                        <!-- 모바일용 재생모드 -->
                         <button id="repeat_btn_mobile" onclick="toggleRepeat()" class="sm:hidden flex items-center justify-center w-10 h-10 rounded-full text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition ml-4">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                         </button>
                         
-                        <!-- 볼륨 아이콘 (데스크탑 장식용) -->
                         <div class="hidden sm:flex items-center justify-center w-10 h-10 text-gray-400 cursor-not-allowed" title="Volume">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>
                         </div>
@@ -174,7 +184,6 @@
                         <span class="breadcrumb-item font-semibold text-gray-900 dark:text-white" onclick="fetchMyFolders('root', 'My Drive')">My Drive</span>
                     </div>
                     
-                    <!-- 텍스트 뺀 직관적 아이콘 버튼들 -->
                     <div class="flex items-center gap-2">
                         <button onclick="createFolder()" title="New Folder" class="p-2 text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"></path></svg>
@@ -187,7 +196,6 @@
                 </div>
                 
                 <div id="folder_list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 max-h-[150px] md:max-h-[350px] overflow-y-auto no-scrollbar py-1">
-                    <!-- Folder items render here -->
                 </div>
             </div>
         </div>
@@ -220,12 +228,10 @@
     </main>
 
     <script>
-        // PWA Registration
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(()=>{}));
         }
 
-        // Dark Mode Logic
         function toggleDarkMode() {
             document.documentElement.classList.toggle('dark');
             localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
@@ -234,7 +240,6 @@
             document.documentElement.classList.add('dark');
         }
 
-        // MSAL Auth
         const msalConfig = { auth: { clientId: "8a7108a1-d00c-4f7c-bbed-f4a4df25b81a", authority: "https://login.microsoftonline.com/common", redirectUri: "https://cloudstreaming.vercel.app/" }, cache: { cacheLocation: "localStorage", storeAuthStateInCookie: false } };
         const msalInstance = new msal.PublicClientApplication(msalConfig);
         
@@ -260,7 +265,6 @@
             catch (error) { msalInstance.acquireTokenRedirect({ scopes: ["Files.ReadWrite.All"] }); }
         }
 
-        // UI Helpers
         function updateMarqueeText(text) {
             const fileInfoEl = document.getElementById('file_info');
             const containerEl = fileInfoEl.parentElement;
@@ -284,7 +288,6 @@
             dot.className = `w-2 h-2 rounded-full ${type === 'play' ? 'bg-green-500' : type === 'load' ? 'bg-[#0078d4] dark:bg-blue-400 animate-pulse' : type === 'err' ? 'bg-red-500' : 'bg-gray-300 dark:bg-gray-600'}`;
         }
 
-        // Folder Operations
         async function createFolder() {
             const name = prompt("Enter new folder name:");
             if (name) {
@@ -306,7 +309,6 @@
             }
         }
 
-        // File Upload
         async function handleFileUpload(event) {
             const files = event.target.files;
             if (!files.length) return;
@@ -322,7 +324,6 @@
             btn.innerHTML = orig; event.target.value = ''; fetchMyFolders(currentFolderId, pathHistory[pathHistory.length - 1].name, false);
         }
 
-        // Fetch Folders
         function renderBreadcrumbs() {
             const container = document.getElementById('breadcrumb_container'); container.innerHTML = '';
             pathHistory.forEach((step, index) => {
@@ -368,13 +369,12 @@
                 if (audios.length > 0) {
                     playlist = audios; currentIndex = 0;
                     document.getElementById('playlist_title').innerText = `Folder: ${folderName}`;
-                    updatePlaylistUI(); playTrack(0, false); // 목록 불러올땐 자동재생 안함
+                    updatePlaylistUI(); playTrack(0, false); 
                 } else { document.getElementById('playlist_title').innerText = folderName; playlist = []; updatePlaylistUI(); }
                 if (!folders.length && !audios.length) container.innerHTML = '<div class="col-span-full text-xs text-gray-400 py-6 text-center">Empty Folder</div>';
             });
         }
 
-        // Custom Audio Player Logic
         const audio = document.getElementById('audio_player');
         const playPauseBtn = document.getElementById('play_pause_btn');
         const iconPlay = document.getElementById('icon_play');
@@ -385,15 +385,13 @@
 
         function formatTime(sec) {
             if (isNaN(sec)) return "0:00";
-            const m = Math.floor(sec / 60);
-            const s = Math.floor(sec % 60);
+            const m = Math.floor(sec / 60), s = Math.floor(sec % 60);
             return `${m}:${s < 10 ? '0' : ''}${s}`;
         }
 
         audio.addEventListener('timeupdate', () => {
             if (!audio.duration) return;
-            const progress = (audio.currentTime / audio.duration) * 100;
-            progressBar.value = progress;
+            progressBar.value = (audio.currentTime / audio.duration) * 100;
             currentTimeEl.innerText = formatTime(audio.currentTime);
         });
 
@@ -402,34 +400,22 @@
             progressBar.disabled = false;
         });
 
-        progressBar.addEventListener('input', (e) => {
-            const time = (e.target.value / 100) * audio.duration;
-            audio.currentTime = time;
-        });
+        progressBar.addEventListener('input', (e) => audio.currentTime = (e.target.value / 100) * audio.duration);
 
         function togglePlayPause() {
             if(playlist.length === 0) return;
-            if (audio.paused) {
-                if(!audio.src) playTrack(currentIndex); // 소스가 없으면 로드
-                else audio.play();
-            } else audio.pause();
+            if (audio.paused) { if(!audio.src) playTrack(currentIndex); else audio.play(); } 
+            else audio.pause();
         }
 
-        audio.addEventListener('play', () => {
-            iconPlay.classList.add('hidden'); iconPause.classList.remove('hidden');
-            setStatus('NOW PLAYING', 'play');
-        });
-        audio.addEventListener('pause', () => {
-            iconPause.classList.add('hidden'); iconPlay.classList.remove('hidden');
-            setStatus('PAUSED', 'standby');
-        });
+        audio.addEventListener('play', () => { iconPlay.classList.add('hidden'); iconPause.classList.remove('hidden'); setStatus('NOW PLAYING', 'play'); });
+        audio.addEventListener('pause', () => { iconPause.classList.add('hidden'); iconPlay.classList.remove('hidden'); setStatus('PAUSED', 'standby'); });
 
         function toggleRepeat() {
             playMode = (playMode + 1) % 4;
             const btn = document.getElementById('repeat_btn'), btnMobile = document.getElementById('repeat_btn_mobile');
             const activeClass = ['text-[#0078d4]', 'dark:text-blue-400', 'bg-blue-50', 'dark:bg-blue-900/20'];
             const inactiveClass = ['text-gray-400', 'hover:text-gray-900', 'dark:hover:text-white', 'hover:bg-gray-100', 'dark:hover:bg-gray-800'];
-            
             [btn, btnMobile].forEach(el => {
                 if(playMode > 0) { el.classList.remove(...inactiveClass); el.classList.add(...activeClass); }
                 else { el.classList.remove(...activeClass); el.classList.add(...inactiveClass); }
@@ -444,17 +430,28 @@
             setStatus('BUFFERING...', 'load');
             progressBar.value = 0; currentTimeEl.innerText = "0:00"; progressBar.disabled = true;
 
+            // 🔥 플레이어 전체에 Shimmer 이펙트 적용
+            const playerCard = document.getElementById('player_card');
+            playerCard.classList.add('shimmer-active');
+
             fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${playlist[index].id}/content`, { headers: { Authorization: `Bearer ${await getToken()}` } })
             .then(res => res.blob()).then(blob => {
                 if (currentObjectUrl) URL.revokeObjectURL(currentObjectUrl);
                 currentObjectUrl = URL.createObjectURL(blob);
                 audio.src = currentObjectUrl;
+                
+                // 🔥 로딩 완료 시 Shimmer 이펙트 제거
+                playerCard.classList.remove('shimmer-active');
+                
                 if(autoPlay) audio.play(); else setStatus('READY', 'standby');
-            }).catch(err => setStatus('ERROR', 'err'));
+            }).catch(err => {
+                playerCard.classList.remove('shimmer-active');
+                setStatus('ERROR', 'err');
+            });
         }
 
         function playNextTrack(isManual = false) {
-            if (playMode === 2 && !isManual) playTrack(currentIndex); // 한곡반복 (자동넘어갈때만)
+            if (playMode === 2 && !isManual) playTrack(currentIndex);
             else if (playMode === 3) {
                 let next = currentIndex; while (playlist.length > 1 && next === currentIndex) next = Math.floor(Math.random() * playlist.length);
                 playTrack(next);
@@ -464,7 +461,7 @@
         }
 
         function playPrevTrack() {
-            if (audio.currentTime > 3) audio.currentTime = 0; // 3초 이후면 처음으로
+            if (audio.currentTime > 3) audio.currentTime = 0;
             else if (currentIndex > 0) playTrack(currentIndex - 1);
         }
 
