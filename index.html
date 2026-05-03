@@ -28,14 +28,36 @@
     <script type="text/javascript" src="https://alcdn.msauth.net/browser/2.30.0/js/msal-browser.min.js"></script>
     
     <style>
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        /* 🔥 커스텀 스크롤바 디자인 */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(156, 163, 175, 0.4); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(107, 114, 128, 0.7); }
+        .dark ::-webkit-scrollbar-thumb { background: rgba(75, 85, 99, 0.4); }
+        .dark ::-webkit-scrollbar-thumb:hover { background: rgba(107, 114, 128, 0.7); }
+
         .show { display: block !important; }
         .breadcrumb-item:hover { color: #0078d4; text-decoration: underline; cursor: pointer; }
         .breadcrumb-separator { color: #6b7280; margin: 0 4px; font-weight: 300; }
         
         .glass { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.5); }
         .dark .glass { background: rgba(18, 18, 18, 0.7); border: 1px solid rgba(255, 255, 255, 0.05); }
+
+        /* 🔥 뉴모피즘(Neumorphism) 버튼 스타일 */
+        .neumorphic {
+            background: #ffffff;
+            box-shadow: 6px 6px 14px rgba(0, 0, 0, 0.05), -6px -6px 14px rgba(255, 255, 255, 0.8);
+        }
+        .dark .neumorphic {
+            background: #121212;
+            box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.3), -6px -6px 12px rgba(255, 255, 255, 0.04);
+        }
+        .neumorphic:active {
+            box-shadow: inset 4px 4px 10px rgba(0, 0, 0, 0.05), inset -4px -4px 10px rgba(255, 255, 255, 0.8);
+        }
+        .dark .neumorphic:active {
+            box-shadow: inset 4px 4px 10px rgba(0, 0, 0, 0.3), inset -4px -4px 10px rgba(255, 255, 255, 0.04);
+        }
 
         .marquee-container { width: 100%; overflow: hidden; white-space: nowrap; position: relative; mask-image: linear-gradient(to right, black 90%, transparent 100%); -webkit-mask-image: linear-gradient(to right, black 90%, transparent 100%); }
         .marquee-content { display: inline-block; padding-left: 100%; animation: marquee 15s linear infinite; }
@@ -47,7 +69,6 @@
         input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: #e5e7eb; border-radius: 2px; }
         .dark input[type=range]::-webkit-slider-runnable-track { background: #374151; }
 
-        /* 🔥 수정된 Shimmer 이펙트 (속도 느리게 조절: 3초) */
         .shimmer-active::before { content: ''; position: absolute; inset: 0; background: rgba(255, 255, 255, 0.3); z-index: 40; pointer-events: none; }
         .dark .shimmer-active::before { background: rgba(0, 0, 0, 0.5); }
         .shimmer-active::after {
@@ -60,7 +81,6 @@
         @keyframes shimmerMove { 0% { transform: translateX(0%); } 100% { transform: translateX(100%); } }
     </style>
 </head>
-<!-- 🔥 스크롤 방지를 위해 overflow-hidden을 바디에 강제 적용 -->
 <body class="bg-gray-50 text-gray-900 dark:bg-black dark:text-gray-100 font-sans antialiased h-screen overflow-hidden flex flex-col transition-colors duration-300">
 
     <header class="z-50 glass shrink-0 transition-colors duration-300">
@@ -88,7 +108,6 @@
         </div>
     </header>
 
-    <!-- 🔥 한 화면에 꽉 차는 컴팩트 레이아웃 (페이지 스크롤 없음) -->
     <main class="flex-1 max-w-[1400px] w-full mx-auto px-4 sm:px-6 py-4 sm:py-6 flex flex-col lg:flex-row gap-4 sm:gap-8 overflow-hidden">
         
         <!-- 왼쪽 영역: 감성 플레이어 -->
@@ -96,7 +115,6 @@
             <div id="player_card" class="h-auto lg:h-full border border-gray-100 dark:border-gray-800 rounded-[2rem] p-5 sm:p-10 bg-white dark:bg-gray-900 shadow-xl shadow-gray-200/50 dark:shadow-none flex flex-col justify-center gap-6 sm:gap-10 relative overflow-hidden transition-colors duration-300">
                 <div class="absolute -top-32 -right-32 w-64 h-64 bg-blue-400/20 dark:bg-blue-900/20 rounded-full blur-[80px] pointer-events-none"></div>
 
-                <!-- 모바일에서는 가로로 콤팩트하게, 앨범커버 소형화 -->
                 <div class="flex flex-row items-center sm:flex-col sm:items-start gap-4 sm:gap-8 z-10 w-full text-left">
                     <div class="w-16 h-16 sm:w-48 sm:h-48 sm:mx-auto lg:mx-0 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-950 rounded-2xl sm:rounded-[2rem] flex items-center justify-center shrink-0 shadow-inner relative overflow-hidden border border-white/50 dark:border-gray-700/50">
                         <svg class="w-8 h-8 sm:w-16 sm:h-16 text-gray-400 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path></svg>
@@ -124,28 +142,29 @@
                         <span id="duration_time">0:00</span>
                     </div>
 
-                    <div class="flex items-center justify-center sm:justify-between w-full mt-1 sm:mt-2">
-                        <button id="repeat_btn" onclick="toggleRepeat()" class="hidden sm:flex items-center justify-center w-12 h-12 rounded-full text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition">
+                    <div class="flex items-center justify-center sm:justify-between w-full mt-1 sm:mt-4">
+                        <button id="repeat_btn" onclick="toggleRepeat()" class="hidden sm:flex items-center justify-center w-12 h-12 rounded-full text-gray-400 hover:text-[#0078d4] dark:hover:text-blue-400 transition">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                         </button>
 
-                        <div class="flex items-center gap-6 sm:gap-8">
-                            <button onclick="playPrevTrack()" class="p-2 text-gray-800 dark:text-white hover:opacity-70 transition">
-                                <svg class="w-8 h-8 sm:w-10 sm:h-10" fill="currentColor" viewBox="0 0 20 20"><path d="M8.445 14.832A1 1 0 0010 14v-2.798l5.445 3.63A1 1 0 0017 14V6a1 1 0 00-1.555-.832L10 8.798V6a1 1 0 00-1.555-.832l-6 4a1 1 0 000 1.664l6 4z"/></svg>
+                        <!-- 🔥 뉴모피즘 기반의 감성 플레이 버튼 그룹 -->
+                        <div class="flex items-center gap-5 sm:gap-8">
+                            <button onclick="playPrevTrack()" class="w-12 h-12 sm:w-14 sm:h-14 neumorphic rounded-full flex items-center justify-center text-gray-500 dark:text-gray-400 hover:text-[#0078d4] dark:hover:text-blue-400 transition-all">
+                                <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
                             </button>
                             
-                            <!-- 🔥 일관성 있는 감성 재생버튼 (두꺼운 검은 원 탈피) -->
-                            <button id="play_pause_btn" onclick="togglePlayPause()" class="w-14 h-14 sm:w-20 sm:h-20 bg-gradient-to-tr from-[#0078d4] to-blue-500 text-white rounded-full flex items-center justify-center hover:scale-105 active:scale-95 transition shadow-lg shadow-blue-500/30">
-                                <svg id="icon_play" class="w-7 h-7 sm:w-10 sm:h-10 ml-1.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/></svg>
-                                <svg id="icon_pause" class="w-7 h-7 sm:w-10 sm:h-10 hidden" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+                            <button id="play_pause_btn" onclick="togglePlayPause()" class="w-16 h-16 sm:w-20 sm:h-20 neumorphic rounded-full flex items-center justify-center text-[#0078d4] dark:text-blue-400 hover:text-blue-600 dark:hover:text-blue-300 transition-all">
+                                <!-- ml-1 을 추가하여 완벽한 시각적 중심 맞춤 -->
+                                <svg id="icon_play" class="w-7 h-7 sm:w-8 sm:h-8 ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                <svg id="icon_pause" class="w-7 h-7 sm:w-8 sm:h-8 hidden" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
                             </button>
 
-                            <button onclick="playNextTrack(true)" class="p-2 text-gray-800 dark:text-white hover:opacity-70 transition">
-                                <svg class="w-8 h-8 sm:w-10 sm:h-10" fill="currentColor" viewBox="0 0 20 20"><path d="M11.555 14.832A1 1 0 0010 14v-2.798l-5.445 3.63A1 1 0 003 14V6a1 1 0 001.555-.832L10 8.798V6a1 1 0 001.555-.832l6 4a1 1 0 000 1.664l-6 4z"/></svg>
+                            <button onclick="playNextTrack(true)" class="w-12 h-12 sm:w-14 sm:h-14 neumorphic rounded-full flex items-center justify-center text-gray-500 dark:text-gray-400 hover:text-[#0078d4] dark:hover:text-blue-400 transition-all">
+                                <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
                             </button>
                         </div>
                         
-                        <button id="repeat_btn_mobile" onclick="toggleRepeat()" class="sm:hidden flex items-center justify-center w-10 h-10 rounded-full text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition">
+                        <button id="repeat_btn_mobile" onclick="toggleRepeat()" class="sm:hidden flex items-center justify-center w-10 h-10 rounded-full text-gray-400 hover:text-[#0078d4] dark:hover:text-blue-400 transition ml-4">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                         </button>
                         
@@ -157,22 +176,19 @@
             </div>
         </div>
 
-        <!-- 🔥 우측 영역: 내부에서만 스크롤되는 파일 탐색기 -->
+        <!-- 우측 영역: 내부에서만 스크롤되는 파일 탐색기 -->
         <div class="w-full lg:w-[55%] flex flex-col flex-1 min-h-0">
             <div class="border border-gray-100 dark:border-gray-800 rounded-[2rem] bg-white dark:bg-gray-950 shadow-sm overflow-hidden flex flex-col h-full transition-colors duration-300">
                 
-                <!-- 상단 탐색 바 -->
                 <div class="bg-gray-50/80 dark:bg-gray-900/80 border-b border-gray-100 dark:border-gray-800 px-5 sm:px-6 py-4 flex items-center justify-between shrink-0">
                     <div class="flex items-center flex-wrap text-sm sm:text-base font-medium text-gray-500 dark:text-gray-400" id="breadcrumb_container">
                         <span class="breadcrumb-item font-semibold text-gray-900 dark:text-white" onclick="fetchMyFolders('root', 'My Drive')">My Drive</span>
                     </div>
                     
-                    <!-- 🔥 하나의 메뉴 안에 숨긴 액션 버튼들 -->
                     <div class="flex items-center gap-2 relative" id="action_buttons" style="display: none;">
                         <button onclick="document.querySelectorAll('.dropdown-content').forEach(d=>d.classList.remove('show')); document.getElementById('main_action_drop').classList.toggle('show'); event.stopPropagation();" class="p-2 text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-gray-800 rounded-full transition bg-gray-100 dark:bg-gray-800/50 menu-btn">
                             <svg class="w-5 h-5 pointer-events-none" fill="currentColor" viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
                         </button>
-                        <!-- 숨겨진 드롭다운 메뉴 -->
                         <div id="main_action_drop" class="dropdown-content absolute right-0 top-10 w-44 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 py-1.5 z-50 hidden">
                             <a onclick="createFolder(); document.getElementById('main_action_drop').classList.remove('show');" class="flex items-center gap-2.5 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
                                 <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"></path></svg>
@@ -187,8 +203,8 @@
                     </div>
                 </div>
 
-                <!-- 내부 스크롤 목록 영역 -->
-                <div id="file_list_container" class="overflow-y-auto no-scrollbar flex-1 p-3 sm:p-5">
+                <!-- 🔥 목록 영역 (스크롤 허용) -->
+                <div id="file_list_container" class="overflow-y-auto flex-1 p-3 sm:p-5">
                     <div class="text-center text-sm text-gray-400 dark:text-gray-600 font-medium h-full flex flex-col justify-center items-center gap-4">
                         <div class="w-16 h-16 bg-gray-50 dark:bg-gray-900 rounded-2xl flex items-center justify-center border border-gray-100 dark:border-gray-800">
                             <svg class="w-8 h-8 text-gray-300 dark:text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
@@ -262,7 +278,7 @@
             dot.className = `w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full ${type === 'play' ? 'bg-green-500' : type === 'load' ? 'bg-[#0078d4] dark:bg-blue-400 animate-pulse' : type === 'err' ? 'bg-red-500' : 'bg-gray-300 dark:bg-gray-600'}`;
         }
 
-        // Folder & File Actions
+        // Actions
         async function createFolder() {
             const name = prompt("Enter new folder name:");
             if (name) {
@@ -299,7 +315,7 @@
             const files = event.target.files;
             if (!files.length) return;
             const container = document.getElementById('file_list_container');
-            container.innerHTML = '<div class="h-full flex flex-col items-center justify-center text-sm text-blue-500 font-medium"><svg class="animate-spin w-8 h-8 mb-3" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Uploading...</div>';
+            container.innerHTML = '<div class="h-full flex flex-col items-center justify-center text-sm text-[#0078d4] font-medium"><svg class="animate-spin w-8 h-8 mb-3" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Uploading...</div>';
             try {
                 const token = await getToken();
                 for (let file of files) {
@@ -310,7 +326,6 @@
             event.target.value = ''; fetchMyFolders(currentFolderId, pathHistory[pathHistory.length - 1].name, false);
         }
 
-        // Navigation
         function renderBreadcrumbs() {
             const container = document.getElementById('breadcrumb_container'); container.innerHTML = '';
             pathHistory.forEach((step, index) => {
@@ -323,10 +338,8 @@
             });
         }
 
-        // 닫기 헬퍼 (배경 클릭 시 드롭다운 닫기)
         window.onclick = function(e) { if (!e.target.matches('.menu-btn')) { document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('show')); } }
 
-        // Fetch Folders & Render List
         async function fetchMyFolders(folderId, folderName, isNewNavigation = true) {
             const container = document.getElementById('file_list_container');
             container.innerHTML = '<div class="h-full flex flex-col items-center justify-center text-sm text-gray-400"><svg class="animate-spin w-8 h-8 text-gray-300 dark:text-gray-700 mb-3" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Loading...</div>';
@@ -343,7 +356,6 @@
                 
                 playlist = audios; 
 
-                // 🔥 모바일 더블탭 이슈 해결: opacity-100 lg:opacity-0 적용
                 folders.forEach(folder => {
                     const item = document.createElement('div');
                     item.className = 'flex items-center justify-between p-3 sm:p-4 mb-2 border border-gray-100 dark:border-gray-800/80 rounded-[1.2rem] bg-gray-50/50 dark:bg-gray-900/30 hover:bg-blue-50/50 dark:hover:bg-blue-900/20 shadow-sm group transition';
@@ -353,7 +365,7 @@
                         <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center shrink-0">
                             <svg class="w-5 h-5 sm:w-6 sm:h-6 text-[#0078d4] dark:text-blue-400" fill="currentColor" viewBox="0 0 24 24"><path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>
                         </div>
-                        <span class="text-sm sm:text-base font-semibold truncate text-gray-800 dark:text-gray-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition">${folder.name}</span>
+                        <span class="text-sm sm:text-base font-semibold truncate text-gray-800 dark:text-gray-200 group-hover:text-[#0078d4] dark:group-hover:text-blue-400 transition">${folder.name}</span>
                     `;
                     infoDiv.onclick = () => fetchMyFolders(folder.id, folder.name, true);
 
@@ -377,17 +389,26 @@
                     
                     const infoDiv = document.createElement('div');
                     infoDiv.className = 'flex items-center gap-3 sm:gap-4 flex-1 min-w-0 pr-4';
-                    infoDiv.onclick = () => playTrack(index);
+                    
+                    // 🔥 클릭 시 재생/일시정지 토글 기능
+                    infoDiv.onclick = () => {
+                        if (index === currentIndex && audio.src) togglePlayPause();
+                        else playTrack(index);
+                    };
                     
                     const numSpan = document.createElement('div');
                     numSpan.id = `track_icon_${index}`;
-                    numSpan.className = `w-10 h-10 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center shrink-0 ${isActive ? 'bg-white dark:bg-gray-800 text-[#0078d4] dark:text-blue-400 shadow-sm' : 'text-gray-400 dark:text-gray-500 font-medium text-sm group-hover/item:text-gray-600 dark:group-hover/item:text-gray-300 bg-gray-100 dark:bg-gray-900 transition'}`;
-                    if (isActive) numSpan.innerHTML = `<svg class="w-5 h-5 animate-pulse" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"/></svg>`;
-                    else numSpan.innerText = index + 1;
+                    numSpan.className = `w-10 h-10 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center shrink-0 ${isActive ? 'bg-white dark:bg-gray-800 text-[#0078d4] dark:text-blue-400 shadow-sm' : 'text-gray-400 dark:text-gray-500 font-medium text-sm group-hover/item:text-[#0078d4] dark:group-hover/item:text-blue-400 bg-gray-100 dark:bg-gray-900 transition'}`;
+                    
+                    // 🔥 재생 상태에 따른 아이콘 렌더링
+                    if (isActive) {
+                        if (!audio.paused) numSpan.innerHTML = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>`;
+                        else numSpan.innerHTML = `<svg class="w-5 h-5 ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>`;
+                    } else numSpan.innerText = index + 1;
                     
                     const textP = document.createElement('p'); 
                     textP.id = `track_text_${index}`;
-                    textP.className = `text-sm sm:text-[15px] leading-tight truncate ${isActive ? 'text-[#0078d4] dark:text-blue-300 font-bold' : 'text-gray-800 dark:text-gray-200 font-medium'}`; 
+                    textP.className = `text-sm sm:text-[15px] leading-tight truncate transition ${isActive ? 'text-[#0078d4] dark:text-blue-300 font-bold' : 'text-gray-800 dark:text-gray-200 font-medium group-hover/item:text-[#0078d4] dark:group-hover/item:text-blue-400'}`; 
                     textP.innerText = file.name;
                     
                     infoDiv.append(numSpan, textP);
@@ -408,22 +429,29 @@
             });
         }
 
-        // Active UI Update
+        // 🔥 재생 상태에 따른 목록 인라인 아이콘 실시간 업데이트
         function updateActiveTrackUI() {
             playlist.forEach((file, index) => {
                 const isActive = index === currentIndex;
                 const row = document.getElementById(`track_row_${index}`), icon = document.getElementById(`track_icon_${index}`), text = document.getElementById(`track_text_${index}`);
                 if(!row || !icon || !text) return;
+                
                 if (isActive) {
                     row.className = `flex items-center justify-between p-3 sm:p-3.5 mb-1.5 group/item hover:bg-gray-50 dark:hover:bg-gray-800/50 transition cursor-pointer rounded-2xl bg-blue-50/80 dark:bg-blue-900/30 border border-blue-100 dark:border-blue-900/40 shadow-sm`;
-                    icon.className = `w-10 h-10 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center shrink-0 bg-white dark:bg-gray-800 text-[#0078d4] dark:text-blue-400 shadow-sm`;
-                    icon.innerHTML = `<svg class="w-5 h-5 animate-pulse" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"/></svg>`;
-                    text.className = `text-sm sm:text-[15px] leading-tight truncate text-[#0078d4] dark:text-blue-300 font-bold`;
+                    icon.className = `w-10 h-10 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center shrink-0 bg-white dark:bg-gray-800 text-[#0078d4] dark:text-blue-400 shadow-sm transition`;
+                    
+                    if(!audio.paused && audio.src) {
+                        icon.innerHTML = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>`;
+                    } else {
+                        icon.innerHTML = `<svg class="w-5 h-5 ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>`;
+                    }
+                    
+                    text.className = `text-sm sm:text-[15px] leading-tight truncate text-[#0078d4] dark:text-blue-300 font-bold transition`;
                 } else {
                     row.className = `flex items-center justify-between p-3 sm:p-3.5 mb-1.5 group/item hover:bg-gray-50 dark:hover:bg-gray-800/50 transition cursor-pointer rounded-2xl border border-transparent`;
-                    icon.className = `w-10 h-10 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center shrink-0 text-gray-400 dark:text-gray-500 font-medium text-sm group-hover/item:text-gray-600 dark:group-hover/item:text-gray-300 bg-gray-100 dark:bg-gray-900 transition`;
+                    icon.className = `w-10 h-10 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center shrink-0 text-gray-400 dark:text-gray-500 font-medium text-sm group-hover/item:text-[#0078d4] dark:group-hover/item:text-blue-400 bg-gray-100 dark:bg-gray-900 transition`;
                     icon.innerHTML = index + 1;
-                    text.className = `text-sm sm:text-[15px] leading-tight truncate text-gray-800 dark:text-gray-200 font-medium`;
+                    text.className = `text-sm sm:text-[15px] leading-tight truncate text-gray-800 dark:text-gray-200 font-medium group-hover/item:text-[#0078d4] dark:group-hover/item:text-blue-400 transition`;
                 }
             });
         }
@@ -444,18 +472,24 @@
             else audio.pause();
         }
 
-        audio.addEventListener('play', () => { iconPlay.classList.add('hidden'); iconPause.classList.remove('hidden'); setStatus('NOW PLAYING', 'play'); });
+        // 🔥 메인 플레이어 버튼 토글 시 재생목록 아이콘도 함께 동기화
+        audio.addEventListener('play', () => { 
+            iconPlay.classList.add('hidden'); iconPause.classList.remove('hidden'); 
+            setStatus('NOW PLAYING', 'play'); 
+            updateActiveTrackUI();
+        });
         audio.addEventListener('pause', () => { 
             iconPause.classList.add('hidden'); iconPlay.classList.remove('hidden'); 
             const currentStatus = document.getElementById('status_info').innerText;
             if(currentStatus !== 'BUFFERING...' && currentStatus !== 'ERROR') setStatus('PAUSED', 'standby'); 
+            updateActiveTrackUI();
         });
 
         function toggleRepeat() {
             playMode = (playMode + 1) % 4;
             const btn = document.getElementById('repeat_btn'), btnMobile = document.getElementById('repeat_btn_mobile');
-            const activeClass = ['text-[#0078d4]', 'dark:text-blue-400', 'bg-blue-50', 'dark:bg-blue-900/20'];
-            const inactiveClass = ['text-gray-400', 'hover:text-gray-900', 'dark:hover:text-white', 'hover:bg-gray-100', 'dark:hover:bg-gray-800'];
+            const activeClass = ['text-[#0078d4]', 'dark:text-blue-400'];
+            const inactiveClass = ['text-gray-400', 'hover:text-[#0078d4]', 'dark:hover:text-blue-400'];
             [btn, btnMobile].forEach(el => {
                 if(playMode > 0) { el.classList.remove(...inactiveClass); el.classList.add(...activeClass); }
                 else { el.classList.remove(...activeClass); el.classList.add(...inactiveClass); }
@@ -486,7 +520,7 @@
                 playTrack(next);
             } else if (currentIndex + 1 < playlist.length) playTrack(currentIndex + 1);
             else if (playMode === 1) playTrack(0);
-            else { setStatus('FINISHED', 'standby'); iconPause.classList.add('hidden'); iconPlay.classList.remove('hidden'); }
+            else { setStatus('FINISHED', 'standby'); iconPause.classList.add('hidden'); iconPlay.classList.remove('hidden'); updateActiveTrackUI(); }
         }
         function playPrevTrack() { if (audio.currentTime > 3) audio.currentTime = 0; else if (currentIndex > 0) playTrack(currentIndex - 1); }
         audio.addEventListener('ended', () => playNextTrack(false));
