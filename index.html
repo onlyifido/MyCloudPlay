@@ -77,8 +77,13 @@
     <header class="z-50 glass shrink-0 transition-colors duration-300">
         <div class="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 max-w-[1400px] mx-auto">
             <div onclick="window.location.reload()" class="font-bold text-lg sm:text-xl tracking-tight flex items-center gap-2.5 text-gray-900 dark:text-white cursor-pointer hover:opacity-70 transition">
+                <!-- 🔥 감성적인 8분음표 2개 로고 교체 -->
                 <div class="w-7 h-7 sm:w-8 sm:h-8 bg-gradient-to-tr from-[#0078d4] to-blue-400 rounded-xl flex items-center justify-center shadow-md">
-                    <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5v-9l6 4.5-6 4.5z"/></svg>
+                    <svg class="w-4 h-4 sm:w-4.5 sm:h-4.5 text-white pr-[1px] pb-[1px]" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                        <path d="M9 18V5l12-2v13" />
+                        <circle cx="6" cy="18" r="3" />
+                        <circle cx="18" cy="16" r="3" />
+                    </svg>
                 </div>
                 Music
             </div>
@@ -89,7 +94,7 @@
                     <svg id="theme_icon_dark" class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
                 </button>
 
-                <button id="login_button" onclick="signIn()" class="bg-blue-600 text-white px-4 py-1.5 sm:px-5 sm:py-2 rounded-full text-sm font-semibold hover:bg-blue-700 transition shadow-md">
+                <button id="login_button" onclick="signIn()" class="bg-[#0078d4] text-white px-4 py-1.5 sm:px-5 sm:py-2 rounded-full text-sm font-semibold hover:opacity-90 transition shadow-md">
                     Sign In
                 </button>
                 <button id="logout_button" style="display: none;" onclick="signOut()" class="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white px-2 py-1.5 text-sm font-medium transition">
@@ -101,14 +106,18 @@
 
     <main class="flex-1 max-w-[1400px] w-full mx-auto px-4 sm:px-6 py-4 sm:py-6 flex flex-col lg:flex-row gap-4 sm:gap-8 overflow-hidden">
         
-        <!-- 왼쪽 영역: 플레이어 -->
         <div class="w-full lg:w-[45%] flex flex-col shrink-0">
             <div id="player_card" class="h-auto lg:h-full border border-gray-100 dark:border-gray-800 rounded-[2rem] p-5 sm:p-10 bg-white dark:bg-gray-900 shadow-xl shadow-gray-200/50 dark:shadow-none flex flex-col justify-center gap-6 sm:gap-10 relative overflow-hidden transition-colors duration-300">
                 <div class="absolute -top-32 -right-32 w-64 h-64 bg-blue-400/20 dark:bg-blue-900/20 rounded-full blur-[80px] pointer-events-none"></div>
 
                 <div class="flex flex-row items-center sm:flex-col sm:items-start gap-4 sm:gap-8 z-10 w-full text-left">
                     <div class="w-16 h-16 sm:w-48 sm:h-48 sm:mx-auto lg:mx-0 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-950 rounded-2xl sm:rounded-[2rem] flex items-center justify-center shrink-0 shadow-inner relative overflow-hidden border border-white/50 dark:border-gray-700/50">
-                        <svg class="w-8 h-8 sm:w-16 sm:h-16 text-gray-400 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path></svg>
+                        <!-- 여기도 8분음표 로고로 통일 -->
+                        <svg class="w-8 h-8 sm:w-16 sm:h-16 text-gray-400 dark:text-gray-600" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                            <path d="M9 18V5l12-2v13" />
+                            <circle cx="6" cy="18" r="3" />
+                            <circle cx="18" cy="16" r="3" />
+                        </svg>
                     </div>
                     
                     <div class="flex-1 min-w-0 w-full sm:pt-2">
@@ -139,16 +148,16 @@
                         </button>
 
                         <div class="flex items-center gap-5 sm:gap-8">
-                            <button onclick="playPrevTrack()" class="w-12 h-12 sm:w-14 sm:h-14 neumorphic rounded-full flex items-center justify-center text-gray-500 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition-all">
+                            <button onclick="playPrevTrack()" class="w-12 h-12 sm:w-14 sm:h-14 neumorphic rounded-full flex items-center justify-center text-gray-500 dark:text-gray-400 hover:text-[#0078d4] dark:hover:text-blue-400 transition-all">
                                 <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
                             </button>
                             
-                            <button id="play_pause_btn" onclick="togglePlayPause()" class="w-14 h-14 sm:w-20 sm:h-20 bg-gradient-to-tr from-blue-600 to-blue-400 text-white rounded-full flex items-center justify-center hover:scale-105 active:scale-95 transition shadow-lg shadow-blue-500/30">
+                            <button id="play_pause_btn" onclick="togglePlayPause()" class="w-14 h-14 sm:w-20 sm:h-20 bg-gradient-to-tr from-[#0078d4] to-blue-500 text-white rounded-full flex items-center justify-center hover:scale-105 active:scale-95 transition shadow-lg shadow-blue-500/30">
                                 <svg id="icon_play" class="w-7 h-7 sm:w-10 sm:h-10 ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                                 <svg id="icon_pause" class="w-7 h-7 sm:w-10 sm:h-10 hidden" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
                             </button>
 
-                            <button onclick="playNextTrack(true)" class="w-12 h-12 sm:w-14 sm:h-14 neumorphic rounded-full flex items-center justify-center text-gray-500 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition-all">
+                            <button onclick="playNextTrack(true)" class="w-12 h-12 sm:w-14 sm:h-14 neumorphic rounded-full flex items-center justify-center text-gray-500 dark:text-gray-400 hover:text-[#0078d4] dark:hover:text-blue-400 transition-all">
                                 <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
                             </button>
                         </div>
@@ -165,7 +174,6 @@
             </div>
         </div>
 
-        <!-- 우측 영역: 탐색기 -->
         <div class="w-full lg:w-[55%] flex flex-col flex-1 min-h-0">
             <div class="border border-gray-100 dark:border-gray-800 rounded-[2rem] bg-white dark:bg-gray-950 shadow-sm overflow-hidden flex flex-col h-full transition-colors duration-300">
                 
@@ -175,9 +183,15 @@
                     </div>
                     
                     <div class="flex items-center gap-1 sm:gap-2 relative" id="action_buttons" style="display: none;">
-                        <!-- 🔥 2. 현재 폴더 무작위 셔플 버튼 (텍스트 제거, 뫼비우스 아이콘) -->
+                        <!-- 🔥 제대로 된 뫼비우스 교차 화살표 셔플 아이콘 적용 -->
                         <button id="shuffle_folder_btn" onclick="playRandomFromFolder()" title="Shuffle Play" style="display: none;" class="flex items-center justify-center text-blue-500 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 w-8 h-8 sm:w-9 sm:h-9 rounded-full transition mr-1">
-                            <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7h-3a4 4 0 00-4 4l-2 2M4 7h3a4 4 0 014 4l2 2m0 0l2 2a4 4 0 004 4h3M20 7l-4-4m4 4l-4 4M20 21l-4-4m4 4l-4 4"></path></svg>
+                            <svg class="w-4 h-4 sm:w-4.5 sm:h-4.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                                <path d="M2 18h1.4c1.3 0 2.5-.6 3.3-1.7l6.1-8.6c.7-1.1 2-1.7 3.3-1.7H22" />
+                                <path d="m18 2 4 4-4 4" />
+                                <path d="M2 6h1.9c1.5 0 2.9.9 3.6 2.2" />
+                                <path d="M22 18h-5.9c-1.3 0-2.6-.7-3.3-1.8l-.5-.8" />
+                                <path d="m18 14 4 4-4 4" />
+                            </svg>
                         </button>
                         
                         <button onclick="toggleMenu(event, 'main_action_drop')" class="p-1.5 sm:p-2 text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-gray-800 rounded-full transition bg-gray-100 dark:bg-gray-800/50">
@@ -354,7 +368,6 @@
                 
                 currentFolderAudios = audios; 
                 
-                // 🔥 2. 현재 폴더에 오디오 파일이 있으면 셔플 버튼 보이기
                 document.getElementById('shuffle_folder_btn').style.display = audios.length > 0 ? 'flex' : 'none';
 
                 folders.forEach(folder => {
@@ -385,7 +398,7 @@
 
                 currentFolderAudios.forEach((file, index) => {
                     const item = document.createElement('div');
-                    item.id = `track_row_${index}`;
+                    item.id = `track_row_${file.id}`;
                     
                     const infoDiv = document.createElement('div');
                     infoDiv.className = 'flex items-center gap-3 sm:gap-4 flex-1 min-w-0 pr-4';
@@ -403,10 +416,10 @@
                     };
                     
                     const numSpan = document.createElement('div');
-                    numSpan.id = `track_icon_${index}`;
+                    numSpan.id = `track_icon_${file.id}`;
                     
                     const textP = document.createElement('p'); 
-                    textP.id = `track_text_${index}`;
+                    textP.id = `track_text_${file.id}`;
                     textP.innerText = file.name;
                     
                     infoDiv.append(numSpan, textP);
@@ -414,8 +427,8 @@
                     const actionsDiv = document.createElement('div');
                     actionsDiv.className = 'relative shrink-0 opacity-100 lg:opacity-0 group-hover/item:opacity-100 focus-within:opacity-100 transition flex items-center';
                     actionsDiv.innerHTML = `
-                        <button onclick="toggleMenu(event, 'drop-m-${index}')" class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-700 dark:hover:text-white rounded-full transition font-bold">⋮</button>
-                        <div id="drop-m-${index}" class="dropdown-content absolute right-0 mt-8 w-28 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 py-1 z-20 hidden">
+                        <button onclick="toggleMenu(event, 'drop-m-${file.id}')" class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-700 dark:hover:text-white rounded-full transition font-bold">⋮</button>
+                        <div id="drop-m-${file.id}" class="dropdown-content absolute right-0 mt-8 w-28 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 py-1 z-20 hidden">
                             <a onclick="event.stopPropagation(); renameItem('${file.id}', '${file.name.replace(/'/g,"\\'")}')" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">Rename</a>
                             <a onclick="event.stopPropagation(); deleteItem('${file.id}', '${file.name.replace(/'/g,"\\'")}')" class="block px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 cursor-pointer">Delete</a>
                         </div>
@@ -429,15 +442,15 @@
             });
         }
 
-        // 🔥 3. 파일의 고유 ID를 비교하여 폴더 이동 시에도 정확한 곡만 선택 처리
+        // 🔥 3번: 현재 재생중인 고유 ID 기준으로 UI 업데이트를 수행하여 다른 폴더에서 버그 발생 방지
         function updateActiveTrackUI() {
             const currentPlayingId = playingQueue[currentIndex]?.id;
             
             currentFolderAudios.forEach((file, index) => {
                 const isActive = (file.id === currentPlayingId && audio.src !== "");
-                const row = document.getElementById(`track_row_${index}`);
-                const icon = document.getElementById(`track_icon_${index}`);
-                const text = document.getElementById(`track_text_${index}`);
+                const row = document.getElementById(`track_row_${file.id}`);
+                const icon = document.getElementById(`track_icon_${file.id}`);
+                const text = document.getElementById(`track_text_${file.id}`);
                 if(!row || !icon || !text) return;
                 
                 if (isActive) {
@@ -487,17 +500,18 @@
             updateRepeatBtnUI();
         }
         
-        // 🔥 1번 & 4번: 재생모드 토글 디자인 안정화 및 명확한 아이콘 변경
+        // 🔥 4번: 색상 꼬임 현상 해결 (기존 클래스 싹 지우고 새로 할당)
         function updateRepeatBtnUI() {
             const btn = document.getElementById('repeat_btn'), btnMobile = document.getElementById('repeat_btn_mobile');
             let svgContent = '';
             
-            if (playMode === 0 || playMode === 1) { // 0: 끄기, 1: 전곡반복
+            if (playMode === 0 || playMode === 1) {
                 svgContent = `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>`;
-            } else if (playMode === 2) { // 2: 한곡반복
+            } else if (playMode === 2) {
                 svgContent = `<svg class="w-6 h-6 relative" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path><text x="12" y="15" font-family="sans-serif" font-size="9" font-weight="bold" fill="currentColor" text-anchor="middle" stroke="none">1</text></svg>`;
-            } else if (playMode === 3) { // 3: 랜덤재생
-                svgContent = `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7h-3a4 4 0 00-4 4l-2 2M4 7h3a4 4 0 014 4l2 2m0 0l2 2a4 4 0 004 4h3M20 7l-4-4m4 4l-4 4M20 21l-4-4m4 4l-4 4"></path></svg>`;
+            } else if (playMode === 3) {
+                // 뫼비우스 교차 셔플 아이콘 적용
+                svgContent = `<svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M2 18h1.4c1.3 0 2.5-.6 3.3-1.7l6.1-8.6c.7-1.1 2-1.7 3.3-1.7H22"/><path d="m18 2 4 4-4 4"/><path d="M2 6h1.9c1.5 0 2.9.9 3.6 2.2"/><path d="M22 18h-5.9c-1.3 0-2.6-.7-3.3-1.8l-.5-.8"/><path d="m18 14 4 4-4 4"/></svg>`;
             }
 
             [btn, btnMobile].forEach(el => {
