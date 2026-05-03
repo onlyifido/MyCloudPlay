@@ -4,15 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OneDrive Music Player</title>
+    
     <!-- PWA Settings -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0078d4">
     <link rel="apple-touch-icon" href="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Microsoft_OneDrive_icon.svg/512px-Microsoft_OneDrive_icon.svg.png">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
-            darkMode: 'class', // 다크모드 클래스 기반 활성화
+            darkMode: 'class', 
             theme: {
                 extend: {
                     fontFamily: { sans: ['Inter', 'sans-serif'] },
@@ -21,7 +23,6 @@
             }
         }
     </script>
-    <!-- Microsoft Authentication Library (MSAL) -->
     <script type="text/javascript" src="https://alcdn.msauth.net/browser/2.30.0/js/msal-browser.min.js"></script>
     <style>
         .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -29,14 +30,11 @@
         .show { display: block !important; }
         .breadcrumb-item:hover { color: #0078d4; text-decoration: underline; cursor: pointer; }
         .breadcrumb-separator { color: #9ca3af; margin: 0 4px; }
-        
-        /* 다크모드 오디오 플레이어 색상 반전 방지용 */
         .dark audio { filter: invert(0.9) hue-rotate(180deg); opacity: 0.8; }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 font-sans antialiased min-h-screen flex flex-col transition-colors duration-300">
 
-    <!-- Header -->
     <header class="sticky top-0 z-50 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm transition-colors duration-300">
         <div class="flex items-center justify-between px-4 sm:px-6 py-3 max-w-[1400px] mx-auto">
             <div class="font-bold text-xl tracking-tight flex items-center gap-2 text-gray-800 dark:text-white">
@@ -47,14 +45,13 @@
             </div>
             
             <div class="flex items-center gap-3">
-                <!-- Dark Mode Toggle -->
                 <button onclick="toggleDarkMode()" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 transition" title="Toggle Dark Mode">
                     <svg id="theme_icon_light" class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
                     <svg id="theme_icon_dark" class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
                 </button>
 
                 <button id="login_button" onclick="signIn()" class="bg-[#0078d4] text-white px-5 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700 transition shadow-sm">
-                    Sign In with Microsoft
+                    Sign In
                 </button>
                 <button id="logout_button" style="display: none;" onclick="signOut()" class="text-red-500 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/40 border border-red-100 dark:border-red-900/50 px-4 py-2 rounded-lg text-sm font-semibold transition">
                     Sign Out
@@ -63,13 +60,9 @@
         </div>
     </header>
 
-    <!-- Main Content -->
     <main class="flex-1 max-w-[1400px] w-full mx-auto px-4 sm:px-6 py-8 flex flex-col lg:flex-row gap-8">
         
-        <!-- Left Area: Player & Folders -->
         <div class="flex-1 flex flex-col gap-8 min-w-0">
-            
-            <!-- Player Card -->
             <div class="border border-gray-200 dark:border-gray-800 rounded-2xl p-6 sm:p-8 bg-white dark:bg-gray-800 shadow-sm flex flex-col gap-6 relative overflow-hidden transition-colors duration-300">
                 <div class="absolute -top-24 -right-24 w-48 h-48 bg-blue-50 dark:bg-blue-900/20 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
 
@@ -87,7 +80,6 @@
                         </div>
                     </div>
                     
-                    <!-- Play Mode Button -->
                     <button id="repeat_btn" onclick="toggleRepeat()" class="shrink-0 flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white bg-gray-50 dark:bg-gray-700/50 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 transition">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                         <span id="mode_text">Off</span>
@@ -99,30 +91,32 @@
                 </div>
             </div>
 
-            <!-- Folder Section -->
             <div id="folders_section" style="display: none;" class="flex flex-col gap-4">
                 <div class="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-3">
-                    <!-- Breadcrumb -->
                     <div class="flex items-center flex-wrap text-sm font-medium text-gray-600 dark:text-gray-400" id="breadcrumb_container">
                         <span class="breadcrumb-item font-bold text-gray-800 dark:text-gray-200" onclick="fetchMyFolders('root', 'My Drive')">My Drive</span>
                     </div>
                     
-                    <!-- Direct Upload Button -->
-                    <input type="file" id="file_upload" accept="audio/*" multiple class="hidden" onchange="handleFileUpload(event)">
-                    <button id="upload_btn" onclick="document.getElementById('file_upload').click()" class="flex items-center gap-1.5 text-xs font-bold text-[#0078d4] dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 px-3 py-1.5 rounded-md transition border border-blue-200 dark:border-blue-800">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
-                        Upload
-                    </button>
+                    <!-- Folder & Upload Actions -->
+                    <div class="flex items-center gap-2">
+                        <button onclick="createFolder()" class="flex items-center gap-1.5 text-xs font-bold text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 px-3 py-1.5 rounded-md transition border border-gray-200 dark:border-gray-700">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"></path></svg>
+                            New Folder
+                        </button>
+                        <input type="file" id="file_upload" accept="audio/*" multiple class="hidden" onchange="handleFileUpload(event)">
+                        <button id="upload_btn" onclick="document.getElementById('file_upload').click()" class="flex items-center gap-1.5 text-xs font-bold text-[#0078d4] dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 px-3 py-1.5 rounded-md transition border border-blue-200 dark:border-blue-800">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                            Upload
+                        </button>
+                    </div>
                 </div>
                 
-                <div id="folder_list" class="grid grid-cols-2 md:grid-cols-3 gap-3 max-h-[130px] md:max-h-[350px] overflow-y-auto no-scrollbar py-1">
+                <div id="folder_list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 max-h-[130px] md:max-h-[350px] overflow-y-auto no-scrollbar py-1">
                     <!-- Folder items render here -->
                 </div>
             </div>
-
         </div>
 
-        <!-- Right Area: Playlist -->
         <div class="w-full lg:w-[420px] flex flex-col gap-4 shrink-0">
             <div class="flex items-center justify-between">
                 <h2 class="text-lg font-bold text-gray-800 dark:text-gray-100 flex items-center gap-2">
@@ -151,94 +145,101 @@
     </main>
 
     <script>
-        // ==========================================
-        // Dark Mode Logic
-        // ==========================================
+        // PWA Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js').catch(err => console.error('SW failed', err));
+            });
+        }
+
+        // Dark Mode
         function toggleDarkMode() {
             document.documentElement.classList.toggle('dark');
-            const isDark = document.documentElement.classList.contains('dark');
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
         }
-
         if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark');
         }
 
-        // ==========================================
-        // Microsoft Azure Configuration
-        // ==========================================
+        // MSAL Configuration
         const msalConfig = {
             auth: {
                 clientId: "8a7108a1-d00c-4f7c-bbed-f4a4df25b81a", 
                 authority: "https://login.microsoftonline.com/common",
                 redirectUri: "https://cloudstreaming.vercel.app/", 
             },
-            cache: {
-                cacheLocation: "localStorage", 
-                storeAuthStateInCookie: false,
-            }
+            cache: { cacheLocation: "localStorage", storeAuthStateInCookie: false }
         };
-
-        const loginRequest = {
-            scopes: ["Files.ReadWrite.All"] 
-        };
-
         const msalInstance = new msal.PublicClientApplication(msalConfig);
         
-        let accountId = "";
-        let playlist = [];
-        let currentIndex = -1;
-        let currentObjectUrl = null;
-        let playMode = 0; 
-        let currentFolderId = 'root'; // Track current folder for uploads
-        
+        let accountId = "", playlist = [], currentIndex = -1, currentObjectUrl = null, playMode = 0, currentFolderId = 'root';
         const modeLabels = ['Off', 'Repeat All', 'Repeat One', 'Shuffle'];
         let pathHistory = [{ id: 'root', name: 'My Drive' }];
 
-        // Check Login State
-        msalInstance.handleRedirectPromise().then(handleResponse).catch(err => { console.error(err); });
+        msalInstance.handleRedirectPromise().then(handleResponse).catch(console.error);
 
         function handleResponse(response) {
-            if (response !== null) {
-                accountId = response.account.homeAccountId;
-                showMainUI();
+            if (response || msalInstance.getAllAccounts().length > 0) {
+                accountId = response ? response.account.homeAccountId : msalInstance.getAllAccounts()[0].homeAccountId;
+                document.getElementById('login_button').style.display = 'none';
+                document.getElementById('logout_button').style.display = 'inline-block';
+                document.getElementById('folders_section').style.display = 'flex';
                 fetchMyFolders('root', 'My Drive', true); 
-            } else {
-                const currentAccounts = msalInstance.getAllAccounts();
-                if (currentAccounts.length > 0) {
-                    accountId = currentAccounts[0].homeAccountId;
-                    showMainUI();
-                    fetchMyFolders('root', 'My Drive', true);
-                }
             }
         }
 
-        function signIn() { msalInstance.loginRedirect(loginRequest); }
+        function signIn() { msalInstance.loginRedirect({ scopes: ["Files.ReadWrite.All"] }); }
         function signOut() { msalInstance.logoutRedirect({ account: msalInstance.getAccountByHomeId(accountId) }); }
-
-        function showMainUI() {
-            document.getElementById('login_button').style.display = 'none';
-            document.getElementById('logout_button').style.display = 'inline-block';
-            document.getElementById('folders_section').style.display = 'flex';
-        }
 
         async function getToken() {
             const request = { scopes: ["Files.ReadWrite.All"], account: msalInstance.getAccountByHomeId(accountId) };
-            try {
-                const response = await msalInstance.acquireTokenSilent(request);
-                return response.accessToken;
-            } catch (error) {
-                if (error instanceof msal.InteractionRequiredAuthError) {
-                    msalInstance.acquireTokenRedirect(request);
-                }
+            try { return (await msalInstance.acquireTokenSilent(request)).accessToken; }
+            catch (error) { msalInstance.acquireTokenRedirect(request); }
+        }
+
+        // Folder Operations (Create, Rename, Delete)
+        async function createFolder() {
+            const folderName = prompt("Enter new folder name:");
+            if (!folderName) return;
+            const token = await getToken();
+            fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${currentFolderId}/children`, {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: folderName, folder: { }, "@microsoft.graph.conflictBehavior": "rename" })
+            }).then(res => {
+                if (res.ok) fetchMyFolders(currentFolderId, pathHistory[pathHistory.length - 1].name, false);
+                else alert("Failed to create folder.");
+            });
+        }
+
+        async function renameFolder(id, oldName) {
+            const newName = prompt("Enter new folder name:", oldName);
+            if (newName && newName !== oldName) {
+                const token = await getToken();
+                fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${id}`, {
+                    method: 'PATCH',
+                    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name: newName })
+                }).then(res => {
+                    if (res.ok) fetchMyFolders(currentFolderId, pathHistory[pathHistory.length - 1].name, false);
+                });
             }
         }
 
-        // ==========================================
-        // Direct Upload Logic (Chunked for large files)
-        // ==========================================
+        async function deleteFolder(id, name) {
+            if (confirm(`WARNING: Are you sure you want to permanently delete the folder '${name}' and ALL its contents?\n\nThis action cannot be undone.`)) {
+                const token = await getToken();
+                fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                }).then(res => {
+                    if (res.ok || res.status === 204) fetchMyFolders(currentFolderId, pathHistory[pathHistory.length - 1].name, false);
+                    else alert("Failed to delete folder.");
+                });
+            }
+        }
+
+        // File Upload
         async function handleFileUpload(event) {
             const files = event.target.files;
             if (!files.length) return;
@@ -251,44 +252,29 @@
             try {
                 const token = await getToken();
                 for (let file of files) {
-                    // 1. Create Upload Session (Allows files > 4MB up to 60MB per chunk)
                     const sessionRes = await fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${currentFolderId}:/${encodeURIComponent(file.name)}:/createUploadSession`, {
                         method: 'POST',
                         headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
                     });
                     const sessionData = await sessionRes.json();
-                    
-                    // 2. Upload the file to the session URL
                     await fetch(sessionData.uploadUrl, {
                         method: 'PUT',
-                        headers: {
-                            'Content-Length': `${file.size}`,
-                            'Content-Range': `bytes 0-${file.size - 1}/${file.size}`
-                        },
+                        headers: { 'Content-Length': `${file.size}`, 'Content-Range': `bytes 0-${file.size - 1}/${file.size}` },
                         body: file
                     });
                 }
-            } catch (err) {
-                console.error("Upload failed:", err);
-                alert(`Failed to upload file(s). Please try again.`);
-            }
+            } catch (err) { alert(`Failed to upload file(s).`); }
             
             uploadBtn.innerHTML = originalHTML;
             uploadBtn.disabled = false;
-            event.target.value = ''; // Reset input
-            
-            // Refresh Current Folder
-            const currentObj = pathHistory[pathHistory.length - 1];
-            fetchMyFolders(currentObj.id, currentObj.name, false);
+            event.target.value = ''; 
+            fetchMyFolders(currentFolderId, pathHistory[pathHistory.length - 1].name, false);
         }
 
-        // ==========================================
-        // Fetch & Navigation Logic
-        // ==========================================
+        // Fetch Folders & Breadcrumbs
         function renderBreadcrumbs() {
             const container = document.getElementById('breadcrumb_container');
             container.innerHTML = '';
-            
             pathHistory.forEach((step, index) => {
                 const span = document.createElement('span');
                 if (index === pathHistory.length - 1) {
@@ -297,10 +283,12 @@
                 } else {
                     span.className = 'breadcrumb-item transition dark:hover:text-blue-400';
                     span.innerText = step.name;
-                    span.onclick = () => navigateToPathIndex(index);
+                    span.onclick = () => {
+                        pathHistory = pathHistory.slice(0, index + 1);
+                        fetchMyFolders(step.id, step.name, false);
+                    };
                 }
                 container.appendChild(span);
-
                 if (index < pathHistory.length - 1) {
                     const sep = document.createElement('span');
                     sep.className = 'breadcrumb-separator';
@@ -310,23 +298,13 @@
             });
         }
 
-        function navigateToPathIndex(index) {
-            const targetStep = pathHistory[index];
-            pathHistory = pathHistory.slice(0, index + 1);
-            fetchMyFolders(targetStep.id, targetStep.name, false);
-        }
-
         async function fetchMyFolders(folderId, folderName, isNewNavigation = true) {
             const container = document.getElementById('folder_list');
-            container.innerHTML = '<div class="col-span-2 md:col-span-3 text-sm text-gray-500 py-6 text-center">Loading folders...</div>';
-            
-            currentFolderId = folderId; // Track for upload
+            container.innerHTML = '<div class="col-span-1 sm:col-span-2 md:col-span-3 text-sm text-gray-500 py-6 text-center">Loading folders...</div>';
+            currentFolderId = folderId; 
 
-            if (isNewNavigation && folderId !== 'root') {
-                pathHistory.push({ id: folderId, name: folderName });
-            } else if (folderId === 'root') {
-                pathHistory = [{ id: 'root', name: 'My Drive' }];
-            }
+            if (isNewNavigation && folderId !== 'root') pathHistory.push({ id: folderId, name: folderName });
+            else if (folderId === 'root') pathHistory = [{ id: 'root', name: 'My Drive' }];
             renderBreadcrumbs();
 
             const token = await getToken();
@@ -338,19 +316,41 @@
             .then(res => res.json())
             .then(data => {
                 container.innerHTML = '';
-                
                 const folders = data.value.filter(item => item.folder);
                 const audios = data.value.filter(item => item.file && item.file.mimeType && item.file.mimeType.includes('audio'));
 
+                // Render Folders with Edit/Delete inline icons
                 folders.forEach(folder => {
-                    const btn = document.createElement('button');
-                    btn.className = 'flex items-center gap-3 p-3.5 border border-gray-200 dark:border-gray-700 rounded-xl hover:border-[#0078d4] dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-gray-700 transition cursor-pointer bg-white dark:bg-gray-800 shadow-sm text-left group';
-                    btn.innerHTML = `
+                    const item = document.createElement('div');
+                    item.className = 'flex items-center justify-between p-3 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 shadow-sm group';
+                    
+                    const infoDiv = document.createElement('div');
+                    infoDiv.className = 'flex items-center gap-3 flex-1 min-w-0 pr-2 cursor-pointer';
+                    infoDiv.innerHTML = `
                         <svg class="w-6 h-6 text-[#0078d4] dark:text-blue-400 shrink-0 opacity-80 group-hover:opacity-100 transition" fill="currentColor" viewBox="0 0 24 24"><path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>
-                        <span class="text-sm font-semibold truncate text-gray-700 dark:text-gray-300 group-hover:text-[#0078d4] dark:group-hover:text-white transition">${folder.name}</span>
+                        <span class="text-sm font-semibold truncate text-gray-700 dark:text-gray-300 group-hover:text-[#0078d4] dark:group-hover:text-blue-400 transition">${folder.name}</span>
                     `;
-                    btn.onclick = () => fetchMyFolders(folder.id, folder.name, true);
-                    container.appendChild(btn);
+                    infoDiv.onclick = () => fetchMyFolders(folder.id, folder.name, true);
+
+                    const actionDiv = document.createElement('div');
+                    actionDiv.className = 'flex items-center gap-1 opacity-0 group-hover:opacity-100 transition';
+                    
+                    const editBtn = document.createElement('button');
+                    editBtn.className = 'p-1.5 text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition';
+                    editBtn.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>`;
+                    editBtn.onclick = (e) => { e.stopPropagation(); renameFolder(folder.id, folder.name); };
+
+                    const delBtn = document.createElement('button');
+                    delBtn.className = 'p-1.5 text-gray-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded transition';
+                    delBtn.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>`;
+                    delBtn.onclick = (e) => { e.stopPropagation(); deleteFolder(folder.id, folder.name); };
+
+                    actionDiv.appendChild(editBtn);
+                    actionDiv.appendChild(delBtn);
+                    
+                    item.appendChild(infoDiv);
+                    item.appendChild(actionDiv);
+                    container.appendChild(item);
                 });
 
                 if (audios.length > 0) {
@@ -366,24 +366,19 @@
                 }
                 
                 if (folders.length === 0 && audios.length === 0) {
-                    container.innerHTML = '<div class="col-span-2 md:col-span-3 text-sm text-gray-400 py-6 text-center">This folder is empty.</div>';
+                    container.innerHTML = '<div class="col-span-1 sm:col-span-2 md:col-span-3 text-sm text-gray-400 py-6 text-center">This folder is empty.</div>';
                 }
             })
             .catch(err => {
-                console.error(err);
-                container.innerHTML = '<div class="col-span-2 text-sm text-red-500">Failed to load data.</div>';
+                container.innerHTML = '<div class="col-span-1 sm:col-span-2 md:col-span-3 text-sm text-red-500 py-6 text-center">Failed to load data.</div>';
             });
         }
 
-        // ==========================================
-        // Player Logic
-        // ==========================================
+        // Playlist & Player Functions
         function toggleRepeat() {
             playMode = (playMode + 1) % 4;
-            const btn = document.getElementById('repeat_btn');
-            const text = document.getElementById('mode_text');
+            const btn = document.getElementById('repeat_btn'), text = document.getElementById('mode_text');
             text.innerText = modeLabels[playMode];
-            
             if(playMode > 0) {
                 btn.classList.add('text-[#0078d4]', 'border-blue-200', 'bg-blue-50', 'dark:text-blue-400', 'dark:bg-blue-900/30', 'dark:border-blue-800');
                 btn.classList.remove('text-gray-500', 'border-gray-200', 'bg-gray-50', 'dark:text-gray-400', 'dark:bg-gray-700/50', 'dark:border-gray-600');
@@ -407,52 +402,35 @@
             const audioPlayer = document.getElementById('audio_player');
             audioPlayer.style.display = 'block';
 
-            const token = await getToken();
-            
-            fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${file.id}/content`, {
-                headers: { Authorization: `Bearer ${token}` }
-            })
-            .then(response => {
-                if (!response.ok) throw new Error('Download failed');
-                return response.blob();
-            })
+            fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${file.id}/content`, { headers: { Authorization: `Bearer ${await getToken()}` } })
+            .then(res => res.blob())
             .then(blob => {
                 if (currentObjectUrl) URL.revokeObjectURL(currentObjectUrl);
                 currentObjectUrl = URL.createObjectURL(blob);
-                
                 document.getElementById('status_info').innerText = 'NOW PLAYING';
                 document.getElementById('status_info').classList.remove('text-[#0078d4]', 'dark:text-blue-400');
                 document.getElementById('status_info').classList.add('text-green-600', 'dark:text-green-400');
                 document.getElementById('status_dot').style.display = 'inline-block';
-                
                 audioPlayer.src = currentObjectUrl;
                 audioPlayer.play();
-            })
-            .catch(error => {
-                console.error(error);
+            }).catch(err => {
                 document.getElementById('status_info').innerText = 'PLAYBACK ERROR';
                 document.getElementById('status_info').classList.add('text-red-500');
-                setTimeout(() => {
-                    document.getElementById('status_info').classList.remove('text-red-500');
-                    playNextTrack();
-                }, 2000); 
+                setTimeout(() => { document.getElementById('status_info').classList.remove('text-red-500'); playNextTrack(); }, 2000); 
             });
         }
 
         function playNextTrack() {
-            if (playMode === 2) {
-                playTrack(currentIndex);
-            } else if (playMode === 3) {
+            if (playMode === 2) playTrack(currentIndex);
+            else if (playMode === 3) {
                 if (playlist.length > 1) {
                     let nextIndex = currentIndex;
                     while (nextIndex === currentIndex) nextIndex = Math.floor(Math.random() * playlist.length);
                     playTrack(nextIndex);
                 } else playTrack(currentIndex);
-            } else if (currentIndex + 1 < playlist.length) {
-                playTrack(currentIndex + 1);
-            } else if (playMode === 1) {
-                playTrack(0);
-            } else {
+            } else if (currentIndex + 1 < playlist.length) playTrack(currentIndex + 1);
+            else if (playMode === 1) playTrack(0);
+            else {
                 document.getElementById('status_info').innerText = 'QUEUE FINISHED';
                 document.getElementById('status_info').classList.remove('text-green-600', 'dark:text-green-400');
                 document.getElementById('status_dot').style.display = 'none';
@@ -468,7 +446,6 @@
             
             playlist.forEach((file, index) => {
                 const isActive = index === currentIndex;
-                
                 const item = document.createElement('div');
                 item.className = `p-3.5 flex justify-between items-center group/item hover:bg-gray-50 dark:hover:bg-gray-700/50 transition cursor-pointer rounded-xl ${isActive ? 'bg-blue-50/70 dark:bg-blue-900/30 border border-blue-100/50 dark:border-blue-800 shadow-sm' : 'border border-transparent'}`;
                 
@@ -478,9 +455,8 @@
                 
                 const numSpan = document.createElement('div');
                 numSpan.className = `w-6 flex items-center justify-center shrink-0 ${isActive ? 'text-[#0078d4] dark:text-blue-400' : 'text-gray-400 dark:text-gray-500 font-medium text-sm group-hover/item:text-gray-600 dark:group-hover/item:text-gray-300 transition'}`;
-                if (isActive) {
-                    numSpan.innerHTML = `<svg class="w-4 h-4 animate-pulse" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path></svg>`;
-                } else numSpan.innerText = index + 1;
+                if (isActive) numSpan.innerHTML = `<svg class="w-4 h-4 animate-pulse" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path></svg>`;
+                else numSpan.innerText = index + 1;
                 
                 const nameP = document.createElement('p');
                 nameP.className = `text-[13px] leading-tight truncate ${isActive ? 'text-[#0078d4] dark:text-blue-300 font-bold' : 'text-gray-700 dark:text-gray-300 font-medium'}`;
@@ -495,7 +471,7 @@
                 const menuBtn = document.createElement('button');
                 menuBtn.className = 'w-7 h-7 flex items-center justify-center text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-md menu-btn transition font-bold';
                 menuBtn.innerHTML = '⋮';
-                menuBtn.onclick = (e) => toggleDropdown(e, index);
+                menuBtn.onclick = (e) => { e.stopPropagation(); closeAllDropdowns(); document.getElementById(`dropdown-${index}`).classList.toggle("show"); };
                 
                 const dropdown = document.createElement('div');
                 dropdown.id = `dropdown-${index}`;
@@ -521,28 +497,18 @@
             });
         }
 
-        function toggleDropdown(event, index) {
-            event.stopPropagation(); 
-            closeAllDropdowns(); 
-            document.getElementById(`dropdown-${index}`).classList.toggle("show");
-        }
-
-        window.onclick = function(event) { if (!event.target.matches('.menu-btn')) closeAllDropdowns(); }
+        window.onclick = function(e) { if (!e.target.matches('.menu-btn')) closeAllDropdowns(); }
         function closeAllDropdowns() {
             var dropdowns = document.getElementsByClassName("dropdown-content");
-            for (var i = 0; i < dropdowns.length; i++) {
-                if (dropdowns[i].classList.contains('show')) dropdowns[i].classList.remove('show');
-            }
+            for (let d of dropdowns) d.classList.remove('show');
         }
 
         async function renameFile(index) {
             const file = playlist[index];
             const newName = prompt('Enter new file name:', file.name);
             if (newName && newName !== file.name) {
-                const token = await getToken();
                 fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${file.id}`, {
-                    method: 'PATCH',
-                    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                    method: 'PATCH', headers: { 'Authorization': `Bearer ${await getToken()}`, 'Content-Type': 'application/json' },
                     body: JSON.stringify({ name: newName })
                 }).then(res => res.json()).then(data => {
                     playlist[index].name = data.name;
@@ -552,16 +518,11 @@
             }
         }
 
-        // Hard Delete Logic with English Warning
         async function trashFile(index) {
             const file = playlist[index];
-            // 강력한 경고창 적용
             if (confirm(`WARNING: Are you sure you want to permanently delete '${file.name}' from your OneDrive? \n\nThis action cannot be undone.`)) {
-                const token = await getToken();
-                fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${file.id}`, {
-                    method: 'DELETE',
-                    headers: { 'Authorization': `Bearer ${token}` }
-                }).then(res => {
+                fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${file.id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${await getToken()}` } })
+                .then(res => {
                     if (res.ok || res.status === 204) {
                         playlist.splice(index, 1);
                         if (index === currentIndex) {
@@ -575,25 +536,11 @@
                                 document.getElementById('status_dot').style.display = 'none';
                                 currentIndex = -1;
                             }
-                        } else if (index < currentIndex) {
-                            currentIndex--;
-                        }
+                        } else if (index < currentIndex) currentIndex--;
                         updatePlaylistUI();
-                    } else {
-                        alert("Failed to delete the file from OneDrive.");
-                    }
+                    } else alert("Failed to delete the file from OneDrive.");
                 });
             }
-        }
-    </script>
-    <script>
-        // PWA 서비스 워커 등록
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js')
-                .then(reg => console.log('Service Worker registered', reg))
-                .catch(err => console.error('Service Worker registration failed', err));
-            });
         }
     </script>
 </body>
