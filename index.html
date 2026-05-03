@@ -47,11 +47,35 @@
         input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: #e5e7eb; border-radius: 2px; }
         .dark input[type=range]::-webkit-slider-runnable-track { background: #374151; }
 
-        .shimmer-active::before { content: ''; position: absolute; inset: 0; background: rgba(255, 255, 255, 0.4); z-index: 40; pointer-events: none; }
+        /* 🔥 수정된 Shimmer 이펙트: 위치를 강제로 이동시켜 움직임 보장 */
+        .shimmer-active::before {
+            content: ''; position: absolute; inset: 0; background: rgba(255, 255, 255, 0.3); z-index: 40; pointer-events: none;
+        }
         .dark .shimmer-active::before { background: rgba(0, 0, 0, 0.5); }
-        .shimmer-active::after { content: ''; position: absolute; inset: 0; background: linear-gradient(105deg, transparent 15%, rgba(255, 255, 255, 0.9) 50%, transparent 85%); background-size: 200% 100%; animation: shimmer 1.2s infinite linear; z-index: 50; pointer-events: none; }
-        .dark .shimmer-active::after { background: linear-gradient(105deg, transparent 15%, rgba(255, 255, 255, 0.15) 50%, transparent 85%); }
-        @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+        
+        .shimmer-active::after {
+            content: ''; position: absolute; top: 0; bottom: 0; width: 200%; left: -100%;
+            background: linear-gradient(
+                90deg,
+                transparent 25%,
+                rgba(255, 255, 255, 0.8) 50%,
+                transparent 75%
+            );
+            animation: shimmerMove 1.5s infinite linear;
+            z-index: 50; pointer-events: none;
+        }
+        .dark .shimmer-active::after {
+            background: linear-gradient(
+                90deg,
+                transparent 25%,
+                rgba(255, 255, 255, 0.15) 50%,
+                transparent 75%
+            );
+        }
+        @keyframes shimmerMove {
+            0% { transform: translateX(0%); }
+            100% { transform: translateX(100%); }
+        }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-900 dark:bg-black dark:text-gray-100 font-sans antialiased min-h-screen flex flex-col transition-colors duration-300">
@@ -81,112 +105,101 @@
         </div>
     </header>
 
-    <main class="flex-1 max-w-[1400px] w-full mx-auto px-4 sm:px-6 py-8 flex flex-col lg:flex-row gap-8">
+    <!-- 🔥 통합된 메인 레이아웃 (좌: 플레이어 / 우: 파일 탐색기 겸 플레이리스트) -->
+    <main class="flex-1 max-w-[1400px] w-full mx-auto px-4 sm:px-6 py-6 sm:py-8 flex flex-col lg:flex-row gap-6 sm:gap-8 h-[calc(100vh-80px)]">
         
-        <div class="flex-1 flex flex-col gap-8 min-w-0">
-            <div id="player_card" class="border border-gray-100 dark:border-gray-800 rounded-3xl p-6 sm:p-8 bg-white dark:bg-gray-900 shadow-xl shadow-gray-200/50 dark:shadow-none flex flex-col gap-8 relative overflow-hidden transition-colors duration-300">
+        <!-- 왼쪽 영역: 감성 플레이어 -->
+        <div class="w-full lg:w-1/2 flex flex-col shrink-0">
+            <div id="player_card" class="h-full border border-gray-100 dark:border-gray-800 rounded-3xl p-6 sm:p-10 bg-white dark:bg-gray-900 shadow-xl shadow-gray-200/50 dark:shadow-none flex flex-col justify-center gap-8 relative overflow-hidden transition-colors duration-300">
                 <div class="absolute -top-32 -right-32 w-64 h-64 bg-blue-400/20 dark:bg-blue-900/30 rounded-full blur-[80px] pointer-events-none"></div>
 
-                <div class="flex flex-col sm:flex-row items-center sm:items-start gap-6 z-10 w-full text-center sm:text-left">
-                    <div class="w-32 h-32 sm:w-28 sm:h-28 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-950 rounded-[2rem] flex items-center justify-center shrink-0 shadow-inner relative overflow-hidden border border-white/50 dark:border-gray-700/50">
-                        <svg class="w-12 h-12 text-gray-400 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path></svg>
+                <div class="flex flex-col items-center sm:items-start gap-8 z-10 w-full text-center sm:text-left">
+                    <div class="w-40 h-40 sm:w-48 sm:h-48 mx-auto sm:mx-0 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-950 rounded-[2rem] flex items-center justify-center shrink-0 shadow-inner relative overflow-hidden border border-white/50 dark:border-gray-700/50">
+                        <svg class="w-16 h-16 text-gray-400 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path></svg>
                     </div>
                     
                     <div class="flex-1 min-w-0 w-full pt-2">
-                        <div class="flex items-center justify-center sm:justify-start gap-2 mb-2">
-                            <span class="w-2 h-2 rounded-full bg-gray-300 dark:bg-gray-600" id="status_dot"></span>
-                            <span class="text-[11px] font-semibold text-gray-500 dark:text-gray-400 tracking-[0.2em] uppercase" id="status_info">STANDBY</span>
+                        <div class="flex items-center justify-center sm:justify-start gap-2 mb-3">
+                            <span class="w-2.5 h-2.5 rounded-full bg-gray-300 dark:bg-gray-600" id="status_dot"></span>
+                            <span class="text-xs font-semibold text-gray-500 dark:text-gray-400 tracking-[0.2em] uppercase" id="status_info">STANDBY</span>
                         </div>
                         
-                        <div class="marquee-container text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2">
+                        <div class="marquee-container text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-2">
                             <div id="file_info" class="marquee-content short">Select a track</div>
                         </div>
-                        <p class="text-sm font-medium text-gray-400 dark:text-gray-500">OneDrive Streaming</p>
+                        <p class="text-base font-medium text-gray-400 dark:text-gray-500">OneDrive Streaming</p>
                     </div>
                 </div>
 
-                <div class="z-10 w-full flex flex-col gap-4">
+                <div class="z-10 w-full flex flex-col gap-6 mt-4">
                     <audio id="audio_player" class="hidden"></audio>
                     
-                    <div class="flex items-center gap-3 w-full text-xs font-medium text-gray-400">
+                    <div class="flex items-center gap-4 w-full text-sm font-medium text-gray-400">
                         <span id="current_time">0:00</span>
                         <input type="range" id="progress_bar" value="0" step="0.1" min="0" max="100" class="flex-1" disabled>
                         <span id="duration_time">0:00</span>
                     </div>
 
                     <div class="flex items-center justify-center sm:justify-between w-full mt-2">
-                        <button id="repeat_btn" onclick="toggleRepeat()" class="hidden sm:flex items-center justify-center w-10 h-10 rounded-full text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                        <button id="repeat_btn" onclick="toggleRepeat()" class="hidden sm:flex items-center justify-center w-12 h-12 rounded-full text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                         </button>
 
-                        <div class="flex items-center gap-6">
+                        <div class="flex items-center gap-8">
                             <button onclick="playPrevTrack()" class="p-2 text-gray-800 dark:text-white hover:opacity-70 transition">
-                                <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M8.445 14.832A1 1 0 0010 14v-2.798l5.445 3.63A1 1 0 0017 14V6a1 1 0 00-1.555-.832L10 8.798V6a1 1 0 00-1.555-.832l-6 4a1 1 0 000 1.664l6 4z"/></svg>
+                                <svg class="w-10 h-10" fill="currentColor" viewBox="0 0 20 20"><path d="M8.445 14.832A1 1 0 0010 14v-2.798l5.445 3.63A1 1 0 0017 14V6a1 1 0 00-1.555-.832L10 8.798V6a1 1 0 00-1.555-.832l-6 4a1 1 0 000 1.664l6 4z"/></svg>
                             </button>
                             
-                            <button id="play_pause_btn" onclick="togglePlayPause()" class="w-16 h-16 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-full flex items-center justify-center hover:scale-105 active:scale-95 transition shadow-lg">
-                                <svg id="icon_play" class="w-8 h-8 ml-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/></svg>
-                                <svg id="icon_pause" class="w-8 h-8 hidden" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+                            <button id="play_pause_btn" onclick="togglePlayPause()" class="w-20 h-20 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-full flex items-center justify-center hover:scale-105 active:scale-95 transition shadow-xl">
+                                <svg id="icon_play" class="w-10 h-10 ml-1.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/></svg>
+                                <svg id="icon_pause" class="w-10 h-10 hidden" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
                             </button>
 
                             <button onclick="playNextTrack(true)" class="p-2 text-gray-800 dark:text-white hover:opacity-70 transition">
-                                <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M11.555 14.832A1 1 0 0010 14v-2.798l-5.445 3.63A1 1 0 003 14V6a1 1 0 001.555-.832L10 8.798V6a1 1 0 001.555-.832l6 4a1 1 0 000 1.664l-6 4z"/></svg>
+                                <svg class="w-10 h-10" fill="currentColor" viewBox="0 0 20 20"><path d="M11.555 14.832A1 1 0 0010 14v-2.798l-5.445 3.63A1 1 0 003 14V6a1 1 0 001.555-.832L10 8.798V6a1 1 0 001.555-.832l6 4a1 1 0 000 1.664l-6 4z"/></svg>
                             </button>
                         </div>
                         
-                        <button id="repeat_btn_mobile" onclick="toggleRepeat()" class="sm:hidden flex items-center justify-center w-10 h-10 rounded-full text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition ml-4">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                        <button id="repeat_btn_mobile" onclick="toggleRepeat()" class="sm:hidden flex items-center justify-center w-12 h-12 rounded-full text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition ml-4">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                         </button>
                         
-                        <div class="hidden sm:flex items-center justify-center w-10 h-10 text-gray-400 cursor-not-allowed" title="Volume">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>
+                        <div class="hidden sm:flex items-center justify-center w-12 h-12 text-gray-400 cursor-not-allowed" title="Volume">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>
                         </div>
                     </div>
-                </div>
-            </div>
-
-            <div id="folders_section" style="display: none;" class="flex flex-col gap-4">
-                <div class="flex items-center justify-between border-b border-gray-200 dark:border-gray-800 pb-3">
-                    <div class="flex items-center flex-wrap text-sm font-medium text-gray-500 dark:text-gray-400" id="breadcrumb_container">
-                        <span class="breadcrumb-item font-semibold text-gray-900 dark:text-white" onclick="fetchMyFolders('root', 'My Drive')">My Drive</span>
-                    </div>
-                    
-                    <div class="flex items-center gap-2">
-                        <button onclick="createFolder()" title="New Folder" class="p-2 text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"></path></svg>
-                        </button>
-                        <input type="file" id="file_upload" accept="audio/*" multiple class="hidden" onchange="handleFileUpload(event)">
-                        <button id="upload_btn" onclick="document.getElementById('file_upload').click()" title="Upload File" class="p-2 text-[#0078d4] dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-full transition">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
-                        </button>
-                    </div>
-                </div>
-                
-                <div id="folder_list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 max-h-[150px] md:max-h-[350px] overflow-y-auto no-scrollbar py-1">
                 </div>
             </div>
         </div>
 
-        <div class="w-full lg:w-[420px] flex flex-col gap-4 shrink-0">
-            <div class="flex items-center justify-between">
-                <h2 class="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                    <svg class="w-5 h-5 text-[#0078d4] dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
-                    Playlist
-                </h2>
-                <span class="text-[11px] font-bold text-[#0078d4] dark:text-blue-300 bg-blue-50 dark:bg-blue-900/20 px-3 py-1 rounded-full" id="playlist_count">0 Tracks</span>
-            </div>
-            
-            <div class="border border-gray-100 dark:border-gray-800 rounded-3xl bg-white dark:bg-gray-950 shadow-sm overflow-hidden flex flex-col h-[400px] lg:h-[calc(100vh-200px)] transition-colors duration-300">
-                <div class="bg-gray-50/50 dark:bg-gray-900/50 border-b border-gray-100 dark:border-gray-800 px-4 py-3">
-                    <p id="playlist_title" class="text-xs font-semibold text-gray-500 dark:text-gray-400 truncate text-center tracking-wide uppercase">Select a folder</p>
+        <!-- 🔥 통합된 우측 영역: 탐색기 (폴더 + 음악 리스트) -->
+        <div class="w-full lg:w-1/2 flex flex-col h-full shrink-0">
+            <div class="border border-gray-100 dark:border-gray-800 rounded-3xl bg-white dark:bg-gray-950 shadow-sm overflow-hidden flex flex-col h-[500px] lg:h-full transition-colors duration-300">
+                
+                <!-- 상단 탐색 바 (경로 및 액션 버튼) -->
+                <div class="bg-gray-50/50 dark:bg-gray-900/50 border-b border-gray-100 dark:border-gray-800 px-4 sm:px-6 py-4 flex items-center justify-between">
+                    <div class="flex items-center flex-wrap text-sm sm:text-base font-medium text-gray-500 dark:text-gray-400" id="breadcrumb_container">
+                        <span class="breadcrumb-item font-semibold text-gray-900 dark:text-white" onclick="fetchMyFolders('root', 'My Drive')">My Drive</span>
+                    </div>
+                    
+                    <div class="flex items-center gap-2" id="action_buttons" style="display: none;">
+                        <button onclick="createFolder()" title="New Folder" class="p-2 text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-gray-800 rounded-full transition bg-gray-100 dark:bg-gray-800/50">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"></path></svg>
+                        </button>
+                        <input type="file" id="file_upload" accept="audio/*" multiple class="hidden" onchange="handleFileUpload(event)">
+                        <button id="upload_btn" onclick="document.getElementById('file_upload').click()" title="Upload Music" class="p-2 text-white bg-[#0078d4] hover:bg-blue-600 rounded-full transition shadow-md">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                        </button>
+                    </div>
                 </div>
 
-                <div id="playlist_container" class="overflow-y-auto no-scrollbar flex-1 divide-y divide-gray-50 dark:divide-gray-800/50 p-2">
+                <!-- 파일 목록 영역 (폴더와 음악이 함께 렌더링됨) -->
+                <div id="file_list_container" class="overflow-y-auto no-scrollbar flex-1 p-2 sm:p-4 pb-24">
                     <div class="text-center text-sm text-gray-400 dark:text-gray-600 font-medium mt-20 flex flex-col items-center gap-4 px-6">
                         <div class="w-16 h-16 bg-gray-50 dark:bg-gray-900 rounded-2xl flex items-center justify-center border border-gray-100 dark:border-gray-800">
                             <svg class="w-8 h-8 text-gray-300 dark:text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
                         </div>
-                        Select a folder on the left.
+                        Please sign in to access your music.
                     </div>
                 </div>
             </div>
@@ -220,7 +233,7 @@
                 accountId = response ? response.account.homeAccountId : msalInstance.getAllAccounts()[0].homeAccountId;
                 document.getElementById('login_button').style.display = 'none';
                 document.getElementById('logout_button').style.display = 'inline-block';
-                document.getElementById('folders_section').style.display = 'flex';
+                document.getElementById('action_buttons').style.display = 'flex';
                 fetchMyFolders('root', 'My Drive', true); 
             }
         }
@@ -252,9 +265,10 @@
             const dot = document.getElementById('status_dot');
             el.innerText = text;
             el.className = `text-[11px] font-semibold tracking-[0.2em] uppercase ${type === 'play' ? 'text-green-500' : type === 'load' ? 'text-[#0078d4] dark:text-blue-400' : type === 'err' ? 'text-red-500' : 'text-gray-500 dark:text-gray-400'}`;
-            dot.className = `w-2 h-2 rounded-full ${type === 'play' ? 'bg-green-500' : type === 'load' ? 'bg-[#0078d4] dark:bg-blue-400 animate-pulse' : type === 'err' ? 'bg-red-500' : 'bg-gray-300 dark:bg-gray-600'}`;
+            dot.className = `w-2.5 h-2.5 rounded-full ${type === 'play' ? 'bg-green-500' : type === 'load' ? 'bg-[#0078d4] dark:bg-blue-400 animate-pulse' : type === 'err' ? 'bg-red-500' : 'bg-gray-300 dark:bg-gray-600'}`;
         }
 
+        // Folder & File Actions
         async function createFolder() {
             const name = prompt("Enter new folder name:");
             if (name) {
@@ -262,17 +276,28 @@
                 .then(res => { if (res.ok) fetchMyFolders(currentFolderId, pathHistory[pathHistory.length - 1].name, false); });
             }
         }
-        async function renameFolder(id, old) {
-            const name = prompt("Enter new folder name:", old);
+        async function renameItem(id, old, isFolder=false) {
+            const name = prompt(`Enter new ${isFolder ? 'folder' : 'file'} name:`, old);
             if (name && name !== old) {
                 fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${id}`, { method: 'PATCH', headers: { 'Authorization': `Bearer ${await getToken()}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ name }) })
-                .then(res => { if (res.ok) fetchMyFolders(currentFolderId, pathHistory[pathHistory.length - 1].name, false); });
+                .then(res => { 
+                    if (res.ok) {
+                        fetchMyFolders(currentFolderId, pathHistory[pathHistory.length - 1].name, false);
+                        if (!isFolder && playlist[currentIndex] && playlist[currentIndex].id === id) updateMarqueeText(name);
+                    } 
+                });
             }
         }
-        async function deleteFolder(id, name) {
-            if (confirm(`WARNING: Permanently delete folder '${name}' and all contents?`)) {
+        async function deleteItem(id, name, isFolder=false) {
+            const msg = isFolder ? `WARNING: Permanently delete folder '${name}' and all contents?` : `Delete track '${name}'?`;
+            if (confirm(msg)) {
                 fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${await getToken()}` } })
-                .then(res => { if (res.ok || res.status===204) fetchMyFolders(currentFolderId, pathHistory[pathHistory.length - 1].name, false); });
+                .then(res => { 
+                    if (res.ok || res.status===204) {
+                        if (!isFolder && playlist[currentIndex] && playlist[currentIndex].id === id) { audio.pause(); setStatus('STANDBY', 'standby'); updateMarqueeText('Select a track'); iconPause.classList.add('hidden'); iconPlay.classList.remove('hidden'); }
+                        fetchMyFolders(currentFolderId, pathHistory[pathHistory.length - 1].name, false);
+                    } 
+                });
             }
         }
 
@@ -280,7 +305,7 @@
             const files = event.target.files;
             if (!files.length) return;
             const btn = document.getElementById('upload_btn'), orig = btn.innerHTML;
-            btn.innerHTML = `<svg class="animate-spin w-5 h-5" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>`;
+            btn.innerHTML = `<svg class="animate-spin w-5 h-5 text-white" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>`;
             try {
                 const token = await getToken();
                 for (let file of files) {
@@ -291,6 +316,7 @@
             btn.innerHTML = orig; event.target.value = ''; fetchMyFolders(currentFolderId, pathHistory[pathHistory.length - 1].name, false);
         }
 
+        // Navigation & Integrated File Rendering
         function renderBreadcrumbs() {
             const container = document.getElementById('breadcrumb_container'); container.innerHTML = '';
             pathHistory.forEach((step, index) => {
@@ -303,9 +329,12 @@
             });
         }
 
+        // Dropdown toggle Helper
+        window.onclick = function(e) { if (!e.target.matches('.menu-btn')) { document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('show')); } }
+
         async function fetchMyFolders(folderId, folderName, isNewNavigation = true) {
-            const container = document.getElementById('folder_list');
-            container.innerHTML = '<div class="col-span-full text-xs text-gray-400 py-6 text-center">Loading...</div>';
+            const container = document.getElementById('file_list_container');
+            container.innerHTML = '<div class="text-xs text-gray-400 py-10 text-center flex flex-col items-center"><svg class="animate-spin w-8 h-8 text-blue-500 mb-3" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Loading...</div>';
             currentFolderId = folderId; 
             if (isNewNavigation && folderId !== 'root') pathHistory.push({ id: folderId, name: folderName });
             else if (folderId === 'root') pathHistory = [{ id: 'root', name: 'My Drive' }];
@@ -314,34 +343,101 @@
             fetch(folderId === 'root' ? "https://graph.microsoft.com/v1.0/me/drive/root/children?$select=id,name,folder,file" : `https://graph.microsoft.com/v1.0/me/drive/items/${folderId}/children?$select=id,name,folder,file`, { headers: { Authorization: `Bearer ${await getToken()}` } })
             .then(res => res.json()).then(data => {
                 container.innerHTML = '';
-                const folders = data.value.filter(i => i.folder), audios = data.value.filter(i => i.file && i.file.mimeType?.includes('audio'));
+                const folders = data.value.filter(i => i.folder);
+                const audios = data.value.filter(i => i.file && i.file.mimeType?.includes('audio'));
+                
+                playlist = audios; // 현재 디렉터리의 음악들만 플레이리스트로 갱신
 
+                // 1. 폴더 먼저 렌더링
                 folders.forEach(folder => {
                     const item = document.createElement('div');
-                    item.className = 'flex items-center justify-between p-3 sm:px-4 border border-gray-100 dark:border-gray-800 rounded-2xl bg-white dark:bg-gray-950 shadow-sm group hover:border-blue-200 dark:hover:border-blue-800 transition';
+                    item.className = 'flex items-center justify-between p-3.5 mb-1.5 border border-gray-100 dark:border-gray-800 rounded-2xl bg-gray-50/50 dark:bg-gray-900/30 hover:bg-blue-50/50 dark:hover:bg-blue-900/20 shadow-sm group transition';
                     const infoDiv = document.createElement('div');
-                    infoDiv.className = 'flex items-center gap-3 flex-1 min-w-0 pr-2 cursor-pointer';
-                    infoDiv.innerHTML = `<svg class="w-5 h-5 text-blue-400 shrink-0 opacity-80 group-hover:opacity-100" fill="currentColor" viewBox="0 0 24 24"><path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg><span class="text-sm font-medium truncate text-gray-700 dark:text-gray-300 group-hover:text-blue-500">${folder.name}</span>`;
+                    infoDiv.className = 'flex items-center gap-3.5 flex-1 min-w-0 pr-2 cursor-pointer';
+                    infoDiv.innerHTML = `
+                        <div class="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center shrink-0">
+                            <svg class="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 24 24"><path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>
+                        </div>
+                        <span class="text-[15px] font-semibold truncate text-gray-800 dark:text-gray-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition">${folder.name}</span>
+                    `;
                     infoDiv.onclick = () => fetchMyFolders(folder.id, folder.name, true);
 
-                    const actionDiv = document.createElement('div');
-                    actionDiv.className = 'flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition';
-                    actionDiv.innerHTML = `
-                        <button onclick="event.stopPropagation(); renameFolder('${folder.id}', '${folder.name.replace(/'/g,"\\'")}')" class="p-1.5 text-gray-400 hover:text-gray-700 dark:hover:text-white rounded-full"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg></button>
-                        <button onclick="event.stopPropagation(); deleteFolder('${folder.id}', '${folder.name.replace(/'/g,"\\'")}')" class="p-1.5 text-gray-400 hover:text-red-500 rounded-full"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>
+                    const actionsDiv = document.createElement('div');
+                    actionsDiv.className = 'relative shrink-0 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition flex items-center';
+                    actionsDiv.innerHTML = `
+                        <button onclick="event.stopPropagation(); document.querySelectorAll('.dropdown-content').forEach(d=>d.classList.remove('show')); document.getElementById('drop-f-${folder.id}').classList.toggle('show');" class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-700 dark:hover:text-white rounded-full menu-btn transition font-bold">⋮</button>
+                        <div id="drop-f-${folder.id}" class="dropdown-content absolute right-0 mt-8 w-28 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 py-1 z-20 hidden">
+                            <a onclick="renameItem('${folder.id}', '${folder.name.replace(/'/g,"\\'")}', true)" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">Rename</a>
+                            <a onclick="deleteItem('${folder.id}', '${folder.name.replace(/'/g,"\\'")}', true)" class="block px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 cursor-pointer">Delete</a>
+                        </div>
                     `;
-                    item.append(infoDiv, actionDiv); container.appendChild(item);
+                    item.append(infoDiv, actionsDiv); container.appendChild(item);
                 });
 
-                if (audios.length > 0) {
-                    playlist = audios; currentIndex = 0;
-                    document.getElementById('playlist_title').innerText = `Folder: ${folderName}`;
-                    updatePlaylistUI(); playTrack(0, false); 
-                } else { document.getElementById('playlist_title').innerText = folderName; playlist = []; updatePlaylistUI(); }
-                if (!folders.length && !audios.length) container.innerHTML = '<div class="col-span-full text-xs text-gray-400 py-6 text-center">Empty Folder</div>';
+                // 2. 이어서 음악 파일 렌더링 (플레이리스트 통합)
+                audios.forEach((file, index) => {
+                    const isActive = index === currentIndex && audio.src;
+                    const item = document.createElement('div');
+                    item.id = `track_row_${index}`;
+                    item.className = `flex items-center justify-between p-3 mb-1 group/item hover:bg-gray-50 dark:hover:bg-gray-800/50 transition cursor-pointer rounded-2xl ${isActive ? 'bg-blue-50/70 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-900/30 shadow-sm' : 'border border-transparent'}`;
+                    
+                    const infoDiv = document.createElement('div');
+                    infoDiv.className = 'flex items-center gap-3.5 flex-1 min-w-0 pr-4';
+                    infoDiv.onclick = () => playTrack(index);
+                    
+                    const numSpan = document.createElement('div');
+                    numSpan.id = `track_icon_${index}`;
+                    numSpan.className = `w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${isActive ? 'bg-white dark:bg-gray-800 text-[#0078d4] dark:text-blue-400 shadow-sm' : 'text-gray-400 dark:text-gray-600 font-medium text-sm group-hover/item:text-gray-600 dark:group-hover/item:text-gray-300 bg-gray-100 dark:bg-gray-900 transition'}`;
+                    if (isActive) numSpan.innerHTML = `<svg class="w-5 h-5 animate-pulse" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"/></svg>`;
+                    else numSpan.innerText = index + 1;
+                    
+                    const textP = document.createElement('p'); 
+                    textP.id = `track_text_${index}`;
+                    textP.className = `text-[14px] leading-tight truncate ${isActive ? 'text-[#0078d4] dark:text-blue-300 font-bold' : 'text-gray-700 dark:text-gray-300 font-medium'}`; 
+                    textP.innerText = file.name;
+                    
+                    infoDiv.append(numSpan, textP);
+
+                    const actionsDiv = document.createElement('div');
+                    actionsDiv.className = 'relative shrink-0 opacity-0 group-hover/item:opacity-100 focus-within:opacity-100 transition flex items-center';
+                    actionsDiv.innerHTML = `
+                        <button onclick="event.stopPropagation(); document.querySelectorAll('.dropdown-content').forEach(d=>d.classList.remove('show')); document.getElementById('drop-m-${index}').classList.toggle('show');" class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-700 dark:hover:text-white rounded-full menu-btn transition font-bold">⋮</button>
+                        <div id="drop-m-${index}" class="dropdown-content absolute right-0 mt-8 w-28 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 py-1 z-20 hidden">
+                            <a onclick="renameItem('${file.id}', '${file.name.replace(/'/g,"\\'")}')" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">Rename</a>
+                            <a onclick="deleteItem('${file.id}', '${file.name.replace(/'/g,"\\'")}')" class="block px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 cursor-pointer">Delete</a>
+                        </div>
+                    `;
+                    item.append(infoDiv, actionsDiv); container.appendChild(item);
+                });
+
+                if (!folders.length && !audios.length) container.innerHTML = '<div class="text-sm text-gray-400 py-10 text-center">Empty Folder</div>';
             });
         }
 
+        // 통합 리스트 상태 업데이트 헬퍼 (전체를 다시 그리지 않고 클래스만 변경)
+        function updateActiveTrackUI() {
+            playlist.forEach((file, index) => {
+                const isActive = index === currentIndex;
+                const row = document.getElementById(`track_row_${index}`);
+                const icon = document.getElementById(`track_icon_${index}`);
+                const text = document.getElementById(`track_text_${index}`);
+                if(!row || !icon || !text) return;
+
+                if (isActive) {
+                    row.className = `flex items-center justify-between p-3 mb-1 group/item hover:bg-gray-50 dark:hover:bg-gray-800/50 transition cursor-pointer rounded-2xl bg-blue-50/70 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-900/30 shadow-sm`;
+                    icon.className = `w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-white dark:bg-gray-800 text-[#0078d4] dark:text-blue-400 shadow-sm`;
+                    icon.innerHTML = `<svg class="w-5 h-5 animate-pulse" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"/></svg>`;
+                    text.className = `text-[14px] leading-tight truncate text-[#0078d4] dark:text-blue-300 font-bold`;
+                } else {
+                    row.className = `flex items-center justify-between p-3 mb-1 group/item hover:bg-gray-50 dark:hover:bg-gray-800/50 transition cursor-pointer rounded-2xl border border-transparent`;
+                    icon.className = `w-10 h-10 rounded-xl flex items-center justify-center shrink-0 text-gray-400 dark:text-gray-600 font-medium text-sm group-hover/item:text-gray-600 dark:group-hover/item:text-gray-300 bg-gray-100 dark:bg-gray-900 transition`;
+                    icon.innerHTML = index + 1;
+                    text.className = `text-[14px] leading-tight truncate text-gray-700 dark:text-gray-300 font-medium`;
+                }
+            });
+        }
+
+        // Custom Player Controls
         const audio = document.getElementById('audio_player');
         const playPauseBtn = document.getElementById('play_pause_btn');
         const iconPlay = document.getElementById('icon_play');
@@ -376,14 +472,10 @@
         }
 
         audio.addEventListener('play', () => { iconPlay.classList.add('hidden'); iconPause.classList.remove('hidden'); setStatus('NOW PLAYING', 'play'); });
-        
-        // PAUSE 이벤트 시 버퍼링 상태일 때는 글자를 덮어쓰지 않도록 조건부 처리
         audio.addEventListener('pause', () => { 
             iconPause.classList.add('hidden'); iconPlay.classList.remove('hidden'); 
             const currentStatus = document.getElementById('status_info').innerText;
-            if(currentStatus !== 'BUFFERING...' && currentStatus !== 'ERROR') {
-                setStatus('PAUSED', 'standby'); 
-            }
+            if(currentStatus !== 'BUFFERING...' && currentStatus !== 'ERROR') setStatus('PAUSED', 'standby'); 
         });
 
         function toggleRepeat() {
@@ -400,11 +492,11 @@
         async function playTrack(index, autoPlay = true) {
             if (index < 0 || index >= playlist.length) return;
             
-            // 🔥 새로운 곡 선택 시 기존 곡 즉시 완전 정지
             audio.pause();
             audio.removeAttribute('src'); 
             
-            currentIndex = index; updatePlaylistUI(); 
+            currentIndex = index; 
+            updateActiveTrackUI(); 
             updateMarqueeText(playlist[index].name);
             
             setStatus('BUFFERING...', 'load');
@@ -418,9 +510,7 @@
                 if (currentObjectUrl) URL.revokeObjectURL(currentObjectUrl);
                 currentObjectUrl = URL.createObjectURL(blob);
                 audio.src = currentObjectUrl;
-                
                 playerCard.classList.remove('shimmer-active');
-                
                 if(autoPlay) audio.play(); else setStatus('READY', 'standby');
             }).catch(err => {
                 playerCard.classList.remove('shimmer-active');
@@ -445,52 +535,6 @@
 
         audio.addEventListener('ended', () => playNextTrack(false));
 
-        function updatePlaylistUI() {
-            const container = document.getElementById('playlist_container');
-            document.getElementById('playlist_count').innerText = `${playlist.length}`;
-            container.innerHTML = '';
-            
-            playlist.forEach((file, index) => {
-                const isActive = index === currentIndex;
-                const item = document.createElement('div');
-                item.className = `p-3 flex justify-between items-center group/item hover:bg-gray-50 dark:hover:bg-gray-900 transition cursor-pointer rounded-2xl ${isActive ? 'bg-blue-50/50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-900/30 shadow-sm' : 'border border-transparent'}`;
-                
-                const infoDiv = document.createElement('div');
-                infoDiv.className = 'flex items-center gap-3.5 flex-1 min-w-0 pr-4';
-                infoDiv.onclick = () => playTrack(index);
-                
-                const numSpan = document.createElement('div');
-                numSpan.className = `w-8 h-8 rounded-xl flex items-center justify-center shrink-0 ${isActive ? 'bg-white dark:bg-gray-800 text-[#0078d4] dark:text-blue-400 shadow-sm' : 'text-gray-400 dark:text-gray-600 font-medium text-xs group-hover/item:text-gray-600 dark:group-hover/item:text-gray-300 bg-gray-50 dark:bg-gray-900 transition'}`;
-                if (isActive) numSpan.innerHTML = `<svg class="w-4 h-4 animate-pulse" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"/></svg>`;
-                else numSpan.innerText = index + 1;
-                
-                infoDiv.innerHTML = ``; infoDiv.appendChild(numSpan);
-                const textP = document.createElement('p'); textP.className = `text-[13px] leading-tight truncate ${isActive ? 'text-[#0078d4] dark:text-blue-300 font-bold' : 'text-gray-700 dark:text-gray-300 font-medium'}`; textP.innerText = file.name;
-                infoDiv.appendChild(textP);
-
-                const actionsDiv = document.createElement('div');
-                actionsDiv.className = 'relative shrink-0 opacity-0 group-hover/item:opacity-100 focus-within:opacity-100 transition flex items-center';
-                actionsDiv.innerHTML = `
-                    <button onclick="event.stopPropagation(); renameFile(${index})" class="p-1.5 text-gray-400 hover:text-gray-700 dark:hover:text-white rounded-full"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg></button>
-                    <button onclick="event.stopPropagation(); trashFile(${index})" class="p-1.5 text-gray-400 hover:text-red-500 rounded-full"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>
-                `;
-                item.append(infoDiv, actionsDiv); container.appendChild(item);
-            });
-        }
-
-        async function renameFile(index) {
-            const name = prompt('Enter new file name:', playlist[index].name);
-            if (name && name !== playlist[index].name) {
-                fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${playlist[index].id}`, { method: 'PATCH', headers: { 'Authorization': `Bearer ${await getToken()}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ name }) })
-                .then(res => res.json()).then(data => { playlist[index].name = data.name; updatePlaylistUI(); if(index === currentIndex) updateMarqueeText(data.name); });
-            }
-        }
-        async function trashFile(index) {
-            if (confirm(`WARNING: Permanently delete '${playlist[index].name}'?`)) {
-                fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${playlist[index].id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${await getToken()}` } })
-                .then(res => { if (res.ok || res.status === 204) { playlist.splice(index, 1); if (index === currentIndex) { if (playlist.length > 0) { currentIndex = currentIndex >= playlist.length ? 0 : currentIndex; playTrack(currentIndex); } else { audio.pause(); updateMarqueeText('Select a track'); setStatus('STANDBY', 'standby'); currentIndex = -1; iconPause.classList.add('hidden'); iconPlay.classList.remove('hidden'); } } else if (index < currentIndex) currentIndex--; updatePlaylistUI(); } });
-            }
-        }
     </script>
 </body>
 </html>
