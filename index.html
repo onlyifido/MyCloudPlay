@@ -244,15 +244,25 @@
                 document.getElementById('logout_button').style.display = 'inline-block';
                 document.getElementById('action_buttons').style.display = 'flex';
                 fetchMyFolders('root', 'My Drive', true); 
-                renderRecentUI(); // 앱 로드 시 최근 재생 곡 로드
+                renderRecentUI(); 
             }
         }
 
         function signIn() { msalInstance.loginRedirect({ scopes: ["Files.ReadWrite.All"] }); }
         function signOut() { msalInstance.logoutRedirect({ account: msalInstance.getAccountByHomeId(accountId) }); }
+        
+        // 🔥 토큰 만료 시 발생하던 무한 로딩 해결을 위한 에러 방어(Try-Catch) 적용
         async function getToken() {
-            try { return (await msalInstance.acquireTokenSilent({ scopes: ["Files.ReadWrite.All"], account: msalInstance.getAccountByHomeId(accountId) })).accessToken; }
-            catch (error) { msalInstance.acquireTokenRedirect({ scopes: ["Files.ReadWrite.All"] }); }
+            try {
+                const account = msalInstance.getAccountByHomeId(accountId) || msalInstance.getAllAccounts()[0];
+                if (!account) { signIn(); return null; }
+                const response = await msalInstance.acquireTokenSilent({ scopes: ["Files.ReadWrite.All"], account: account });
+                return response.accessToken;
+            } catch (error) {
+                console.warn("Token acquisition failed.", error);
+                msalInstance.acquireTokenRedirect({ scopes: ["Files.ReadWrite.All"] });
+                return null;
+            }
         }
 
         async function requestWakeLock() {
@@ -309,7 +319,6 @@
         document.addEventListener('click', closeAllDropdowns);
         document.addEventListener('touchstart', closeAllDropdowns, { passive: true });
 
-        // 🔥 최근 재생 곡 관리 로직
         function saveRecentTrack(track) {
             let recent = JSON.parse(localStorage.getItem('recent_tracks') || '[]');
             recent = recent.filter(t => t.id !== track.id);
@@ -331,7 +340,7 @@
             recent.forEach(track => {
                 const chip = document.createElement('div');
                 chip.className = 'shrink-0 px-4 py-1.5 rounded-full border border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900 text-[11px] font-medium text-gray-600 dark:text-gray-400 cursor-pointer active:scale-95 transition-all md:hover:border-[#0078d4] md:hover:text-[#0078d4]';
-                chip.innerText = track.name.replace(/\.[^/.]+$/, ""); // 확장자 제거
+                chip.innerText = track.name.replace(/\.[^/.]+$/, ""); 
                 chip.onclick = () => {
                     playingQueue = [track];
                     currentIndex = 0;
@@ -341,6 +350,7 @@
             });
         }
 
+        // 🔥 무한 로딩 버그를 막기 위한 철저한 에러 핸들링 추가
         async function fetchMyFolders(folderId, folderName, isNewNavigation = true) {
             const container = document.getElementById('file_list_container');
             container.innerHTML = '<div class="h-full flex flex-col items-center justify-center text-sm text-gray-400"><svg class="animate-spin w-8 h-8 text-gray-300 dark:text-gray-700 mb-3" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Loading...</div>';
@@ -349,8 +359,22 @@
             else if (folderId === 'root') pathHistory = [{ id: 'root', name: 'My Drive' }];
             renderBreadcrumbs();
 
-            fetch(folderId === 'root' ? "https://graph.microsoft.com/v1.0/me/drive/root/children?$orderby=name" : `https://graph.microsoft.com/v1.0/me/drive/items/${folderId}/children?$orderby=name`, { headers: { Authorization: `Bearer ${await getToken()}` } })
-            .then(res => res.json()).then(data => {
+            try {
+                const token = await getToken();
+                if (!token) throw new Error("Please sign in again.");
+
+                const url = folderId === 'root' 
+                    ? "https://graph.microsoft.com/v1.0/me/drive/root/children?$orderby=name" 
+                    : `https://graph.microsoft.com/v1.0/me/drive/items/${folderId}/children?$orderby=name`;
+
+                const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
+                const data = await res.json();
+
+                // 에러 발생 시 잡아내어 멈추도록 처리
+                if (!res.ok || !data.value) {
+                    throw new Error(data.error?.message || "Failed to load files from OneDrive");
+                }
+
                 container.innerHTML = '';
                 const folders = data.value.filter(i => i.folder);
                 const audios = data.value.filter(i => i.file && i.file.mimeType?.includes('audio'));
@@ -385,7 +409,12 @@
                 });
                 if (!folders.length && !audios.length) container.innerHTML = '<div class="h-full flex flex-col items-center justify-center text-sm text-gray-400"><div class="text-3xl mb-2 opacity-50">📁</div>Folder is empty.</div>';
                 updateActiveTrackUI();
-            });
+            
+            } catch (err) {
+                console.error("Fetch Error:", err);
+                // 에러 발생 시 로딩바를 없애고 안내 문구 출력
+                container.innerHTML = `<div class="h-full flex flex-col items-center justify-center text-sm text-red-500 font-medium"><svg class="w-8 h-8 mb-3 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg><span class="opacity-80">Connection Error. Please refresh.</span></div>`;
+            }
         }
 
         function updateActiveTrackUI() {
@@ -428,8 +457,8 @@
             else if (playMode === 2) svg = `<svg class="w-5 h-5 sm:w-6 sm:h-6 relative" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path><text x="12" y="15" font-family="sans-serif" font-size="9" font-weight="bold" fill="currentColor" text-anchor="middle" stroke="none">1</text></svg>`;
             else if (playMode === 3) svg = `<svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M2 18h1.4c1.3 0 2.5-.6 3.3-1.7l6.1-8.6c.7-1.1 2-1.7 3.3-1.7H22"/><path d="m18 2 4 4-4 4"/><path d="M2 6h1.9c1.5 0 2.9.9 3.6 2.2"/><path d="M22 18h-5.9c-1.3 0-2.6-.7-3.3-1.8l-.5-.8"/><path d="m18 14 4 4-4 4"/></svg>`;
             btn.innerHTML = svg;
-            if(playMode > 0) btn.className = `absolute left-0 flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full transition text-[#0078d4] dark:text-blue-400 active:scale-95`;
-            else btn.className = `absolute left-0 flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full transition text-gray-400 active:scale-95`;
+            if(playMode > 0) btn.className = `absolute left-0 flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full transition md:hover:text-[#0078d4] md:dark:hover:text-blue-400 text-[#0078d4] dark:text-blue-400 active:scale-95`;
+            else btn.className = `absolute left-0 flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full transition md:hover:text-[#0078d4] md:dark:hover:text-blue-400 text-gray-400 active:scale-95`;
         }
 
         function playRandomFromFolder() { if(currentFolderAudios.length === 0) return; playMode = 3; updateRepeatBtnUI(); playingQueue = [...currentFolderAudios]; playingFolderId = currentFolderId; currentIndex = Math.floor(Math.random() * playingQueue.length); playTrack(currentIndex); }
@@ -437,7 +466,7 @@
         async function playTrack(index, autoPlay = true) {
             if (index < 0 || index >= playingQueue.length) return;
             audio.pause(); audio.removeAttribute('src'); currentIndex = index; updateActiveTrackUI(); updateMarqueeText(playingQueue[index].name);
-            saveRecentTrack(playingQueue[index]); // 🔥 재생 시 마다 저장
+            saveRecentTrack(playingQueue[index]); 
             setStatus('BUFFERING...', 'load'); progressBar.value = 0; currentTimeEl.innerText = "0:00"; progressBar.disabled = true;
             const playerCard = document.getElementById('player_card'); playerCard.classList.add('shimmer-active');
             try {
