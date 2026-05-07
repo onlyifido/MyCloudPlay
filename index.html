@@ -71,7 +71,6 @@
             </div>
             
             <div class="flex items-center gap-2 sm:gap-4">
-                <!-- 🔥 PC(md 이상)에서는 숨김, 클릭 시 설명창(Alert) 발생, 톤다운된 은은한 아이콘 적용 -->
                 <div id="wake_lock_indicator" onclick="alert('Screen auto-lock is disabled while playing to prevent playback from stopping.')" class="opacity-0 scale-95 transition-all duration-500 flex md:hidden items-center justify-center p-1 text-yellow-600/60 dark:text-yellow-500/60 cursor-pointer" title="Screen keeps awake">
                     <svg class="w-5 h-5 sm:w-6 sm:h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <rect x="5" y="2" width="14" height="20" rx="3" stroke="currentColor" stroke-width="1.5"/>
@@ -128,9 +127,10 @@
                         <span id="duration_time">0:00</span>
                     </div>
 
-                    <div class="flex items-center justify-center sm:justify-between w-full mt-1 sm:mt-4">
-                        <button id="repeat_btn" onclick="toggleRepeat()" class="hidden sm:flex items-center justify-center w-12 h-12 rounded-full text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                    <div class="relative flex items-center justify-center w-full mt-2 sm:mt-4 h-14 sm:h-20">
+                        
+                        <button id="repeat_btn" onclick="toggleRepeat()" class="absolute left-0 flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full text-gray-400 hover:text-[#0078d4] dark:hover:text-blue-400 transition">
+                            <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                         </button>
 
                         <div class="flex items-center gap-5 sm:gap-8">
@@ -146,14 +146,6 @@
                             <button onclick="playNextTrack(true)" class="w-12 h-12 sm:w-14 sm:h-14 neumorphic rounded-full flex items-center justify-center text-gray-500 dark:text-gray-400 hover:text-[#0078d4] dark:hover:text-blue-400 transition-all">
                                 <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
                             </button>
-                        </div>
-                        
-                        <button id="repeat_btn_mobile" onclick="toggleRepeat()" class="sm:hidden flex items-center justify-center w-10 h-10 rounded-full text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 transition ml-4">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-                        </button>
-                        
-                        <div class="hidden sm:flex items-center justify-center w-12 h-12 text-gray-400 cursor-not-allowed" title="Volume">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>
                         </div>
                     </div>
                 </div>
@@ -179,7 +171,7 @@
                             </svg>
                         </button>
                         
-                        <button onclick="toggleMenu(event, 'main_action_drop')" class="p-1.5 sm:p-2 text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-gray-800 rounded-full transition bg-gray-100 dark:bg-gray-800/50">
+                        <button onclick="toggleMenu(event, 'main_action_drop')" class="p-1.5 sm:p-2 text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-gray-800 rounded-full transition bg-gray-100 dark:bg-gray-800/50 menu-btn">
                             <svg class="w-5 h-5 pointer-events-none" fill="currentColor" viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
                         </button>
                         <div id="main_action_drop" class="dropdown-content absolute right-0 top-10 w-44 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 py-1.5 z-50 hidden">
@@ -229,7 +221,6 @@
         let currentObjectUrl = null, playMode = 0, currentFolderId = 'root';
         let pathHistory = [{ id: 'root', name: 'My Drive' }];
 
-        // 🔥 화면 켜짐 유지(Wake Lock) 변수 선언
         let wakeLock = null;
 
         msalInstance.handleRedirectPromise().then(handleResponse).catch(console.error);
@@ -251,7 +242,6 @@
             catch (error) { msalInstance.acquireTokenRedirect({ scopes: ["Files.ReadWrite.All"] }); }
         }
 
-        // 🔥 Wake Lock 활성화 함수
         async function requestWakeLock() {
             try {
                 if ('wakeLock' in navigator) {
@@ -268,18 +258,12 @@
             } catch (err) { console.error(`Wake Lock error: ${err.name}`); }
         }
 
-        // 🔥 Wake Lock 해제 함수
         function releaseWakeLock() {
-            if (wakeLock !== null) {
-                wakeLock.release();
-                wakeLock = null;
-            }
+            if (wakeLock !== null) { wakeLock.release(); wakeLock = null; }
         }
 
         document.addEventListener('visibilitychange', async () => {
-            if (wakeLock !== null && document.visibilityState === 'visible' && !audio.paused) {
-                requestWakeLock();
-            }
+            if (wakeLock !== null && document.visibilityState === 'visible' && !audio.paused) { requestWakeLock(); }
         });
 
         function updateMarqueeText(text) {
@@ -304,14 +288,22 @@
             dot.className = `w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full ${type === 'play' ? 'bg-green-500' : type === 'load' ? 'bg-[#0078d4] dark:bg-blue-400 animate-pulse' : type === 'err' ? 'bg-red-500' : 'bg-gray-300 dark:bg-gray-600'}`;
         }
 
+        // 🔥 모바일 화면 빈공간 터치 시 메뉴 닫기 완벽 적용
         function toggleMenu(e, id) {
             e.stopPropagation();
+            e.preventDefault();
             const target = document.getElementById(id);
             const isShowing = target.classList.contains('show');
             document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('show'));
             if (!isShowing) target.classList.add('show');
         }
-        window.onclick = function() { document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('show')); }
+        function closeAllDropdowns(e) {
+            if (!e.target.closest('.menu-btn') && !e.target.closest('.dropdown-content')) {
+                document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('show'));
+            }
+        }
+        document.addEventListener('click', closeAllDropdowns);
+        document.addEventListener('touchstart', closeAllDropdowns, { passive: true });
 
         async function createFolder() {
             const name = prompt("Enter new folder name:");
@@ -371,7 +363,6 @@
             });
         }
 
-        // 🔥 4. 폴더/파일 불러올 때 원드라이브 API 정렬 알고리즘 강제 지정 (인덱스 꼬임 완벽 해결)
         async function fetchMyFolders(folderId, folderName, isNewNavigation = true) {
             const container = document.getElementById('file_list_container');
             container.innerHTML = '<div class="h-full flex flex-col items-center justify-center text-sm text-gray-400"><svg class="animate-spin w-8 h-8 text-gray-300 dark:text-gray-700 mb-3" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Loading...</div>';
@@ -380,7 +371,7 @@
             else if (folderId === 'root') pathHistory = [{ id: 'root', name: 'My Drive' }];
             renderBreadcrumbs();
 
-            // API 주소 끝에 ?$orderby=name 추가
+            // 🔥 OneDrive 파일 정렬을 무조건 이름순(orderby=name)으로 고정하여 목록 꼬임 해결
             fetch(folderId === 'root' ? "https://graph.microsoft.com/v1.0/me/drive/root/children?$orderby=name" : `https://graph.microsoft.com/v1.0/me/drive/items/${folderId}/children?$orderby=name`, { headers: { Authorization: `Bearer ${await getToken()}` } })
             .then(res => res.json()).then(data => {
                 container.innerHTML = '';
@@ -391,10 +382,9 @@
                 
                 document.getElementById('shuffle_folder_btn').style.display = audios.length > 0 ? 'flex' : 'none';
 
-                // 🔥 3. 모바일에서 굳어버리던 폴더의 group-hover 스타일을 모두 PC 전용(md:)으로 분리
                 folders.forEach(folder => {
                     const item = document.createElement('div');
-                    item.className = 'flex items-center justify-between p-3 sm:p-4 mb-2 border border-gray-100 dark:border-gray-800/80 rounded-[1.2rem] bg-gray-50/50 dark:bg-gray-900/30 active:bg-blue-50/50 dark:active:bg-blue-900/20 md:hover:bg-blue-50/50 md:dark:hover:bg-blue-900/20 shadow-sm group transition cursor-pointer';
+                    item.className = 'flex items-center justify-between p-3 sm:p-4 mb-2 border border-gray-100 dark:border-gray-800/80 rounded-[1.2rem] bg-gray-50/50 dark:bg-gray-900/30 active:bg-gray-100 dark:active:bg-gray-800/50 md:hover:bg-blue-50/50 md:dark:hover:bg-blue-900/20 shadow-sm group transition cursor-pointer';
                     item.onclick = () => fetchMyFolders(folder.id, folder.name, true);
                     
                     const infoDiv = document.createElement('div');
@@ -407,9 +397,9 @@
                     `;
 
                     const actionsDiv = document.createElement('div');
-                    actionsDiv.className = 'relative shrink-0 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 focus-within:opacity-100 transition flex items-center';
+                    actionsDiv.className = 'relative shrink-0 opacity-100 lg:opacity-0 md:group-hover:opacity-100 focus-within:opacity-100 transition flex items-center';
                     actionsDiv.innerHTML = `
-                        <button onclick="toggleMenu(event, 'drop-f-${folder.id}')" class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-700 dark:hover:text-white rounded-full transition font-bold">⋮</button>
+                        <button onclick="toggleMenu(event, 'drop-f-${folder.id}')" class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-700 dark:hover:text-white rounded-full transition font-bold menu-btn">⋮</button>
                         <div id="drop-f-${folder.id}" class="dropdown-content absolute right-0 mt-8 w-28 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 py-1 z-20 hidden">
                             <a onclick="event.stopPropagation(); renameItem('${folder.id}', '${folder.name.replace(/'/g,"\\'")}', true)" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">Rename</a>
                             <a onclick="event.stopPropagation(); deleteItem('${folder.id}', '${folder.name.replace(/'/g,"\\'")}', true)" class="block px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 cursor-pointer">Delete</a>
@@ -447,9 +437,9 @@
                     infoDiv.append(numSpan, textP);
 
                     const actionsDiv = document.createElement('div');
-                    actionsDiv.className = 'relative shrink-0 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 focus-within:opacity-100 transition flex items-center';
+                    actionsDiv.className = 'relative shrink-0 opacity-100 lg:opacity-0 md:group-hover:opacity-100 focus-within:opacity-100 transition flex items-center';
                     actionsDiv.innerHTML = `
-                        <button onclick="toggleMenu(event, 'drop-m-${file.id}')" class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-700 dark:hover:text-white rounded-full transition font-bold">⋮</button>
+                        <button onclick="toggleMenu(event, 'drop-m-${file.id}')" class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-700 dark:hover:text-white rounded-full transition font-bold menu-btn">⋮</button>
                         <div id="drop-m-${file.id}" class="dropdown-content absolute right-0 mt-8 w-28 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 py-1 z-20 hidden">
                             <a onclick="event.stopPropagation(); renameItem('${file.id}', '${file.name.replace(/'/g,"\\'")}')" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">Rename</a>
                             <a onclick="event.stopPropagation(); deleteItem('${file.id}', '${file.name.replace(/'/g,"\\'")}')" class="block px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 cursor-pointer">Delete</a>
@@ -464,7 +454,7 @@
             });
         }
 
-        // 🔥 3. 모바일에서의 악질적인 Sticky Hover 완벽 분리 적용 구역
+        // 🔥 모바일 Sticky Hover 방지 및 직관적인 Pulsing Dot 적용
         function updateActiveTrackUI() {
             const currentPlayingId = playingQueue[currentIndex]?.id;
             
@@ -477,16 +467,14 @@
                 
                 if (isActive) {
                     row.className = `flex items-center justify-between p-3 sm:p-3.5 mb-1.5 cursor-pointer rounded-2xl bg-blue-50/80 dark:bg-blue-900/30 border border-blue-100 dark:border-blue-900/40 shadow-sm transition group`;
-                    icon.className = `w-10 h-10 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center shrink-0 bg-white dark:bg-gray-800 text-[#0078d4] dark:text-blue-400 shadow-sm transition`;
                     
-                    if(!audio.paused && audio.src) {
-                        icon.innerHTML = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>`;
-                    } else {
-                        icon.innerHTML = `<svg class="w-5 h-5 ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>`;
-                    }
+                    // 직관적인 퍼지는 점(Pulsing Dot) 애니메이션 적용
+                    icon.className = `w-10 h-10 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center shrink-0 transition`;
+                    icon.innerHTML = `<div class="relative flex items-center justify-center w-full h-full"><span class="absolute w-4 h-4 rounded-full bg-blue-400/60 animate-ping"></span><span class="relative w-2.5 h-2.5 rounded-full bg-[#0078d4] dark:bg-blue-400"></span></div>`;
+                    
                     text.className = `text-sm sm:text-[15px] leading-tight truncate text-[#0078d4] dark:text-blue-300 font-bold transition`;
                 } else {
-                    // 비활성 곡에는 모바일용 active: 효과와 PC 전용(md:) hover 효과를 분리하여 적용합니다.
+                    // 비활성 목록에서는 PC용 hover와 모바일용 active를 철저히 분리
                     row.className = `flex items-center justify-between p-3 sm:p-3.5 mb-1.5 cursor-pointer rounded-2xl border border-transparent active:bg-gray-100 dark:active:bg-gray-800/50 md:hover:bg-gray-50 md:dark:hover:bg-gray-800/50 transition group`;
                     icon.className = `w-10 h-10 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center shrink-0 text-gray-400 dark:text-gray-500 font-medium text-sm bg-gray-100 dark:bg-gray-900 md:group-hover:text-[#0078d4] md:dark:group-hover:text-blue-400 transition`;
                     icon.innerHTML = index + 1;
@@ -530,27 +518,23 @@
         }
         
         function updateRepeatBtnUI() {
-            const btn = document.getElementById('repeat_btn'), btnMobile = document.getElementById('repeat_btn_mobile');
+            const btn = document.getElementById('repeat_btn');
             let svgContent = '';
             
             if (playMode === 0 || playMode === 1) {
-                svgContent = `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>`;
+                svgContent = `<svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>`;
             } else if (playMode === 2) {
-                svgContent = `<svg class="w-6 h-6 relative" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path><text x="12" y="15" font-family="sans-serif" font-size="9" font-weight="bold" fill="currentColor" text-anchor="middle" stroke="none">1</text></svg>`;
+                svgContent = `<svg class="w-5 h-5 sm:w-6 sm:h-6 relative" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path><text x="12" y="15" font-family="sans-serif" font-size="9" font-weight="bold" fill="currentColor" text-anchor="middle" stroke="none">1</text></svg>`;
             } else if (playMode === 3) {
-                svgContent = `<svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M2 18h1.4c1.3 0 2.5-.6 3.3-1.7l6.1-8.6c.7-1.1 2-1.7 3.3-1.7H22"/><path d="m18 2 4 4-4 4"/><path d="M2 6h1.9c1.5 0 2.9.9 3.6 2.2"/><path d="M22 18h-5.9c-1.3 0-2.6-.7-3.3-1.8l-.5-.8"/><path d="m18 14 4 4-4 4"/></svg>`;
+                svgContent = `<svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M2 18h1.4c1.3 0 2.5-.6 3.3-1.7l6.1-8.6c.7-1.1 2-1.7 3.3-1.7H22"/><path d="m18 2 4 4-4 4"/><path d="M2 6h1.9c1.5 0 2.9.9 3.6 2.2"/><path d="M22 18h-5.9c-1.3 0-2.6-.7-3.3-1.8l-.5-.8"/><path d="m18 14 4 4-4 4"/></svg>`;
             }
 
-            [btn, btnMobile].forEach(el => {
-                el.innerHTML = svgContent;
-                if(playMode > 0) { 
-                    el.className = `hidden sm:flex items-center justify-center w-12 h-12 rounded-full transition hover:text-[#0078d4] text-[#0078d4] dark:text-blue-400`;
-                    if(el.id === 'repeat_btn_mobile') el.className = `sm:hidden flex items-center justify-center w-10 h-10 rounded-full transition ml-4 hover:text-[#0078d4] text-[#0078d4] dark:text-blue-400`;
-                } else { 
-                    el.className = `hidden sm:flex items-center justify-center w-12 h-12 rounded-full transition hover:text-[#0078d4] dark:hover:text-blue-400 text-gray-400`;
-                    if(el.id === 'repeat_btn_mobile') el.className = `sm:hidden flex items-center justify-center w-10 h-10 rounded-full transition ml-4 hover:text-[#0078d4] dark:hover:text-blue-400 text-gray-400`;
-                }
-            });
+            btn.innerHTML = svgContent;
+            if(playMode > 0) { 
+                btn.className = `absolute left-0 flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full transition hover:text-[#0078d4] text-[#0078d4] dark:text-blue-400`;
+            } else { 
+                btn.className = `absolute left-0 flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full transition hover:text-[#0078d4] dark:hover:text-blue-400 text-gray-400`;
+            }
         }
 
         function playRandomFromFolder() {
