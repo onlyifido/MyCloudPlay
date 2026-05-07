@@ -53,6 +53,18 @@
         .shimmer-active::after { content: ''; position: absolute; top: 0; bottom: 0; left: 0; right: 0; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent); transform: translateX(-100%); animation: shimmerMove 1.2s infinite linear; z-index: 50; pointer-events: none; }
         .dark .shimmer-active::after { background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12), transparent); }
         @keyframes shimmerMove { 100% { transform: translateX(100%); } }
+
+        /* 🔥 세련된 미니 EQ(이퀄라이저) CSS 추가 */
+        .playing-eq { display: flex; align-items: flex-end; justify-content: center; gap: 3px; width: 16px; height: 14px; }
+        .eq-bar { width: 3px; background-color: #0078d4; border-radius: 2px; transform-origin: bottom; }
+        .dark .eq-bar { background-color: #60a5fa; }
+        .eq-bar-1 { height: 100%; animation: eq-bounce 0.7s infinite alternate ease-in-out; }
+        .eq-bar-2 { height: 100%; animation: eq-bounce 0.7s infinite alternate ease-in-out -0.3s; }
+        .eq-bar-3 { height: 100%; animation: eq-bounce 0.7s infinite alternate ease-in-out -0.5s; }
+        @keyframes eq-bounce { 0% { transform: scaleY(0.2); } 100% { transform: scaleY(1); } }
+        /* 일시정지 시 바가 작아지고 회색으로 변함 */
+        .eq-paused .eq-bar { animation: none; transform: scaleY(0.25); background-color: #9ca3af; }
+        .dark .eq-paused .eq-bar { background-color: #6b7280; }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-900 dark:bg-black dark:text-gray-100 font-sans antialiased h-screen overflow-hidden flex flex-col transition-colors duration-300">
@@ -129,21 +141,21 @@
 
                     <div class="relative flex items-center justify-center w-full mt-2 sm:mt-4 h-14 sm:h-20">
                         
-                        <button id="repeat_btn" onclick="toggleRepeat()" class="absolute left-0 flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full text-gray-400 hover:text-[#0078d4] dark:hover:text-blue-400 transition">
+                        <button id="repeat_btn" onclick="toggleRepeat()" class="absolute left-0 flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full text-gray-400 md:hover:text-[#0078d4] md:dark:hover:text-blue-400 active:scale-95 transition">
                             <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                         </button>
 
                         <div class="flex items-center gap-5 sm:gap-8">
-                            <button onclick="playPrevTrack()" class="w-12 h-12 sm:w-14 sm:h-14 neumorphic rounded-full flex items-center justify-center text-gray-500 dark:text-gray-400 hover:text-[#0078d4] dark:hover:text-blue-400 transition-all">
+                            <button onclick="playPrevTrack()" class="w-12 h-12 sm:w-14 sm:h-14 neumorphic rounded-full flex items-center justify-center text-gray-500 dark:text-gray-400 md:hover:text-[#0078d4] md:dark:hover:text-blue-400 active:scale-95 transition-all">
                                 <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
                             </button>
                             
-                            <button id="play_pause_btn" onclick="togglePlayPause()" class="w-14 h-14 sm:w-20 sm:h-20 bg-gradient-to-tr from-[#0078d4] to-blue-500 text-white rounded-full flex items-center justify-center hover:scale-105 active:scale-95 transition shadow-lg shadow-blue-500/30">
+                            <button id="play_pause_btn" onclick="togglePlayPause()" class="w-14 h-14 sm:w-20 sm:h-20 bg-gradient-to-tr from-[#0078d4] to-blue-500 text-white rounded-full flex items-center justify-center md:hover:scale-105 active:scale-95 transition shadow-lg shadow-blue-500/30">
                                 <svg id="icon_play" class="w-7 h-7 sm:w-10 sm:h-10 ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                                 <svg id="icon_pause" class="w-7 h-7 sm:w-10 sm:h-10 hidden" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
                             </button>
 
-                            <button onclick="playNextTrack(true)" class="w-12 h-12 sm:w-14 sm:h-14 neumorphic rounded-full flex items-center justify-center text-gray-500 dark:text-gray-400 hover:text-[#0078d4] dark:hover:text-blue-400 transition-all">
+                            <button onclick="playNextTrack(true)" class="w-12 h-12 sm:w-14 sm:h-14 neumorphic rounded-full flex items-center justify-center text-gray-500 dark:text-gray-400 md:hover:text-[#0078d4] md:dark:hover:text-blue-400 active:scale-95 transition-all">
                                 <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
                             </button>
                         </div>
@@ -161,7 +173,7 @@
                     </div>
                     
                     <div class="flex items-center gap-1 sm:gap-2 relative" id="action_buttons" style="display: none;">
-                        <button id="shuffle_folder_btn" onclick="playRandomFromFolder()" title="Shuffle Play" style="display: none;" class="flex items-center justify-center text-[#0078d4] dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50 w-8 h-8 sm:w-9 sm:h-9 rounded-full transition mr-1">
+                        <button id="shuffle_folder_btn" onclick="playRandomFromFolder()" title="Shuffle Play" style="display: none;" class="flex items-center justify-center text-[#0078d4] dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 md:hover:bg-blue-100 md:dark:hover:bg-blue-900/50 active:scale-95 w-8 h-8 sm:w-9 sm:h-9 rounded-full transition mr-1">
                             <svg class="w-4 h-4 sm:w-4.5 sm:h-4.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
                                 <path d="M2 18h1.4c1.3 0 2.5-.6 3.3-1.7l6.1-8.6c.7-1.1 2-1.7 3.3-1.7H22" />
                                 <path d="m18 2 4 4-4 4" />
@@ -171,7 +183,7 @@
                             </svg>
                         </button>
                         
-                        <button onclick="toggleMenu(event, 'main_action_drop')" class="p-1.5 sm:p-2 text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white hover:bg-gray-200 dark:hover:bg-gray-800 rounded-full transition bg-gray-100 dark:bg-gray-800/50 menu-btn">
+                        <button onclick="toggleMenu(event, 'main_action_drop')" class="p-1.5 sm:p-2 text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white md:hover:bg-gray-200 md:dark:hover:bg-gray-800 rounded-full transition bg-gray-100 dark:bg-gray-800/50 menu-btn">
                             <svg class="w-5 h-5 pointer-events-none" fill="currentColor" viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
                         </button>
                         <div id="main_action_drop" class="dropdown-content absolute right-0 top-10 w-44 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 py-1.5 z-50 hidden">
@@ -288,7 +300,6 @@
             dot.className = `w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full ${type === 'play' ? 'bg-green-500' : type === 'load' ? 'bg-[#0078d4] dark:bg-blue-400 animate-pulse' : type === 'err' ? 'bg-red-500' : 'bg-gray-300 dark:bg-gray-600'}`;
         }
 
-        // 🔥 모바일 화면 빈공간 터치 시 메뉴 닫기 완벽 적용
         function toggleMenu(e, id) {
             e.stopPropagation();
             e.preventDefault();
@@ -371,7 +382,6 @@
             else if (folderId === 'root') pathHistory = [{ id: 'root', name: 'My Drive' }];
             renderBreadcrumbs();
 
-            // 🔥 OneDrive 파일 정렬을 무조건 이름순(orderby=name)으로 고정하여 목록 꼬임 해결
             fetch(folderId === 'root' ? "https://graph.microsoft.com/v1.0/me/drive/root/children?$orderby=name" : `https://graph.microsoft.com/v1.0/me/drive/items/${folderId}/children?$orderby=name`, { headers: { Authorization: `Bearer ${await getToken()}` } })
             .then(res => res.json()).then(data => {
                 container.innerHTML = '';
@@ -454,7 +464,7 @@
             });
         }
 
-        // 🔥 모바일 Sticky Hover 방지 및 직관적인 Pulsing Dot 적용
+        // 🔥 재생 중인 곡에 부드러운 '미니 이퀄라이저' 적용
         function updateActiveTrackUI() {
             const currentPlayingId = playingQueue[currentIndex]?.id;
             
@@ -467,14 +477,16 @@
                 
                 if (isActive) {
                     row.className = `flex items-center justify-between p-3 sm:p-3.5 mb-1.5 cursor-pointer rounded-2xl bg-blue-50/80 dark:bg-blue-900/30 border border-blue-100 dark:border-blue-900/40 shadow-sm transition group`;
-                    
-                    // 직관적인 퍼지는 점(Pulsing Dot) 애니메이션 적용
                     icon.className = `w-10 h-10 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center shrink-0 transition`;
-                    icon.innerHTML = `<div class="relative flex items-center justify-center w-full h-full"><span class="absolute w-4 h-4 rounded-full bg-blue-400/60 animate-ping"></span><span class="relative w-2.5 h-2.5 rounded-full bg-[#0078d4] dark:bg-blue-400"></span></div>`;
+                    
+                    if(!audio.paused && audio.src) {
+                        icon.innerHTML = `<div class="playing-eq"><span class="eq-bar eq-bar-1"></span><span class="eq-bar eq-bar-2"></span><span class="eq-bar eq-bar-3"></span></div>`;
+                    } else {
+                        icon.innerHTML = `<div class="playing-eq eq-paused"><span class="eq-bar eq-bar-1"></span><span class="eq-bar eq-bar-2"></span><span class="eq-bar eq-bar-3"></span></div>`;
+                    }
                     
                     text.className = `text-sm sm:text-[15px] leading-tight truncate text-[#0078d4] dark:text-blue-300 font-bold transition`;
                 } else {
-                    // 비활성 목록에서는 PC용 hover와 모바일용 active를 철저히 분리
                     row.className = `flex items-center justify-between p-3 sm:p-3.5 mb-1.5 cursor-pointer rounded-2xl border border-transparent active:bg-gray-100 dark:active:bg-gray-800/50 md:hover:bg-gray-50 md:dark:hover:bg-gray-800/50 transition group`;
                     icon.className = `w-10 h-10 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center shrink-0 text-gray-400 dark:text-gray-500 font-medium text-sm bg-gray-100 dark:bg-gray-900 md:group-hover:text-[#0078d4] md:dark:group-hover:text-blue-400 transition`;
                     icon.innerHTML = index + 1;
@@ -517,6 +529,7 @@
             updateRepeatBtnUI();
         }
         
+        // 🔥 반복 버튼 상태 CSS 최적화 (모바일/PC 모두 동일하게 md:hover 적용하여 터치 꼬임 해결)
         function updateRepeatBtnUI() {
             const btn = document.getElementById('repeat_btn');
             let svgContent = '';
@@ -531,9 +544,9 @@
 
             btn.innerHTML = svgContent;
             if(playMode > 0) { 
-                btn.className = `absolute left-0 flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full transition hover:text-[#0078d4] text-[#0078d4] dark:text-blue-400`;
+                btn.className = `absolute left-0 flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full transition md:hover:text-[#0078d4] md:dark:hover:text-blue-400 text-[#0078d4] dark:text-blue-400 active:scale-95`;
             } else { 
-                btn.className = `absolute left-0 flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full transition hover:text-[#0078d4] dark:hover:text-blue-400 text-gray-400`;
+                btn.className = `absolute left-0 flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full transition md:hover:text-[#0078d4] md:dark:hover:text-blue-400 text-gray-400 active:scale-95`;
             }
         }
 
