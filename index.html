@@ -54,7 +54,6 @@
         .dark .shimmer-active::after { background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12), transparent); }
         @keyframes shimmerMove { 100% { transform: translateX(100%); } }
 
-        /* 🔥 세련된 미니 EQ(이퀄라이저) CSS 추가 */
         .playing-eq { display: flex; align-items: flex-end; justify-content: center; gap: 3px; width: 16px; height: 14px; }
         .eq-bar { width: 3px; background-color: #0078d4; border-radius: 2px; transform-origin: bottom; }
         .dark .eq-bar { background-color: #60a5fa; }
@@ -62,7 +61,6 @@
         .eq-bar-2 { height: 100%; animation: eq-bounce 0.7s infinite alternate ease-in-out -0.3s; }
         .eq-bar-3 { height: 100%; animation: eq-bounce 0.7s infinite alternate ease-in-out -0.5s; }
         @keyframes eq-bounce { 0% { transform: scaleY(0.2); } 100% { transform: scaleY(1); } }
-        /* 일시정지 시 바가 작아지고 회색으로 변함 */
         .eq-paused .eq-bar { animation: none; transform: scaleY(0.25); background-color: #9ca3af; }
         .dark .eq-paused .eq-bar { background-color: #6b7280; }
     </style>
@@ -140,7 +138,6 @@
                     </div>
 
                     <div class="relative flex items-center justify-center w-full mt-2 sm:mt-4 h-14 sm:h-20">
-                        
                         <button id="repeat_btn" onclick="toggleRepeat()" class="absolute left-0 flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full text-gray-400 md:hover:text-[#0078d4] md:dark:hover:text-blue-400 active:scale-95 transition">
                             <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                         </button>
@@ -149,12 +146,10 @@
                             <button onclick="playPrevTrack()" class="w-12 h-12 sm:w-14 sm:h-14 neumorphic rounded-full flex items-center justify-center text-gray-500 dark:text-gray-400 md:hover:text-[#0078d4] md:dark:hover:text-blue-400 active:scale-95 transition-all">
                                 <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
                             </button>
-                            
                             <button id="play_pause_btn" onclick="togglePlayPause()" class="w-14 h-14 sm:w-20 sm:h-20 bg-gradient-to-tr from-[#0078d4] to-blue-500 text-white rounded-full flex items-center justify-center md:hover:scale-105 active:scale-95 transition shadow-lg shadow-blue-500/30">
                                 <svg id="icon_play" class="w-7 h-7 sm:w-10 sm:h-10 ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                                 <svg id="icon_pause" class="w-7 h-7 sm:w-10 sm:h-10 hidden" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
                             </button>
-
                             <button onclick="playNextTrack(true)" class="w-12 h-12 sm:w-14 sm:h-14 neumorphic rounded-full flex items-center justify-center text-gray-500 dark:text-gray-400 md:hover:text-[#0078d4] md:dark:hover:text-blue-400 active:scale-95 transition-all">
                                 <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
                             </button>
@@ -200,6 +195,12 @@
                     </div>
                 </div>
 
+                <div id="recent_tracks_container" class="hidden shrink-0 border-b border-gray-100 dark:border-gray-800 px-4 py-3 bg-white dark:bg-gray-950">
+                    <p class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2.5 ml-1">Recently Played</p>
+                    <div id="recent_tracks_list" class="flex gap-2 overflow-x-auto no-scrollbar pb-1">
+                        </div>
+                </div>
+
                 <div id="file_list_container" class="overflow-y-auto flex-1 p-3 sm:p-5">
                     <div class="text-center text-sm text-gray-400 dark:text-gray-600 font-medium h-full flex flex-col justify-center items-center gap-4">
                         <div class="w-16 h-16 bg-gray-50 dark:bg-gray-900 rounded-2xl flex items-center justify-center border border-gray-100 dark:border-gray-800">
@@ -232,7 +233,6 @@
         let accountId = "", currentFolderAudios = [], playingQueue = [], currentIndex = -1, playingFolderId = '';
         let currentObjectUrl = null, playMode = 0, currentFolderId = 'root';
         let pathHistory = [{ id: 'root', name: 'My Drive' }];
-
         let wakeLock = null;
 
         msalInstance.handleRedirectPromise().then(handleResponse).catch(console.error);
@@ -244,6 +244,7 @@
                 document.getElementById('logout_button').style.display = 'inline-block';
                 document.getElementById('action_buttons').style.display = 'flex';
                 fetchMyFolders('root', 'My Drive', true); 
+                renderRecentUI(); // 앱 로드 시 최근 재생 곡 로드
             }
         }
 
@@ -259,21 +260,14 @@
                 if ('wakeLock' in navigator) {
                     wakeLock = await navigator.wakeLock.request('screen');
                     const indicator = document.getElementById('wake_lock_indicator');
-                    indicator.classList.remove('opacity-0', 'scale-95');
-                    indicator.classList.add('opacity-100', 'scale-100');
-                    
+                    indicator.classList.remove('opacity-0', 'scale-95'); indicator.classList.add('opacity-100', 'scale-100');
                     wakeLock.addEventListener('release', () => { 
-                        indicator.classList.remove('opacity-100', 'scale-100');
-                        indicator.classList.add('opacity-0', 'scale-95');
+                        indicator.classList.remove('opacity-100', 'scale-100'); indicator.classList.add('opacity-0', 'scale-95');
                     });
                 }
             } catch (err) { console.error(`Wake Lock error: ${err.name}`); }
         }
-
-        function releaseWakeLock() {
-            if (wakeLock !== null) { wakeLock.release(); wakeLock = null; }
-        }
-
+        function releaseWakeLock() { if (wakeLock !== null) { wakeLock.release(); wakeLock = null; } }
         document.addEventListener('visibilitychange', async () => {
             if (wakeLock !== null && document.visibilityState === 'visible' && !audio.paused) { requestWakeLock(); }
         });
@@ -301,8 +295,7 @@
         }
 
         function toggleMenu(e, id) {
-            e.stopPropagation();
-            e.preventDefault();
+            e.stopPropagation(); e.preventDefault();
             const target = document.getElementById(id);
             const isShowing = target.classList.contains('show');
             document.querySelectorAll('.dropdown-content').forEach(d => d.classList.remove('show'));
@@ -316,61 +309,35 @@
         document.addEventListener('click', closeAllDropdowns);
         document.addEventListener('touchstart', closeAllDropdowns, { passive: true });
 
-        async function createFolder() {
-            const name = prompt("Enter new folder name:");
-            if (name) {
-                fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${currentFolderId}/children`, { method: 'POST', headers: { 'Authorization': `Bearer ${await getToken()}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ name, folder: { }, "@microsoft.graph.conflictBehavior": "rename" }) })
-                .then(res => { if (res.ok) fetchMyFolders(currentFolderId, pathHistory[pathHistory.length - 1].name, false); });
-            }
-        }
-        async function renameItem(id, old, isFolder=false) {
-            const name = prompt(`Enter new ${isFolder ? 'folder' : 'file'} name:`, old);
-            if (name && name !== old) {
-                fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${id}`, { method: 'PATCH', headers: { 'Authorization': `Bearer ${await getToken()}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ name }) })
-                .then(res => { 
-                    if (res.ok) {
-                        fetchMyFolders(currentFolderId, pathHistory[pathHistory.length - 1].name, false);
-                        if (!isFolder && playingQueue[currentIndex] && playingQueue[currentIndex].id === id) updateMarqueeText(name);
-                    } 
-                });
-            }
-        }
-        async function deleteItem(id, name, isFolder=false) {
-            if (confirm(isFolder ? `Delete folder '${name}' and all contents?` : `Delete track '${name}'?`)) {
-                fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${await getToken()}` } })
-                .then(res => { 
-                    if (res.ok || res.status===204) {
-                        if (!isFolder && playingQueue[currentIndex] && playingQueue[currentIndex].id === id) { audio.pause(); setStatus('STANDBY', 'standby'); updateMarqueeText('Select a track'); iconPause.classList.add('hidden'); iconPlay.classList.remove('hidden'); }
-                        fetchMyFolders(currentFolderId, pathHistory[pathHistory.length - 1].name, false);
-                    } 
-                });
-            }
+        // 🔥 최근 재생 곡 관리 로직
+        function saveRecentTrack(track) {
+            let recent = JSON.parse(localStorage.getItem('recent_tracks') || '[]');
+            recent = recent.filter(t => t.id !== track.id);
+            recent.unshift({ id: track.id, name: track.name });
+            if (recent.length > 10) recent.pop();
+            localStorage.setItem('recent_tracks', JSON.stringify(recent));
+            renderRecentUI();
         }
 
-        async function handleFileUpload(event) {
-            const files = event.target.files;
-            if (!files.length) return;
-            const container = document.getElementById('file_list_container');
-            container.innerHTML = '<div class="h-full flex flex-col items-center justify-center text-sm text-[#0078d4] font-medium"><svg class="animate-spin w-8 h-8 mb-3" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Uploading...</div>';
-            try {
-                const token = await getToken();
-                for (let file of files) {
-                    const session = await (await fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${currentFolderId}:/${encodeURIComponent(file.name)}:/createUploadSession`, { method: 'POST', headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' } })).json();
-                    await fetch(session.uploadUrl, { method: 'PUT', headers: { 'Content-Length': `${file.size}`, 'Content-Range': `bytes 0-${file.size - 1}/${file.size}` }, body: file });
-                }
-            } catch (err) { alert(`Upload failed.`); }
-            event.target.value = ''; fetchMyFolders(currentFolderId, pathHistory[pathHistory.length - 1].name, false);
-        }
-
-        function renderBreadcrumbs() {
-            const container = document.getElementById('breadcrumb_container'); container.innerHTML = '';
-            pathHistory.forEach((step, index) => {
-                const span = document.createElement('span');
-                span.innerText = step.name;
-                if (index === pathHistory.length - 1) span.className = 'font-semibold text-gray-900 dark:text-white';
-                else { span.className = 'breadcrumb-item transition dark:hover:text-[#0078d4]'; span.onclick = () => { pathHistory = pathHistory.slice(0, index + 1); fetchMyFolders(step.id, step.name, false); }; }
-                container.appendChild(span);
-                if (index < pathHistory.length - 1) { const sep = document.createElement('span'); sep.className = 'breadcrumb-separator'; sep.innerText = '/'; container.appendChild(sep); }
+        function renderRecentUI() {
+            const container = document.getElementById('recent_tracks_container');
+            const list = document.getElementById('recent_tracks_list');
+            const recent = JSON.parse(localStorage.getItem('recent_tracks') || '[]');
+            
+            if (recent.length === 0) { container.classList.add('hidden'); return; }
+            container.classList.remove('hidden');
+            list.innerHTML = '';
+            
+            recent.forEach(track => {
+                const chip = document.createElement('div');
+                chip.className = 'shrink-0 px-4 py-1.5 rounded-full border border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900 text-[11px] font-medium text-gray-600 dark:text-gray-400 cursor-pointer active:scale-95 transition-all md:hover:border-[#0078d4] md:hover:text-[#0078d4]';
+                chip.innerText = track.name.replace(/\.[^/.]+$/, ""); // 확장자 제거
+                chip.onclick = () => {
+                    playingQueue = [track];
+                    currentIndex = 0;
+                    playTrack(0);
+                };
+                list.appendChild(chip);
             });
         }
 
@@ -387,104 +354,51 @@
                 container.innerHTML = '';
                 const folders = data.value.filter(i => i.folder);
                 const audios = data.value.filter(i => i.file && i.file.mimeType?.includes('audio'));
-                
                 currentFolderAudios = audios; 
-                
                 document.getElementById('shuffle_folder_btn').style.display = audios.length > 0 ? 'flex' : 'none';
 
                 folders.forEach(folder => {
                     const item = document.createElement('div');
                     item.className = 'flex items-center justify-between p-3 sm:p-4 mb-2 border border-gray-100 dark:border-gray-800/80 rounded-[1.2rem] bg-gray-50/50 dark:bg-gray-900/30 active:bg-gray-100 dark:active:bg-gray-800/50 md:hover:bg-blue-50/50 md:dark:hover:bg-blue-900/20 shadow-sm group transition cursor-pointer';
                     item.onclick = () => fetchMyFolders(folder.id, folder.name, true);
-                    
-                    const infoDiv = document.createElement('div');
-                    infoDiv.className = 'flex items-center gap-3 sm:gap-4 flex-1 min-w-0 pr-2';
-                    infoDiv.innerHTML = `
-                        <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center shrink-0 pointer-events-none">
-                            <svg class="w-5 h-5 sm:w-6 sm:h-6 text-[#0078d4] dark:text-blue-400" fill="currentColor" viewBox="0 0 24 24"><path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>
-                        </div>
-                        <span class="text-sm sm:text-base font-semibold truncate text-gray-800 dark:text-gray-200 md:group-hover:text-[#0078d4] md:dark:group-hover:text-blue-400 transition pointer-events-none">${folder.name}</span>
-                    `;
-
+                    item.innerHTML = `<div class="flex items-center gap-3 sm:gap-4 flex-1 min-w-0 pr-2"><div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center shrink-0 pointer-events-none"><svg class="w-5 h-5 sm:w-6 sm:h-6 text-[#0078d4] dark:text-blue-400" fill="currentColor" viewBox="0 0 24 24"><path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg></div><span class="text-sm sm:text-base font-semibold truncate text-gray-800 dark:text-gray-200 md:group-hover:text-[#0078d4] md:dark:group-hover:text-blue-400 transition pointer-events-none">${folder.name}</span></div>`;
                     const actionsDiv = document.createElement('div');
                     actionsDiv.className = 'relative shrink-0 opacity-100 lg:opacity-0 md:group-hover:opacity-100 focus-within:opacity-100 transition flex items-center';
-                    actionsDiv.innerHTML = `
-                        <button onclick="toggleMenu(event, 'drop-f-${folder.id}')" class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-700 dark:hover:text-white rounded-full transition font-bold menu-btn">⋮</button>
-                        <div id="drop-f-${folder.id}" class="dropdown-content absolute right-0 mt-8 w-28 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 py-1 z-20 hidden">
-                            <a onclick="event.stopPropagation(); renameItem('${folder.id}', '${folder.name.replace(/'/g,"\\'")}', true)" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">Rename</a>
-                            <a onclick="event.stopPropagation(); deleteItem('${folder.id}', '${folder.name.replace(/'/g,"\\'")}', true)" class="block px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 cursor-pointer">Delete</a>
-                        </div>
-                    `;
-                    item.append(infoDiv, actionsDiv); container.appendChild(item);
+                    actionsDiv.innerHTML = `<button onclick="toggleMenu(event, 'drop-f-${folder.id}')" class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-700 dark:hover:text-white rounded-full transition font-bold menu-btn">⋮</button><div id="drop-f-${folder.id}" class="dropdown-content absolute right-0 mt-8 w-28 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 py-1 z-20 hidden"><a onclick="event.stopPropagation(); renameItem('${folder.id}', '${folder.name.replace(/'/g,"\\'")}', true)" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">Rename</a><a onclick="event.stopPropagation(); deleteItem('${folder.id}', '${folder.name.replace(/'/g,"\\'")}', true)" class="block px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 cursor-pointer">Delete</a></div>`;
+                    item.append(actionsDiv); container.appendChild(item);
                 });
 
                 currentFolderAudios.forEach((file, index) => {
-                    const item = document.createElement('div');
-                    item.id = `track_row_${file.id}`;
-                    
-                    const infoDiv = document.createElement('div');
-                    infoDiv.className = 'flex items-center gap-3 sm:gap-4 flex-1 min-w-0 pr-4';
-                    
+                    const item = document.createElement('div'); item.id = `track_row_${file.id}`;
+                    item.className = 'flex items-center justify-between p-3 sm:p-3.5 mb-1.5 cursor-pointer rounded-2xl border border-transparent active:bg-gray-100 dark:active:bg-gray-800/50 md:hover:bg-gray-50 md:dark:hover:bg-gray-800/50 transition group';
+                    const infoDiv = document.createElement('div'); infoDiv.className = 'flex items-center gap-3 sm:gap-4 flex-1 min-w-0 pr-4';
                     infoDiv.onclick = () => {
                         const currentPlayingId = playingQueue[currentIndex]?.id;
-                        if (file.id === currentPlayingId && audio.src) {
-                            togglePlayPause();
-                        } else {
-                            playingQueue = [...currentFolderAudios];
-                            playingFolderId = currentFolderId;
-                            currentIndex = index;
-                            playTrack(currentIndex);
-                        }
+                        if (file.id === currentPlayingId && audio.src) togglePlayPause();
+                        else { playingQueue = [...currentFolderAudios]; playingFolderId = currentFolderId; currentIndex = index; playTrack(currentIndex); }
                     };
-                    
-                    const numSpan = document.createElement('div');
-                    numSpan.id = `track_icon_${file.id}`;
-                    
-                    const textP = document.createElement('p'); 
-                    textP.id = `track_text_${file.id}`;
-                    textP.innerText = file.name;
-                    
-                    infoDiv.append(numSpan, textP);
-
+                    infoDiv.innerHTML = `<div id="track_icon_${file.id}" class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center shrink-0 text-gray-400 dark:text-gray-500 font-medium text-sm bg-gray-100 dark:bg-gray-900 md:group-hover:text-[#0078d4] md:dark:group-hover:text-blue-400 transition">${index + 1}</div><p id="track_text_${file.id}" class="text-sm sm:text-[15px] leading-tight truncate text-gray-800 dark:text-gray-200 font-medium md:group-hover:text-[#0078d4] md:dark:group-hover:text-blue-400 transition">${file.name}</p>`;
                     const actionsDiv = document.createElement('div');
                     actionsDiv.className = 'relative shrink-0 opacity-100 lg:opacity-0 md:group-hover:opacity-100 focus-within:opacity-100 transition flex items-center';
-                    actionsDiv.innerHTML = `
-                        <button onclick="toggleMenu(event, 'drop-m-${file.id}')" class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-700 dark:hover:text-white rounded-full transition font-bold menu-btn">⋮</button>
-                        <div id="drop-m-${file.id}" class="dropdown-content absolute right-0 mt-8 w-28 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 py-1 z-20 hidden">
-                            <a onclick="event.stopPropagation(); renameItem('${file.id}', '${file.name.replace(/'/g,"\\'")}')" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">Rename</a>
-                            <a onclick="event.stopPropagation(); deleteItem('${file.id}', '${file.name.replace(/'/g,"\\'")}')" class="block px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 cursor-pointer">Delete</a>
-                        </div>
-                    `;
+                    actionsDiv.innerHTML = `<button onclick="toggleMenu(event, 'drop-m-${file.id}')" class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-700 dark:hover:text-white rounded-full transition font-bold menu-btn">⋮</button><div id="drop-m-${file.id}" class="dropdown-content absolute right-0 mt-8 w-28 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 py-1 z-20 hidden"><a onclick="event.stopPropagation(); renameItem('${file.id}', '${file.name.replace(/'/g,"\\'")}')" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">Rename</a><a onclick="event.stopPropagation(); deleteItem('${file.id}', '${file.name.replace(/'/g,"\\'")}')" class="block px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 cursor-pointer">Delete</a></div>`;
                     item.append(infoDiv, actionsDiv); container.appendChild(item);
                 });
-
                 if (!folders.length && !audios.length) container.innerHTML = '<div class="h-full flex flex-col items-center justify-center text-sm text-gray-400"><div class="text-3xl mb-2 opacity-50">📁</div>Folder is empty.</div>';
-                
                 updateActiveTrackUI();
             });
         }
 
-        // 🔥 재생 중인 곡에 부드러운 '미니 이퀄라이저' 적용
         function updateActiveTrackUI() {
             const currentPlayingId = playingQueue[currentIndex]?.id;
-            
             currentFolderAudios.forEach((file, index) => {
                 const isActive = (file.id === currentPlayingId && audio.src !== "");
-                const row = document.getElementById(`track_row_${file.id}`);
-                const icon = document.getElementById(`track_icon_${file.id}`);
-                const text = document.getElementById(`track_text_${file.id}`);
+                const row = document.getElementById(`track_row_${file.id}`), icon = document.getElementById(`track_icon_${file.id}`), text = document.getElementById(`track_text_${file.id}`);
                 if(!row || !icon || !text) return;
-                
                 if (isActive) {
                     row.className = `flex items-center justify-between p-3 sm:p-3.5 mb-1.5 cursor-pointer rounded-2xl bg-blue-50/80 dark:bg-blue-900/30 border border-blue-100 dark:border-blue-900/40 shadow-sm transition group`;
-                    icon.className = `w-10 h-10 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center shrink-0 transition`;
-                    
-                    if(!audio.paused && audio.src) {
-                        icon.innerHTML = `<div class="playing-eq"><span class="eq-bar eq-bar-1"></span><span class="eq-bar eq-bar-2"></span><span class="eq-bar eq-bar-3"></span></div>`;
-                    } else {
-                        icon.innerHTML = `<div class="playing-eq eq-paused"><span class="eq-bar eq-bar-1"></span><span class="eq-bar eq-bar-2"></span><span class="eq-bar eq-bar-3"></span></div>`;
-                    }
-                    
+                    icon.className = `w-10 h-10 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center shrink-0 bg-white dark:bg-gray-800 text-[#0078d4] dark:text-blue-400 shadow-sm transition`;
+                    if(!audio.paused && audio.src) icon.innerHTML = `<div class="playing-eq"><span class="eq-bar eq-bar-1"></span><span class="eq-bar eq-bar-2"></span><span class="eq-bar eq-bar-3"></span></div>`;
+                    else icon.innerHTML = `<div class="playing-eq eq-paused"><span class="eq-bar eq-bar-1"></span><span class="eq-bar eq-bar-2"></span><span class="eq-bar eq-bar-3"></span></div>`;
                     text.className = `text-sm sm:text-[15px] leading-tight truncate text-[#0078d4] dark:text-blue-300 font-bold transition`;
                 } else {
                     row.className = `flex items-center justify-between p-3 sm:p-3.5 mb-1.5 cursor-pointer rounded-2xl border border-transparent active:bg-gray-100 dark:active:bg-gray-800/50 md:hover:bg-gray-50 md:dark:hover:bg-gray-800/50 transition group`;
@@ -499,138 +413,53 @@
         const progressBar = document.getElementById('progress_bar'), currentTimeEl = document.getElementById('current_time'), durationTimeEl = document.getElementById('duration_time');
 
         function formatTime(sec) { if (isNaN(sec)) return "0:00"; const m = Math.floor(sec / 60), s = Math.floor(sec % 60); return `${m}:${s < 10 ? '0' : ''}${s}`; }
-
         audio.addEventListener('timeupdate', () => { if (!audio.duration) return; progressBar.value = (audio.currentTime / audio.duration) * 100; currentTimeEl.innerText = formatTime(audio.currentTime); });
         audio.addEventListener('loadedmetadata', () => { durationTimeEl.innerText = formatTime(audio.duration); progressBar.disabled = false; });
         progressBar.addEventListener('input', (e) => audio.currentTime = (e.target.value / 100) * audio.duration);
 
-        function togglePlayPause() {
-            if(playingQueue.length === 0) return;
-            if (audio.paused) { if(!audio.src) playTrack(currentIndex); else audio.play(); } 
-            else audio.pause();
-        }
+        function togglePlayPause() { if(playingQueue.length === 0) return; if (audio.paused) { if(!audio.src) playTrack(currentIndex); else audio.play(); } else audio.pause(); }
+        audio.addEventListener('play', () => { iconPlay.classList.add('hidden'); iconPause.classList.remove('hidden'); setStatus('NOW PLAYING', 'play'); updateActiveTrackUI(); requestWakeLock(); });
+        audio.addEventListener('pause', () => { iconPause.classList.add('hidden'); iconPlay.classList.remove('hidden'); if(document.getElementById('status_info').innerText !== 'BUFFERING...') setStatus('PAUSED', 'standby'); updateActiveTrackUI(); releaseWakeLock(); });
 
-        audio.addEventListener('play', () => { 
-            iconPlay.classList.add('hidden'); iconPause.classList.remove('hidden'); 
-            setStatus('NOW PLAYING', 'play'); 
-            updateActiveTrackUI(); 
-            requestWakeLock();
-        });
-        audio.addEventListener('pause', () => { 
-            iconPause.classList.add('hidden'); iconPlay.classList.remove('hidden'); 
-            const currentStatus = document.getElementById('status_info').innerText;
-            if(currentStatus !== 'BUFFERING...' && currentStatus !== 'ERROR') setStatus('PAUSED', 'standby'); 
-            updateActiveTrackUI(); 
-            releaseWakeLock();
-        });
-
-        function toggleRepeat() {
-            playMode = (playMode + 1) % 4;
-            updateRepeatBtnUI();
-        }
-        
-        // 🔥 반복 버튼 상태 CSS 최적화 (모바일/PC 모두 동일하게 md:hover 적용하여 터치 꼬임 해결)
+        function toggleRepeat() { playMode = (playMode + 1) % 4; updateRepeatBtnUI(); }
         function updateRepeatBtnUI() {
-            const btn = document.getElementById('repeat_btn');
-            let svgContent = '';
-            
-            if (playMode === 0 || playMode === 1) {
-                svgContent = `<svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>`;
-            } else if (playMode === 2) {
-                svgContent = `<svg class="w-5 h-5 sm:w-6 sm:h-6 relative" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path><text x="12" y="15" font-family="sans-serif" font-size="9" font-weight="bold" fill="currentColor" text-anchor="middle" stroke="none">1</text></svg>`;
-            } else if (playMode === 3) {
-                svgContent = `<svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M2 18h1.4c1.3 0 2.5-.6 3.3-1.7l6.1-8.6c.7-1.1 2-1.7 3.3-1.7H22"/><path d="m18 2 4 4-4 4"/><path d="M2 6h1.9c1.5 0 2.9.9 3.6 2.2"/><path d="M22 18h-5.9c-1.3 0-2.6-.7-3.3-1.8l-.5-.8"/><path d="m18 14 4 4-4 4"/></svg>`;
-            }
-
-            btn.innerHTML = svgContent;
-            if(playMode > 0) { 
-                btn.className = `absolute left-0 flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full transition md:hover:text-[#0078d4] md:dark:hover:text-blue-400 text-[#0078d4] dark:text-blue-400 active:scale-95`;
-            } else { 
-                btn.className = `absolute left-0 flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full transition md:hover:text-[#0078d4] md:dark:hover:text-blue-400 text-gray-400 active:scale-95`;
-            }
+            const btn = document.getElementById('repeat_btn'); let svg = '';
+            if (playMode === 0 || playMode === 1) svg = `<svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>`;
+            else if (playMode === 2) svg = `<svg class="w-5 h-5 sm:w-6 sm:h-6 relative" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path><text x="12" y="15" font-family="sans-serif" font-size="9" font-weight="bold" fill="currentColor" text-anchor="middle" stroke="none">1</text></svg>`;
+            else if (playMode === 3) svg = `<svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M2 18h1.4c1.3 0 2.5-.6 3.3-1.7l6.1-8.6c.7-1.1 2-1.7 3.3-1.7H22"/><path d="m18 2 4 4-4 4"/><path d="M2 6h1.9c1.5 0 2.9.9 3.6 2.2"/><path d="M22 18h-5.9c-1.3 0-2.6-.7-3.3-1.8l-.5-.8"/><path d="m18 14 4 4-4 4"/></svg>`;
+            btn.innerHTML = svg;
+            if(playMode > 0) btn.className = `absolute left-0 flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full transition text-[#0078d4] dark:text-blue-400 active:scale-95`;
+            else btn.className = `absolute left-0 flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full transition text-gray-400 active:scale-95`;
         }
 
-        function playRandomFromFolder() {
-            if(currentFolderAudios.length === 0) return;
-            playMode = 3; 
-            updateRepeatBtnUI();
-            playingQueue = [...currentFolderAudios];
-            playingFolderId = currentFolderId;
-            currentIndex = Math.floor(Math.random() * playingQueue.length);
-            playTrack(currentIndex);
-        }
+        function playRandomFromFolder() { if(currentFolderAudios.length === 0) return; playMode = 3; updateRepeatBtnUI(); playingQueue = [...currentFolderAudios]; playingFolderId = currentFolderId; currentIndex = Math.floor(Math.random() * playingQueue.length); playTrack(currentIndex); }
 
         async function playTrack(index, autoPlay = true) {
             if (index < 0 || index >= playingQueue.length) return;
-            audio.pause(); audio.removeAttribute('src'); 
-            
-            currentIndex = index; 
-            updateActiveTrackUI(); 
-            updateMarqueeText(playingQueue[index].name);
-            
+            audio.pause(); audio.removeAttribute('src'); currentIndex = index; updateActiveTrackUI(); updateMarqueeText(playingQueue[index].name);
+            saveRecentTrack(playingQueue[index]); // 🔥 재생 시 마다 저장
             setStatus('BUFFERING...', 'load'); progressBar.value = 0; currentTimeEl.innerText = "0:00"; progressBar.disabled = true;
-
             const playerCard = document.getElementById('player_card'); playerCard.classList.add('shimmer-active');
-
             try {
                 const token = await getToken();
-                const contentRes = await fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${playingQueue[index].id}/content`, {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
-                
+                const contentRes = await fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${playingQueue[index].id}/content`, { headers: { Authorization: `Bearer ${token}` } });
                 if (!contentRes.ok) throw new Error("File Download Failed");
-
                 const blob = await contentRes.blob();
                 if (currentObjectUrl) URL.revokeObjectURL(currentObjectUrl);
-                currentObjectUrl = URL.createObjectURL(blob);
-                audio.src = currentObjectUrl;
-
+                currentObjectUrl = URL.createObjectURL(blob); audio.src = currentObjectUrl;
                 playerCard.classList.remove('shimmer-active');
-
                 if ('mediaSession' in navigator) {
-                    navigator.mediaSession.metadata = new MediaMetadata({
-                        title: playingQueue[index].name.replace(/\.[^/.]+$/, ""), 
-                        artist: 'OneDrive Streaming',
-                        album: 'Music Player',
-                        artwork: [ { src: 'data:image/svg+xml;charset=utf-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 512 512%22%3E%3Cdefs%3E%3ClinearGradient id=%22grad%22 x1=%220%25%22 y1=%22100%25%22 x2=%22100%25%22 y2=%220%25%22%3E%3Cstop offset=%220%25%22 style=%22stop-color:%230078d4;stop-opacity:1%22 /%3E%3Cstop offset=%22100%25%22 style=%22stop-color:%2360a5fa;stop-opacity:1%22 /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width=%22512%22 height=%22512%22 rx=%22112%22 fill=%22url(%23grad)%22 /%3E%3Cpath d=%22M210 370V130l210-40v230%22 fill=%22none%22 stroke=%22%23ffffff%22 stroke-width=%2232%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22/%3E%3Ccircle cx=%22160%22 cy=%22370%22 r=%2250%22 fill=%22none%22 stroke=%22%23ffffff%22 stroke-width=%2232%22/%3E%3Ccircle cx=%22370%22 cy=%22330%22 r=%2250%22 fill=%22none%22 stroke=%22%23ffffff%22 stroke-width=%2232%22/%3E%3C/svg%3E', sizes: '512x512', type: 'image/svg+xml' } ]
-                    });
-                    navigator.mediaSession.setActionHandler('play', () => { togglePlayPause(); });
-                    navigator.mediaSession.setActionHandler('pause', () => { togglePlayPause(); });
-                    navigator.mediaSession.setActionHandler('previoustrack', () => { playPrevTrack(); });
-                    navigator.mediaSession.setActionHandler('nexttrack', () => { playNextTrack(true); });
+                    navigator.mediaSession.metadata = new MediaMetadata({ title: playingQueue[index].name.replace(/\.[^/.]+$/, ""), artist: 'OneDrive Streaming', album: 'Music Player', artwork: [ { src: 'data:image/svg+xml;charset=utf-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 512 512%22%3E%3Cdefs%3E%3ClinearGradient id=%22grad%22 x1=%220%25%22 y1=%22100%25%22 x2=%22100%25%22 y2=%220%25%22%3E%3Cstop offset=%220%25%22 style=%22stop-color:%230078d4;stop-opacity:1%22 /%3E%3Cstop offset=%22100%25%22 style=%22stop-color:%2360a5fa;stop-opacity:1%22 /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width=%22512%22 height=%22512%22 rx=%22112%22 fill=%22url(%23grad)%22 /%3E%3Cpath d=%22M210 370V130l210-40v230%22 fill=%22none%22 stroke=%22%23ffffff%22 stroke-width=%2232%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22/%3E%3Ccircle cx=%22160%22 cy=%22370%22 r=%2250%22 fill=%22none%22 stroke=%22%23ffffff%22 stroke-width=%2232%22/%3E%3Ccircle cx=%22370%22 cy=%22330%22 r=%2250%22 fill=%22none%22 stroke=%22%23ffffff%22 stroke-width=%2232%22/%3E%3C/svg%3E', sizes: '512x512', type: 'image/svg+xml' } ] });
+                    navigator.mediaSession.setActionHandler('play', () => { togglePlayPause(); }); navigator.mediaSession.setActionHandler('pause', () => { togglePlayPause(); });
+                    navigator.mediaSession.setActionHandler('previoustrack', () => { playPrevTrack(); }); navigator.mediaSession.setActionHandler('nexttrack', () => { playNextTrack(true); });
                 }
-
                 if(autoPlay) audio.play(); else setStatus('READY', 'standby');
-
-            } catch(err) {
-                console.error(err);
-                playerCard.classList.remove('shimmer-active'); 
-                setStatus('ERROR', 'err');
-            }
+            } catch(err) { console.error(err); playerCard.classList.remove('shimmer-active'); setStatus('ERROR', 'err'); }
         }
 
-        function playNextTrack(isManual = false) {
-            if (playingQueue.length === 0) return;
-            if (playMode === 2 && !isManual) playTrack(currentIndex);
-            else if (playMode === 3) {
-                let next = currentIndex; 
-                if (playingQueue.length > 1) {
-                    while (next === currentIndex) next = Math.floor(Math.random() * playingQueue.length);
-                }
-                playTrack(next);
-            } else if (currentIndex + 1 < playingQueue.length) playTrack(currentIndex + 1);
-            else if (playMode === 1) playTrack(0);
-            else { setStatus('FINISHED', 'standby'); iconPause.classList.add('hidden'); iconPlay.classList.remove('hidden'); updateActiveTrackUI(); }
-        }
-        
-        function playPrevTrack() { 
-            if (playingQueue.length === 0) return;
-            if (audio.currentTime > 3) audio.currentTime = 0; 
-            else if (currentIndex > 0) playTrack(currentIndex - 1); 
-        }
-        
+        function playNextTrack(isManual = false) { if (playingQueue.length === 0) return; if (playMode === 2 && !isManual) playTrack(currentIndex); else if (playMode === 3) { let next = currentIndex; if (playingQueue.length > 1) { while (next === currentIndex) next = Math.floor(Math.random() * playingQueue.length); } playTrack(next); } else if (currentIndex + 1 < playingQueue.length) playTrack(currentIndex + 1); else if (playMode === 1) playTrack(0); else { setStatus('FINISHED', 'standby'); iconPause.classList.add('hidden'); iconPlay.classList.remove('hidden'); updateActiveTrackUI(); } }
+        function playPrevTrack() { if (playingQueue.length === 0) return; if (audio.currentTime > 3) audio.currentTime = 0; else if (currentIndex > 0) playTrack(currentIndex - 1); }
         audio.addEventListener('ended', () => playNextTrack(false));
-
     </script>
 </body>
 </html>
