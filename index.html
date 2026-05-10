@@ -8,7 +8,7 @@
     
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#000000">
-    <link rel="apple-touch-icon" href="data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3ClinearGradient id='grad' x1='0%25' y1='100%25' x2='100%25' y2='0%25'%3E%3Cstop offset='0%25' style='stop-color:%230078d4;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%2360a5fa;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='512' height='512' rx='112' fill='url(%23grad)' /%3E%3Cpath d='M210 370V130l210-40v230' fill='none' stroke='%23ffffff' stroke-width='32' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='160' cy='370' r='50' fill='none' stroke='%23ffffff' stroke-width='32'/%3E%3Ccircle cx='370' cy='330' r='50' fill='none' stroke='%23ffffff' stroke-width='32'/%3E%3C/svg%3E">
+    <link rel="apple-touch-icon" href="data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3ClinearGradient id='grad' x1='0%25' y1='100%25' x2='100%25' y2='0%25'%3E%3Cstop offset='0%25' style='stop-color:%230078d4;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%2360a5fa;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='512' height='512' fill='url(%23grad)' /%3E%3Cpath d='M210 370V130l210-40v230' fill='none' stroke='%23ffffff' stroke-width='32' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='160' cy='370' r='50' fill='none' stroke='%23ffffff' stroke-width='32'/%3E%3Ccircle cx='370' cy='330' r='50' fill='none' stroke='%23ffffff' stroke-width='32'/%3E%3C/svg%3E">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -48,7 +48,7 @@
         input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: #e5e7eb; border-radius: 2px; }
         .dark input[type=range]::-webkit-slider-runnable-track { background: #374151; }
 
-        /* 🔥 직진형(90deg) 스켈레톤 로딩 원복 */
+        /* 🔥 직진형(90deg) 스켈레톤 로딩 */
         .shimmer-active::before { content: ''; position: absolute; inset: 0; background: rgba(255, 255, 255, 0.3); z-index: 40; pointer-events: none; }
         .dark .shimmer-active::before { background: rgba(0, 0, 0, 0.5); }
         .shimmer-active::after { content: ''; position: absolute; top: 0; bottom: 0; left: 0; right: 0; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent); transform: translateX(-100%); animation: shimmerMove 1.2s infinite linear; z-index: 50; pointer-events: none; }
@@ -104,23 +104,22 @@
         </div>
     </header>
 
-    <main class="flex-1 max-w-[1400px] w-full mx-auto px-4 sm:px-6 py-4 sm:py-6 flex flex-col lg:flex-row gap-4 sm:gap-8 min-h-0 overflow-hidden">
+    <main class="flex-1 w-full max-w-[1400px] mx-auto px-4 sm:px-6 pb-6 sm:pb-8 pt-2 sm:pt-6 flex flex-col lg:flex-row gap-4 sm:gap-6 min-h-0 overflow-hidden">
         
-        <div class="w-full lg:w-[45%] flex flex-col shrink-0 lg:h-full justify-center">
-            <div id="player_card" class="isolate border border-gray-100 dark:border-gray-800 rounded-[2rem] p-6 sm:p-10 bg-white dark:bg-gray-900 shadow-xl shadow-gray-200/50 dark:shadow-none flex flex-col justify-center relative transition-colors duration-300" style="-webkit-mask-image: -webkit-radial-gradient(white, black);">
+        <div class="w-full lg:w-[45%] flex flex-col shrink-0 justify-center h-auto lg:h-full">
+            <div id="player_card" class="isolate border border-gray-100 dark:border-gray-800 rounded-[2rem] p-6 sm:p-10 bg-white dark:bg-gray-900 flex flex-col justify-center relative transition-colors duration-300" style="clip-path: inset(0 round 2rem); transform: translateZ(0);">
                 <div class="absolute -top-32 -right-32 w-64 h-64 bg-blue-400/20 dark:bg-blue-900/20 rounded-full blur-[80px] pointer-events-none -z-10"></div>
 
                 <div class="z-10 w-full text-center flex flex-col items-center pt-2 sm:pt-4">
-                    <div class="flex items-center gap-2 mb-3 sm:mb-5 justify-center">
-                        <span class="w-2.5 h-2.5 rounded-full bg-gray-300 dark:bg-gray-600" id="status_dot"></span>
-                        <span class="text-xs font-bold text-gray-500 dark:text-gray-400 tracking-[0.2em] uppercase" id="status_info">STANDBY</span>
+                    <div class="flex items-center gap-2 mb-3 justify-center">
+                        <span class="w-2 h-2 rounded-full bg-gray-300 dark:bg-gray-600" id="status_dot"></span>
+                        <span class="text-[10px] sm:text-xs font-bold text-gray-500 dark:text-gray-400 tracking-[0.2em] uppercase" id="status_info">STANDBY</span>
                     </div>
                     
-                    <div class="marquee-container w-full max-w-sm mx-auto text-2xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 dark:text-white mb-2 sm:mb-4 px-2">
+                    <div class="marquee-container w-full max-w-sm mx-auto text-2xl sm:text-3xl lg:text-4xl font-extrabold text-gray-900 dark:text-white px-2">
                         <div id="file_info" class="marquee-content short">Select a track</div>
                     </div>
-                    <p class="text-sm sm:text-base font-medium text-gray-400 dark:text-gray-500">OneDrive Streaming</p>
-                </div>
+                    </div>
 
                 <div class="z-10 w-full flex flex-col mt-8 sm:mt-12 max-w-md mx-auto">
                     <audio id="audio_player" class="hidden"></audio>
@@ -131,19 +130,21 @@
                         <span id="duration_time">0:00</span>
                     </div>
 
-                    <div class="relative flex items-center justify-center w-full mt-4 sm:mt-6 h-16 sm:h-20">
+                    <div class="relative flex items-center justify-center w-full mt-5 sm:mt-6 h-16">
                         <button id="repeat_btn" onclick="toggleRepeat()" class="absolute left-0 flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full text-gray-400 md:hover:text-[#0078d4] md:dark:hover:text-blue-400 active:scale-95 transition">
                             <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                         </button>
 
-                        <div class="flex items-center gap-5 sm:gap-8">
+                        <div class="flex items-center gap-6 sm:gap-8">
                             <button onclick="playPrevTrack()" class="w-12 h-12 sm:w-14 sm:h-14 neumorphic rounded-full flex items-center justify-center text-gray-500 dark:text-gray-400 md:hover:text-[#0078d4] md:dark:hover:text-blue-400 active:scale-95 transition-all">
                                 <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
                             </button>
-                            <button id="play_pause_btn" onclick="togglePlayPause()" class="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-tr from-[#0078d4] to-blue-500 text-white rounded-full flex items-center justify-center md:hover:scale-105 active:scale-95 transition shadow-lg shadow-blue-500/30">
-                                <svg id="icon_play" class="w-8 h-8 sm:w-10 sm:h-10 ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                                <svg id="icon_pause" class="w-8 h-8 sm:w-10 sm:h-10 hidden" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                            
+                            <button id="play_pause_btn" onclick="togglePlayPause()" class="w-16 h-16 sm:w-18 sm:h-18 bg-gradient-to-tr from-[#006cbd] to-[#0078d4] text-white rounded-full flex items-center justify-center md:hover:brightness-110 active:scale-95 transition-all shadow-[0_8px_20px_rgba(0,120,212,0.25)] dark:shadow-[0_8px_20px_rgba(0,120,212,0.4)]">
+                                <svg id="icon_play" class="w-8 h-8 sm:w-9 sm:h-9 translate-x-[2px]" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                <svg id="icon_pause" class="w-8 h-8 sm:w-9 sm:h-9 hidden" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
                             </button>
+                            
                             <button onclick="playNextTrack(true)" class="w-12 h-12 sm:w-14 sm:h-14 neumorphic rounded-full flex items-center justify-center text-gray-500 dark:text-gray-400 md:hover:text-[#0078d4] md:dark:hover:text-blue-400 active:scale-95 transition-all">
                                 <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
                             </button>
@@ -190,10 +191,12 @@
                 </div>
 
                 <div class="flex-1 overflow-y-auto w-full relative">
-                    <div id="recent_tracks_container" class="hidden border-b border-gray-100 dark:border-gray-800 px-5 py-3 sm:py-4 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-md sticky top-0 z-20">
-                        <p class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2.5 ml-1">Recently Played</p>
-                        <div id="recent_tracks_list" class="grid grid-cols-3 gap-2 w-full">
-                            </div>
+                    <div id="recent_tracks_container" class="hidden border-b border-gray-100 dark:border-gray-800 px-4 sm:px-5 py-2 sm:py-3 bg-gray-50/70 dark:bg-gray-900/70 backdrop-blur-md sticky top-0 z-20">
+                        <div class="flex items-center gap-1.5 mb-1.5 ml-1">
+                            <svg class="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            <p class="text-[9px] sm:text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Recent</p>
+                        </div>
+                        <div id="recent_tracks_list" class="grid grid-cols-3 gap-2 w-full"></div>
                     </div>
 
                     <div id="file_list_container" class="p-3 sm:p-5 pb-10 min-h-[50%]">
@@ -216,7 +219,7 @@
             window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(()=>{}));
         }
 
-        // 🔥 모바일 OS 체크: PC에서는 Wake Lock 렌더링 자체를 생략
+        // 🔥 모바일 OS 체크: PC(윈도우/맥)에서는 폰 아이콘(Wake Lock) 완전 제거
         document.addEventListener("DOMContentLoaded", () => {
             const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
             const wakeLockIndicator = document.getElementById('wake_lock_indicator');
@@ -335,7 +338,6 @@
         document.addEventListener('click', closeAllDropdowns);
         document.addEventListener('touchstart', closeAllDropdowns, { passive: true });
 
-        // 🔥 최근 곡 (최대 3개 제한, 폴더 정보 저장)
         function getRecentTracks() {
             try { return JSON.parse(localStorage.getItem('recent_tracks') || '[]'); } 
             catch (e) { return []; }
@@ -367,7 +369,7 @@
             
             recent.forEach(track => {
                 const chip = document.createElement('div');
-                chip.className = 'w-full px-2 sm:px-3 py-1.5 sm:py-2 rounded-xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-sm text-[10px] sm:text-xs font-semibold text-center text-gray-600 dark:text-gray-400 cursor-pointer active:scale-95 transition-all md:hover:border-[#0078d4] md:hover:text-[#0078d4] truncate';
+                chip.className = 'w-full px-2 sm:px-3 py-1.5 sm:py-2 rounded-[0.8rem] border border-gray-200/60 dark:border-gray-700/60 bg-white dark:bg-gray-800 shadow-sm text-[10px] sm:text-xs font-semibold text-center text-gray-700 dark:text-gray-300 cursor-pointer active:scale-95 transition-all md:hover:border-[#0078d4] md:hover:text-[#0078d4] truncate';
                 chip.innerText = track.name.replace(/\.[^/.]+$/, ""); 
                 
                 chip.onclick = () => {
@@ -375,7 +377,6 @@
                     currentIndex = 0;
                     playTrack(0); 
                     
-                    // 빵부스러기 무한 증식을 막는 완벽한 초기화 로직
                     if (currentFolderId !== track.folderId && track.folderId) {
                         pathHistory = [{ id: 'root', name: 'My Drive' }]; 
                         if (track.folderId !== 'root') {
@@ -446,7 +447,6 @@
             });
         }
 
-        // 🔥 폴더 불러오기: 스켈레톤 로딩 UI 적용
         async function fetchMyFolders(folderId, folderName, isNewNavigation = true) {
             const container = document.getElementById('file_list_container');
             
@@ -562,7 +562,7 @@
         function toggleRepeat() { playMode = (playMode + 1) % 4; updateRepeatBtnUI(); }
         function updateRepeatBtnUI() {
             const btn = document.getElementById('repeat_btn'); 
-            audio.loop = (playMode === 2); // 1곡 반복 딜레이 제로
+            audio.loop = (playMode === 2); 
             let svg = '';
             if (playMode === 0 || playMode === 1) svg = `<svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>`;
             else if (playMode === 2) svg = `<svg class="w-5 h-5 sm:w-6 sm:h-6 relative" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path><text x="12" y="15" font-family="sans-serif" font-size="9" font-weight="bold" fill="currentColor" text-anchor="middle" stroke="none">1</text></svg>`;
@@ -589,7 +589,7 @@
                 currentObjectUrl = URL.createObjectURL(blob); audio.src = currentObjectUrl;
                 playerCard.classList.remove('shimmer-active');
                 if ('mediaSession' in navigator) {
-                    navigator.mediaSession.metadata = new MediaMetadata({ title: playingQueue[index].name.replace(/\.[^/.]+$/, ""), artist: 'OneDrive Streaming', album: 'Music Player', artwork: [ { src: 'data:image/svg+xml;charset=utf-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 512 512%22%3E%3Cdefs%3E%3ClinearGradient id=%22grad%22 x1=%220%25%22 y1=%22100%25%22 x2=%22100%25%22 y2=%220%25%22%3E%3Cstop offset=%220%25%22 style=%22stop-color:%230078d4;stop-opacity:1%22 /%3E%3Cstop offset=%22100%25%22 style=%22stop-color:%2360a5fa;stop-opacity:1%22 /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width=%22512%22 height=%22512%22 rx=%22112%22 fill=%22url(%23grad)%22 /%3E%3Cpath d=%22M210 370V130l210-40v230%22 fill=%22none%22 stroke=%22%23ffffff%22 stroke-width=%2232%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22/%3E%3Ccircle cx=%22160%22 cy=%22370%22 r=%2250%22 fill=%22none%22 stroke=%22%23ffffff%22 stroke-width=%2232%22/%3E%3Ccircle cx=%22370%22 cy=%22330%22 r=%2250%22 fill=%22none%22 stroke=%22%23ffffff%22 stroke-width=%2232%22/%3E%3C/svg%3E', sizes: '512x512', type: 'image/svg+xml' } ] });
+                    navigator.mediaSession.metadata = new MediaMetadata({ title: playingQueue[index].name.replace(/\.[^/.]+$/, ""), artist: 'Music Player', album: 'Music Player', artwork: [ { src: 'data:image/svg+xml;charset=utf-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 512 512%22%3E%3Cdefs%3E%3ClinearGradient id=%22grad%22 x1=%220%25%22 y1=%22100%25%22 x2=%22100%25%22 y2=%220%25%22%3E%3Cstop offset=%220%25%22 style=%22stop-color:%230078d4;stop-opacity:1%22 /%3E%3Cstop offset=%22100%25%22 style=%22stop-color:%2360a5fa;stop-opacity:1%22 /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width=%22512%22 height=%22512%22 fill=%22url(%23grad)%22 /%3E%3Cpath d=%22M210 370V130l210-40v230%22 fill=%22none%22 stroke=%22%23ffffff%22 stroke-width=%2232%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22/%3E%3Ccircle cx=%22160%22 cy=%22370%22 r=%2250%22 fill=%22none%22 stroke=%22%23ffffff%22 stroke-width=%2232%22/%3E%3Ccircle cx=%22370%22 cy=%22330%22 r=%2250%22 fill=%22none%22 stroke=%22%23ffffff%22 stroke-width=%2232%22/%3E%3C/svg%3E', sizes: '512x512', type: 'image/svg+xml' } ] });
                     navigator.mediaSession.setActionHandler('play', () => { togglePlayPause(); }); navigator.mediaSession.setActionHandler('pause', () => { togglePlayPause(); });
                     navigator.mediaSession.setActionHandler('previoustrack', () => { playPrevTrack(); }); navigator.mediaSession.setActionHandler('nexttrack', () => { playNextTrack(true); });
                 }
