@@ -597,8 +597,11 @@
             updateRepeatBtnUI();
         }
         
-        function updateRepeatBtnUI() {
+                function updateRepeatBtnUI() {
             const btn = document.getElementById('repeat_btn');
+            
+            audio.loop = (playMode === 2);
+            
             let svgContent = '';
             
             if (playMode === 0 || playMode === 1) {
