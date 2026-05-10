@@ -8,7 +8,7 @@
     
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#000000">
-    <link rel="apple-touch-icon" href="data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3ClinearGradient id='grad' x1='0%25' y1='100%25' x2='100%25' y2='0%25'%3E%3Cstop offset='0%25' style='stop-color:%230078d4;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%2360a5fa;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='512' height='512' rx='112' fill='url(%23grad)' /%3E%3Cpath d='M201 370V130l210-40v230' fill='none' stroke='%23ffffff' stroke-width='32' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='151' cy='370' r='50' fill='none' stroke='%23ffffff' stroke-width='32'/%3E%3Ccircle cx='361' cy='330' r='50' fill='none' stroke='%23ffffff' stroke-width='32'/%3E%3C/svg%3E">
+    <link rel="apple-touch-icon" href="data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3ClinearGradient id='grad' x1='0%25' y1='100%25' x2='100%25' y2='0%25'%3E%3Cstop offset='0%25' style='stop-color:%230078d4;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%2360a5fa;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='512' height='512' rx='112' fill='url(%23grad)' /%3E%3Cpath d='M210 370V130l210-40v230' fill='none' stroke='%23ffffff' stroke-width='32' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='160' cy='370' r='50' fill='none' stroke='%23ffffff' stroke-width='32'/%3E%3Ccircle cx='370' cy='330' r='50' fill='none' stroke='%23ffffff' stroke-width='32'/%3E%3C/svg%3E">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -48,6 +48,7 @@
         input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: #e5e7eb; border-radius: 2px; }
         .dark input[type=range]::-webkit-slider-runnable-track { background: #374151; }
 
+        /* 🔥 직진형(90deg) 스켈레톤 로딩 원복 */
         .shimmer-active::before { content: ''; position: absolute; inset: 0; background: rgba(255, 255, 255, 0.3); z-index: 40; pointer-events: none; }
         .dark .shimmer-active::before { background: rgba(0, 0, 0, 0.5); }
         .shimmer-active::after { content: ''; position: absolute; top: 0; bottom: 0; left: 0; right: 0; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent); transform: translateX(-100%); animation: shimmerMove 1.2s infinite linear; z-index: 50; pointer-events: none; }
@@ -68,13 +69,13 @@
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-900 dark:bg-black dark:text-gray-100 font-sans antialiased h-screen overflow-hidden flex flex-col transition-colors duration-300">
+<body class="fixed inset-0 w-full h-[100dvh] flex flex-col bg-gray-50 text-gray-900 dark:bg-black dark:text-gray-100 font-sans antialiased overflow-hidden transition-colors duration-300">
 
     <header class="z-50 glass shrink-0 transition-colors duration-300">
-        <div class="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 max-w-[1400px] mx-auto">
+        <div class="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 max-w-[1400px] w-full mx-auto">
             <div onclick="window.location.reload()" class="font-bold text-lg sm:text-xl tracking-tight flex items-center gap-2.5 text-gray-900 dark:text-white cursor-pointer hover:opacity-70 transition">
                 <div class="w-7 h-7 sm:w-8 sm:h-8 bg-gradient-to-tr from-[#0078d4] to-blue-400 rounded-xl flex items-center justify-center shadow-md">
-                    <svg class="w-4 h-4 sm:w-4.5 sm:h-4.5 text-white" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                    <svg class="w-4 h-4 sm:w-4.5 sm:h-4.5 text-white pr-[1px] pb-[1px]" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
                         <path d="M9 18V5l12-2v13" />
                         <circle cx="6" cy="18" r="3" />
                         <circle cx="18" cy="16" r="3" />
@@ -103,51 +104,49 @@
         </div>
     </header>
 
-    <main class="flex-1 max-w-[1400px] w-full mx-auto px-4 sm:px-6 py-4 sm:py-6 flex flex-col lg:flex-row gap-4 sm:gap-8 overflow-hidden">
+    <main class="flex-1 max-w-[1400px] w-full mx-auto px-4 sm:px-6 py-4 sm:py-6 flex flex-col lg:flex-row gap-4 sm:gap-8 min-h-0 overflow-hidden">
         
-        <div class="w-full lg:w-[45%] flex flex-col shrink-0">
-            <div id="player_card" class="h-auto border border-gray-100 dark:border-gray-800 rounded-[2rem] p-5 sm:p-8 bg-white dark:bg-gray-900 shadow-xl shadow-gray-200/50 dark:shadow-none flex flex-col justify-center relative overflow-hidden isolate transform-gpu transition-colors duration-300">
-                <div class="absolute -top-32 -right-32 w-64 h-64 bg-blue-400/20 dark:bg-blue-900/20 rounded-full blur-[80px] pointer-events-none"></div>
+        <div class="w-full lg:w-[45%] flex flex-col shrink-0 lg:h-full justify-center">
+            <div id="player_card" class="isolate border border-gray-100 dark:border-gray-800 rounded-[2rem] p-6 sm:p-10 bg-white dark:bg-gray-900 shadow-xl shadow-gray-200/50 dark:shadow-none flex flex-col justify-center relative transition-colors duration-300" style="-webkit-mask-image: -webkit-radial-gradient(white, black);">
+                <div class="absolute -top-32 -right-32 w-64 h-64 bg-blue-400/20 dark:bg-blue-900/20 rounded-full blur-[80px] pointer-events-none -z-10"></div>
 
-                <div class="flex flex-col items-center justify-center gap-2 sm:gap-4 z-10 w-full text-center">
+                <div class="z-10 w-full text-center flex flex-col items-center pt-2 sm:pt-4">
+                    <div class="flex items-center gap-2 mb-3 sm:mb-5 justify-center">
+                        <span class="w-2.5 h-2.5 rounded-full bg-gray-300 dark:bg-gray-600" id="status_dot"></span>
+                        <span class="text-xs font-bold text-gray-500 dark:text-gray-400 tracking-[0.2em] uppercase" id="status_info">STANDBY</span>
+                    </div>
                     
-                    <div class="w-full pt-2 sm:pt-4">
-                        <div class="flex items-center gap-2 mb-2 sm:mb-4 justify-center">
-                            <span class="w-2.5 h-2.5 rounded-full bg-gray-300 dark:bg-gray-600" id="status_dot"></span>
-                            <span class="text-xs font-bold text-gray-500 dark:text-gray-400 tracking-[0.2em] uppercase" id="status_info">STANDBY</span>
-                        </div>
-                        
-                        <div class="marquee-container text-2xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 dark:text-white mb-2 sm:mb-4 px-2">
-                            <div id="file_info" class="marquee-content short">Select a track</div>
-                        </div>
-                        </div>
+                    <div class="marquee-container w-full max-w-sm mx-auto text-2xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 dark:text-white mb-2 sm:mb-4 px-2">
+                        <div id="file_info" class="marquee-content short">Select a track</div>
+                    </div>
+                    <p class="text-sm sm:text-base font-medium text-gray-400 dark:text-gray-500">OneDrive Streaming</p>
+                </div>
 
-                    <div class="w-full flex flex-col gap-4 sm:gap-6 mt-2 sm:mt-4 w-full max-w-md mx-auto">
-                        <audio id="audio_player" class="hidden"></audio>
-                        
-                        <div class="flex items-center gap-3 sm:gap-4 w-full text-xs sm:text-sm font-medium text-gray-400">
-                            <span id="current_time">0:00</span>
-                            <input type="range" id="progress_bar" value="0" step="0.1" min="0" max="100" class="flex-1" disabled>
-                            <span id="duration_time">0:00</span>
-                        </div>
+                <div class="z-10 w-full flex flex-col mt-8 sm:mt-12 max-w-md mx-auto">
+                    <audio id="audio_player" class="hidden"></audio>
+                    
+                    <div class="flex items-center gap-3 sm:gap-4 w-full text-xs sm:text-sm font-medium text-gray-400">
+                        <span id="current_time">0:00</span>
+                        <input type="range" id="progress_bar" value="0" step="0.1" min="0" max="100" class="flex-1" disabled>
+                        <span id="duration_time">0:00</span>
+                    </div>
 
-                        <div class="relative flex items-center justify-center w-full h-14 sm:h-16">
-                            <button id="repeat_btn" onclick="toggleRepeat()" class="absolute left-0 flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full text-gray-400 active:scale-95 transition">
-                                <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                    <div class="relative flex items-center justify-center w-full mt-4 sm:mt-6 h-16 sm:h-20">
+                        <button id="repeat_btn" onclick="toggleRepeat()" class="absolute left-0 flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full text-gray-400 md:hover:text-[#0078d4] md:dark:hover:text-blue-400 active:scale-95 transition">
+                            <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                        </button>
+
+                        <div class="flex items-center gap-5 sm:gap-8">
+                            <button onclick="playPrevTrack()" class="w-12 h-12 sm:w-14 sm:h-14 neumorphic rounded-full flex items-center justify-center text-gray-500 dark:text-gray-400 md:hover:text-[#0078d4] md:dark:hover:text-blue-400 active:scale-95 transition-all">
+                                <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
                             </button>
-
-                            <div class="flex items-center gap-5 sm:gap-8">
-                                <button onclick="playPrevTrack()" class="w-12 h-12 sm:w-14 sm:h-14 neumorphic rounded-full flex items-center justify-center text-gray-500 dark:text-gray-400 md:hover:text-[#0078d4] md:dark:hover:text-blue-400 active:scale-95 transition-all">
-                                    <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
-                                </button>
-                                <button id="play_pause_btn" onclick="togglePlayPause()" class="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-tr from-[#0078d4] to-blue-500 text-white rounded-full flex items-center justify-center md:hover:scale-105 active:scale-95 transition shadow-lg shadow-blue-500/30">
-                                    <svg id="icon_play" class="w-7 h-7 sm:w-8 sm:h-8 ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                                    <svg id="icon_pause" class="w-7 h-7 sm:w-8 sm:h-8 hidden" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-                                </button>
-                                <button onclick="playNextTrack(true)" class="w-12 h-12 sm:w-14 sm:h-14 neumorphic rounded-full flex items-center justify-center text-gray-500 dark:text-gray-400 md:hover:text-[#0078d4] md:dark:hover:text-blue-400 active:scale-95 transition-all">
-                                    <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
-                                </button>
-                            </div>
+                            <button id="play_pause_btn" onclick="togglePlayPause()" class="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-tr from-[#0078d4] to-blue-500 text-white rounded-full flex items-center justify-center md:hover:scale-105 active:scale-95 transition shadow-lg shadow-blue-500/30">
+                                <svg id="icon_play" class="w-8 h-8 sm:w-10 sm:h-10 ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                <svg id="icon_pause" class="w-8 h-8 sm:w-10 sm:h-10 hidden" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                            </button>
+                            <button onclick="playNextTrack(true)" class="w-12 h-12 sm:w-14 sm:h-14 neumorphic rounded-full flex items-center justify-center text-gray-500 dark:text-gray-400 md:hover:text-[#0078d4] md:dark:hover:text-blue-400 active:scale-95 transition-all">
+                                <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -155,7 +154,7 @@
         </div>
 
         <div class="w-full lg:w-[55%] flex flex-col flex-1 min-h-0">
-            <div class="border border-gray-100 dark:border-gray-800 rounded-[2rem] bg-white dark:bg-gray-950 shadow-sm overflow-hidden flex flex-col h-full transition-colors duration-300">
+            <div class="border border-gray-100 dark:border-gray-800 rounded-[2rem] bg-white dark:bg-gray-950 shadow-sm flex flex-col flex-1 min-h-0 overflow-hidden transition-colors duration-300">
                 
                 <div class="bg-gray-50/80 dark:bg-gray-900/80 border-b border-gray-100 dark:border-gray-800 px-5 sm:px-6 py-4 flex items-center justify-between shrink-0">
                     <div class="flex items-center flex-wrap text-sm sm:text-base font-medium text-gray-500 dark:text-gray-400" id="breadcrumb_container">
@@ -190,18 +189,15 @@
                     </div>
                 </div>
 
-                <div class="flex-1 overflow-y-auto flex flex-col min-h-0 relative">
-                    
-                    <div id="recent_tracks_container" class="hidden shrink-0 border-b border-gray-100 dark:border-gray-800 px-4 sm:px-5 py-3 sm:py-4 bg-gray-50/30 dark:bg-gray-950 z-10 sticky top-0 backdrop-blur-md">
-                        <div class="flex items-center justify-between mb-2 sm:mb-3">
-                            <p class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest ml-1">Recently Played</p>
-                        </div>
+                <div class="flex-1 overflow-y-auto w-full relative">
+                    <div id="recent_tracks_container" class="hidden border-b border-gray-100 dark:border-gray-800 px-5 py-3 sm:py-4 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-md sticky top-0 z-20">
+                        <p class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2.5 ml-1">Recently Played</p>
                         <div id="recent_tracks_list" class="grid grid-cols-3 gap-2 w-full">
                             </div>
                     </div>
 
-                    <div id="file_list_container" class="flex-1 p-3 sm:p-5 relative">
-                        <div class="text-center text-sm text-gray-400 dark:text-gray-600 font-medium h-full flex flex-col justify-center items-center gap-4">
+                    <div id="file_list_container" class="p-3 sm:p-5 pb-10 min-h-[50%]">
+                        <div class="text-center text-sm text-gray-400 dark:text-gray-600 font-medium h-full flex flex-col justify-center items-center gap-4 mt-10">
                             <div class="w-16 h-16 bg-gray-50 dark:bg-gray-900 rounded-2xl flex items-center justify-center border border-gray-100 dark:border-gray-800">
                                 <svg class="w-8 h-8 text-gray-300 dark:text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
                             </div>
@@ -220,17 +216,15 @@
             window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(()=>{}));
         }
 
-        // 🔥 모바일 OS 체크 (PC에서는 Wake Lock 마크 렌더링 안 함)
+        // 🔥 모바일 OS 체크: PC에서는 Wake Lock 렌더링 자체를 생략
         document.addEventListener("DOMContentLoaded", () => {
             const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
             const wakeLockIndicator = document.getElementById('wake_lock_indicator');
             if (!isMobile) {
-                if(wakeLockIndicator) wakeLockIndicator.remove(); 
+                wakeLockIndicator.remove(); 
             } else {
-                if(wakeLockIndicator) {
-                    wakeLockIndicator.classList.remove('hidden'); 
-                    wakeLockIndicator.classList.add('flex');
-                }
+                wakeLockIndicator.classList.remove('hidden'); 
+                wakeLockIndicator.classList.add('flex');
             }
         });
 
@@ -341,7 +335,7 @@
         document.addEventListener('click', closeAllDropdowns);
         document.addEventListener('touchstart', closeAllDropdowns, { passive: true });
 
-        // 🔥 최근 곡 무한 증식 버그 완벽 차단 로직 적용
+        // 🔥 최근 곡 (최대 3개 제한, 폴더 정보 저장)
         function getRecentTracks() {
             try { return JSON.parse(localStorage.getItem('recent_tracks') || '[]'); } 
             catch (e) { return []; }
@@ -356,7 +350,7 @@
             const fName = track.folderName || pathHistory[pathHistory.length - 1]?.name || 'My Drive';
             
             recent.unshift({ id: track.id, name: track.name, folderId: fId, folderName: fName }); 
-            if (recent.length > 3) recent = recent.slice(0, 3); // 3개까지만
+            if (recent.length > 3) recent = recent.slice(0, 3); 
             
             try { localStorage.setItem('recent_tracks', JSON.stringify(recent)); } catch(e){}
             renderRecentUI();
@@ -373,7 +367,7 @@
             
             recent.forEach(track => {
                 const chip = document.createElement('div');
-                chip.className = 'w-full px-2 sm:px-3 py-2 sm:py-2.5 rounded-xl border border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900/50 text-[10px] sm:text-xs font-semibold text-center text-gray-600 dark:text-gray-400 cursor-pointer active:scale-95 transition-all md:hover:border-[#0078d4] md:hover:text-[#0078d4] truncate';
+                chip.className = 'w-full px-2 sm:px-3 py-1.5 sm:py-2 rounded-xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-sm text-[10px] sm:text-xs font-semibold text-center text-gray-600 dark:text-gray-400 cursor-pointer active:scale-95 transition-all md:hover:border-[#0078d4] md:hover:text-[#0078d4] truncate';
                 chip.innerText = track.name.replace(/\.[^/.]+$/, ""); 
                 
                 chip.onclick = () => {
@@ -381,8 +375,9 @@
                     currentIndex = 0;
                     playTrack(0); 
                     
+                    // 빵부스러기 무한 증식을 막는 완벽한 초기화 로직
                     if (currentFolderId !== track.folderId && track.folderId) {
-                        pathHistory = [{ id: 'root', name: 'My Drive' }]; // 경로 무한 증식 차단 (초기화)
+                        pathHistory = [{ id: 'root', name: 'My Drive' }]; 
                         if (track.folderId !== 'root') {
                             pathHistory.push({ id: track.folderId, name: track.folderName || 'Folder' });
                         }
@@ -451,7 +446,7 @@
             });
         }
 
-        // 🔥 폴더 불러오기: 스켈레톤 로딩 및 서버 에러(무한로딩) 방지 적용
+        // 🔥 폴더 불러오기: 스켈레톤 로딩 UI 적용
         async function fetchMyFolders(folderId, folderName, isNewNavigation = true) {
             const container = document.getElementById('file_list_container');
             
@@ -475,7 +470,7 @@
 
             try {
                 const token = await getToken();
-                if (!token) throw new Error("Need token");
+                if (!token) throw new Error("Please sign in again.");
 
                 const url = folderId === 'root' 
                     ? "https://graph.microsoft.com/v1.0/me/drive/root/children" 
@@ -522,12 +517,12 @@
                     actionsDiv.innerHTML = `<button onclick="toggleMenu(event, 'drop-m-${file.id}')" class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-700 dark:hover:text-white rounded-full transition font-bold menu-btn">⋮</button><div id="drop-m-${file.id}" class="dropdown-content absolute right-0 mt-8 w-28 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 py-1 z-20 hidden"><a onclick="event.stopPropagation(); renameItem('${file.id}', '${file.name.replace(/'/g,"\\'")}')" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">Rename</a><a onclick="event.stopPropagation(); deleteItem('${file.id}', '${file.name.replace(/'/g,"\\'")}')" class="block px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 cursor-pointer">Delete</a></div>`;
                     item.append(infoDiv, actionsDiv); container.appendChild(item);
                 });
-                if (!folders.length && !audios.length) container.innerHTML = '<div class="h-full flex flex-col items-center justify-center text-sm text-gray-400"><div class="text-3xl mb-2 opacity-50">📁</div>Folder is empty.</div>';
+                if (!folders.length && !audios.length) container.innerHTML = '<div class="h-full flex flex-col items-center justify-center text-sm text-gray-400 mt-10"><div class="text-3xl mb-2 opacity-50">📁</div>Folder is empty.</div>';
                 updateActiveTrackUI();
             
             } catch (err) {
                 console.error("Fetch Error:", err);
-                container.innerHTML = `<div class="h-full flex flex-col items-center justify-center text-sm text-red-500 font-medium"><svg class="w-8 h-8 mb-3 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg><span class="opacity-80">Connection Error. Please refresh.</span></div>`;
+                container.innerHTML = `<div class="h-full flex flex-col items-center justify-center text-sm text-red-500 font-medium mt-10"><svg class="w-8 h-8 mb-3 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg><span class="opacity-80">Connection Error. Please refresh.</span></div>`;
             }
         }
 
@@ -565,20 +560,16 @@
         audio.addEventListener('pause', () => { iconPause.classList.add('hidden'); iconPlay.classList.remove('hidden'); if(document.getElementById('status_info').innerText !== 'BUFFERING...') setStatus('PAUSED', 'standby'); updateActiveTrackUI(); releaseWakeLock(); });
 
         function toggleRepeat() { playMode = (playMode + 1) % 4; updateRepeatBtnUI(); }
-        
-        // 🔥 hover 클래스 제거 완료
         function updateRepeatBtnUI() {
-            const btn = document.getElementById('repeat_btn'); let svg = '';
-            
-            // 🔥 1곡 반복 재생 시 브라우저 자체 루프 켜기 (딜레이 제로)
-            audio.loop = (playMode === 2);
-            
+            const btn = document.getElementById('repeat_btn'); 
+            audio.loop = (playMode === 2); // 1곡 반복 딜레이 제로
+            let svg = '';
             if (playMode === 0 || playMode === 1) svg = `<svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>`;
             else if (playMode === 2) svg = `<svg class="w-5 h-5 sm:w-6 sm:h-6 relative" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path><text x="12" y="15" font-family="sans-serif" font-size="9" font-weight="bold" fill="currentColor" text-anchor="middle" stroke="none">1</text></svg>`;
             else if (playMode === 3) svg = `<svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M2 18h1.4c1.3 0 2.5-.6 3.3-1.7l6.1-8.6c.7-1.1 2-1.7 3.3-1.7H22"/><path d="m18 2 4 4-4 4"/><path d="M2 6h1.9c1.5 0 2.9.9 3.6 2.2"/><path d="M22 18h-5.9c-1.3 0-2.6-.7-3.3-1.8l-.5-.8"/><path d="m18 14 4 4-4 4"/></svg>`;
             btn.innerHTML = svg;
-            if(playMode > 0) btn.className = `absolute left-0 flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full transition text-[#0078d4] dark:text-blue-400 active:scale-95`;
-            else btn.className = `absolute left-0 flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full transition text-gray-400 active:scale-95`;
+            if(playMode > 0) btn.className = `absolute left-0 flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full transition md:hover:text-[#0078d4] md:dark:hover:text-blue-400 text-[#0078d4] dark:text-blue-400 active:scale-95`;
+            else btn.className = `absolute left-0 flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full transition md:hover:text-[#0078d4] md:dark:hover:text-blue-400 text-gray-400 active:scale-95`;
         }
 
         function playRandomFromFolder() { if(currentFolderAudios.length === 0) return; playMode = 3; updateRepeatBtnUI(); playingQueue = [...currentFolderAudios]; playingFolderId = currentFolderId; currentIndex = Math.floor(Math.random() * playingQueue.length); playTrack(currentIndex); }
@@ -598,7 +589,7 @@
                 currentObjectUrl = URL.createObjectURL(blob); audio.src = currentObjectUrl;
                 playerCard.classList.remove('shimmer-active');
                 if ('mediaSession' in navigator) {
-                    navigator.mediaSession.metadata = new MediaMetadata({ title: playingQueue[index].name.replace(/\.[^/.]+$/, ""), artist: 'OneDrive Streaming', album: 'Music Player', artwork: [ { src: 'data:image/svg+xml;charset=utf-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 512 512%22%3E%3Cdefs%3E%3ClinearGradient id=%22grad%22 x1=%220%25%22 y1=%22100%25%22 x2=%22100%25%22 y2=%220%25%22%3E%3Cstop offset=%220%25%22 style=%22stop-color:%230078d4;stop-opacity:1%22 /%3E%3Cstop offset=%22100%25%22 style=%22stop-color:%2360a5fa;stop-opacity:1%22 /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width=%22512%22 height=%22512%22 rx=%22112%22 fill=%22url(%23grad)%22 /%3E%3Cpath d=%22M201 370V130l210-40v230%22 fill=%22none%22 stroke=%22%23ffffff%22 stroke-width=%2232%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22/%3E%3Ccircle cx=%22151%22 cy=%22370%22 r=%2250%22 fill=%22none%22 stroke=%22%23ffffff%22 stroke-width=%2232%22/%3E%3Ccircle cx=%22361%22 cy=%22330%22 r=%2250%22 fill=%22none%22 stroke=%22%23ffffff%22 stroke-width=%2232%22/%3E%3C/svg%3E', sizes: '512x512', type: 'image/svg+xml' } ] });
+                    navigator.mediaSession.metadata = new MediaMetadata({ title: playingQueue[index].name.replace(/\.[^/.]+$/, ""), artist: 'OneDrive Streaming', album: 'Music Player', artwork: [ { src: 'data:image/svg+xml;charset=utf-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 512 512%22%3E%3Cdefs%3E%3ClinearGradient id=%22grad%22 x1=%220%25%22 y1=%22100%25%22 x2=%22100%25%22 y2=%220%25%22%3E%3Cstop offset=%220%25%22 style=%22stop-color:%230078d4;stop-opacity:1%22 /%3E%3Cstop offset=%22100%25%22 style=%22stop-color:%2360a5fa;stop-opacity:1%22 /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width=%22512%22 height=%22512%22 rx=%22112%22 fill=%22url(%23grad)%22 /%3E%3Cpath d=%22M210 370V130l210-40v230%22 fill=%22none%22 stroke=%22%23ffffff%22 stroke-width=%2232%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22/%3E%3Ccircle cx=%22160%22 cy=%22370%22 r=%2250%22 fill=%22none%22 stroke=%22%23ffffff%22 stroke-width=%2232%22/%3E%3Ccircle cx=%22370%22 cy=%22330%22 r=%2250%22 fill=%22none%22 stroke=%22%23ffffff%22 stroke-width=%2232%22/%3E%3C/svg%3E', sizes: '512x512', type: 'image/svg+xml' } ] });
                     navigator.mediaSession.setActionHandler('play', () => { togglePlayPause(); }); navigator.mediaSession.setActionHandler('pause', () => { togglePlayPause(); });
                     navigator.mediaSession.setActionHandler('previoustrack', () => { playPrevTrack(); }); navigator.mediaSession.setActionHandler('nexttrack', () => { playNextTrack(true); });
                 }
