@@ -81,18 +81,9 @@
                 Got music files? Upload to <a href="https://onedrive.live.com/" target="_blank" class="text-[#0078d4] dark:text-blue-400 font-bold hover:underline">OneDrive</a> and stream here.
             </p>
             <ul class="text-sm text-gray-700 dark:text-gray-300 space-y-3 mb-6 font-medium">
-                <li class="flex items-start gap-2">
-                    <span class="shrink-0 text-[#0078d4] dark:text-blue-400">✨</span> 
-                    <span><strong>100% Free:</strong> No subscriptions. Supported by minimal ads.</span>
-                </li>
-                <li class="flex items-start gap-2">
-                    <span class="shrink-0 text-[#0078d4] dark:text-blue-400">🔐</span> 
-                    <span><strong>Zero Sign-up:</strong> Uses your Microsoft account securely.</span>
-                </li>
-                <li class="flex items-start gap-2">
-                    <span class="shrink-0 text-[#0078d4] dark:text-blue-400">🚀</span> 
-                    <span><strong>Lightning Fast:</strong> Optimized Web App experience.</span>
-                </li>
+                <li class="flex items-start gap-2"><span class="shrink-0 text-[#0078d4] dark:text-blue-400">✨</span> <span><strong>100% Free:</strong> No subscriptions. Supported by minimal ads.</span></li>
+                <li class="flex items-start gap-2"><span class="shrink-0 text-[#0078d4] dark:text-blue-400">🔐</span> <span><strong>Zero Sign-up:</strong> Uses your Microsoft account securely.</span></li>
+                <li class="flex items-start gap-2"><span class="shrink-0 text-[#0078d4] dark:text-blue-400">🚀</span> <span><strong>Lightning Fast:</strong> Optimized Web App experience.</span></li>
             </ul>
             <div class="bg-gray-50 dark:bg-gray-800/50 rounded-2xl p-4 border border-gray-100 dark:border-gray-700/50 text-xs text-gray-600 dark:text-gray-400 font-medium">
                 <p class="font-bold text-gray-900 dark:text-white mb-2 tracking-wider uppercase">📱 Install as an App</p>
@@ -215,13 +206,11 @@
     </main>
 
     <script>
-        // 🔥 누락되었던 다크모드 스위치 함수 복구 완료
         function toggleDarkMode() {
             document.documentElement.classList.toggle('dark');
             localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
         }
         
-        // 페이지 로드 시 다크모드 설정 적용
         if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
         }
@@ -280,10 +269,33 @@
                 modal.classList.remove('flex'); 
             }, 300);
         }
-        
-        window.onclick = (e) => { 
-            if(e.target.id.endsWith('_modal')) closeModal(e.target.id); 
-        };
+
+        // 🔥 배경 클릭 시 드롭다운 및 모달 닫기 복구 완료
+        window.addEventListener('click', (e) => {
+            // 드롭다운 닫기
+            if (!e.target.closest('.menu-btn') && !e.target.closest('.dropdown-content')) {
+                document.querySelectorAll('.dropdown-content').forEach(d => d.classList.add('hidden'));
+            }
+            
+            // Info 모달 닫기 (배경 터치)
+            const infoModal = document.getElementById('info_modal');
+            if (infoModal && !infoModal.classList.contains('hidden')) {
+                const infoCard = document.getElementById('info_modal_card');
+                // 카드를 클릭한 게 아니고, 열기 버튼을 누른 게 아니면 닫기
+                if (!infoCard.contains(e.target) && !e.target.closest('[onclick*="info_modal"]')) {
+                    closeModal('info_modal');
+                }
+            }
+
+            // Rename 모달 닫기 (배경 터치)
+            const renameModal = document.getElementById('rename_modal');
+            if (renameModal && !renameModal.classList.contains('hidden')) {
+                const renameCard = document.getElementById('rename_modal_card');
+                if (!renameCard.contains(e.target) && !e.target.closest('.dropdown-content')) {
+                    closeModal('rename_modal');
+                }
+            }
+        });
 
         msalInstance.handleRedirectPromise().then(res => {
             if (res || msalInstance.getAllAccounts().length > 0) {
@@ -304,7 +316,6 @@
             msalInstance.logoutRedirect({ account: msalInstance.getAccountByHomeId(accountId) }); 
         }
         
-        // 🔥 서버 401 에러 원천 차단: 토큰 안전 갱신 로직 복구
         async function getToken() {
             try {
                 const account = msalInstance.getAccountByHomeId(accountId) || msalInstance.getAllAccounts()[0];
@@ -357,8 +368,13 @@
                 audio.src = URL.createObjectURL(blob);
                 document.getElementById('player_card').classList.remove('shimmer-active');
                 
+                // 🔥 잃어버렸던 잠금화면 8분음표 로고(Artwork) 완벽 복구
                 if ('mediaSession' in navigator) {
-                    navigator.mediaSession.metadata = new MediaMetadata({ title: base, artist: 'Music Player' });
+                    navigator.mediaSession.metadata = new MediaMetadata({ 
+                        title: base, 
+                        artist: 'Music Player',
+                        artwork: [ { src: 'data:image/svg+xml;charset=utf-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 512 512%22%3E%3Cdefs%3E%3ClinearGradient id=%22grad%22 x1=%220%25%22 y1=%22100%25%22 x2=%22100%25%22 y2=%220%25%22%3E%3Cstop offset=%220%25%22 style=%22stop-color:%230078d4;stop-opacity:1%22 /%3E%3Cstop offset=%22100%25%22 style=%22stop-color:%2360a5fa;stop-opacity:1%22 /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width=%22512%22 height=%22512%22 fill=%22url(%23grad)%22 /%3E%3Cpath d=%22M200 370V130l210-40v230%22 fill=%22none%22 stroke=%22%23ffffff%22 stroke-width=%2232%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22/%3E%3Ccircle cx=%22150%22 cy=%22370%22 r=%2250%22 fill=%22none%22 stroke=%22%23ffffff%22 stroke-width=%2232%22/%3E%3Ccircle cx=%22360%22 cy=%22330%22 r=%2250%22 fill=%22none%22 stroke=%22%23ffffff%22 stroke-width=%2232%22/%3E%3C/svg%3E', sizes: '512x512', type: 'image/svg+xml' } ]
+                    });
                 }
                 
                 if(autoPlay) audio.play(); else setStatus('READY', 'standby');
@@ -453,7 +469,6 @@
                         } 
                     };
                     
-                    // 🔥 숫자 찌그러짐 방지 (shrink-0 복구)
                     info.innerHTML = `<div id="track_icon_${a.id}" class="w-10 h-10 sm:w-11 sm:h-11 shrink-0 rounded-xl flex items-center justify-center bg-gray-100 dark:bg-gray-900 text-gray-400 font-bold text-sm transition">${i+1}</div><p id="track_text_${a.id}" class="text-sm sm:text-[15px] font-medium truncate text-gray-800 dark:text-gray-200 transition">${base}</p>`;
                     
                     el.append(info, createActionBtn(a.id, a.name, false)); 
@@ -470,7 +485,6 @@
             }
         }
 
-        // 🔥 폴더 점 3개 메뉴(Action Button) 뼈대 복구
         function createActionBtn(id, name, isFolder) {
             const wrap = document.createElement('div'); 
             wrap.className = 'relative flex items-center shrink-0 opacity-100 lg:opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition';
@@ -802,10 +816,6 @@
             const r = Math.floor(s % 60); 
             return `${m}:${r < 10 ? '0' : ''}${r}`; 
         }
-        
-        window.addEventListener('click', () => { 
-            document.querySelectorAll('.dropdown-content').forEach(d => d.classList.add('hidden')); 
-        }, true);
 
         // 모바일 OS 체크: PC에서는 폰 아이콘 아예 삭제
         document.addEventListener("DOMContentLoaded", () => {
