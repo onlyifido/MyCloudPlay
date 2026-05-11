@@ -8,7 +8,7 @@
     
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#000000">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3ClinearGradient id='grad' x1='0%25' y1='100%25' x2='100%25' y2='0%25'%3E%3Cstop offset='0%25' style='stop-color:%230078d4;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%2360a5fa;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='512' height='512' fill='url(%23grad)' /%3E%3Cpath d='M200 370V130l210-40v230' fill='none' stroke='%23ffffff' stroke-width='32' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='150' cy='370' r='50' fill='none' stroke='%23ffffff' stroke-width='32'/%3E%3Ccircle cx='360' cy='330' r='50' fill='none' stroke='%23ffffff' stroke-width='32'/%3E%3C/svg%3E">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3ClinearGradient id='grad' x1='0%25' y1='100%25' x2='100%25' y2='0%25'%3E%3Cstop offset='0%25' style='stop-color:%230078d4;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%2360a5fa;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='512' height='512' rx='112' fill='url(%23grad)' /%3E%3Cpath d='M200 370V130l210-40v230' fill='none' stroke='%23ffffff' stroke-width='32' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='150' cy='370' r='50' fill='none' stroke='%23ffffff' stroke-width='32'/%3E%3Ccircle cx='360' cy='330' r='50' fill='none' stroke='%23ffffff' stroke-width='32'/%3E%3C/svg%3E">
     <link rel="apple-touch-icon" href="data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3ClinearGradient id='grad' x1='0%25' y1='100%25' x2='100%25' y2='0%25'%3E%3Cstop offset='0%25' style='stop-color:%230078d4;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%2360a5fa;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='512' height='512' fill='url(%23grad)' /%3E%3Cpath d='M200 370V130l210-40v230' fill='none' stroke='%23ffffff' stroke-width='32' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='150' cy='370' r='50' fill='none' stroke='%23ffffff' stroke-width='32'/%3E%3Ccircle cx='360' cy='330' r='50' fill='none' stroke='%23ffffff' stroke-width='32'/%3E%3C/svg%3E">
 
     <script src="https://cdn.tailwindcss.com"></script>
@@ -132,7 +132,7 @@
                 
                 <div id="file_ext_badge" class="absolute top-6 right-8 px-2 py-0.5 rounded-md bg-gray-50 dark:bg-gray-800 text-[9px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest hidden">MP3</div>
 
-                <div class="z-10 w-full text-center flex flex-col items-center">
+                <div class="z-10 w-full text-center flex flex-col items-center pt-2 sm:pt-4">
                     <div class="flex items-center gap-2 mb-3 justify-center">
                         <span class="w-2 h-2 rounded-full bg-gray-300 dark:bg-gray-600" id="status_dot"></span>
                         <span class="text-[10px] sm:text-xs font-bold text-gray-500 dark:text-gray-400 tracking-[0.2em] uppercase" id="status_info">STANDBY</span>
@@ -162,17 +162,21 @@
 
         <div class="w-full lg:w-[55%] flex flex-col flex-1 min-h-0">
             <div class="border border-gray-100 dark:border-gray-800 rounded-[2.5rem] bg-white dark:bg-gray-950 shadow-sm flex flex-col flex-1 min-h-0 overflow-hidden transition-colors duration-300">
-                <div class="bg-gray-50/80 dark:bg-gray-900/80 border-b border-gray-100 dark:border-gray-800 px-5 py-4 flex items-center justify-between shrink-0">
+                
+                <div class="bg-gray-50/80 dark:bg-gray-900/80 border-b border-gray-100 dark:border-gray-800 px-5 sm:px-6 py-4 flex items-center justify-between shrink-0">
                     <div id="breadcrumb_container" class="flex items-center flex-wrap text-sm sm:text-base font-medium text-gray-500 dark:text-gray-400">
                         <span class="font-semibold text-gray-900 dark:text-white">My Drive</span>
                     </div>
                     
-                    <div id="action_buttons" style="display: none;" class="flex items-center gap-2 relative">
+                    <div id="action_buttons" style="display: none;" class="flex items-center gap-2">
                         <button id="shuffle_folder_btn" onclick="playRandomFromFolder()" style="display: none;" class="w-9 h-9 flex items-center justify-center text-[#0078d4] bg-blue-50 dark:bg-blue-900/30 rounded-full transition active:scale-90"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M2 18h1.4c1.3 0 2.5-.6 3.3-1.7l6.1-8.6c.7-1.1 2-1.7 3.3-1.7H22" /><path d="m18 2 4 4-4 4" /><path d="M2 6h1.9c1.5 0 2.9.9 3.6 2.2" /><path d="M22 18h-5.9c-1.3 0-2.6-.7-3.3-1.8l-.5-.8" /><path d="m18 14 4 4-4 4" /></svg></button>
-                        <button onclick="toggleMenu(event, 'main_action_drop')" class="p-2 text-gray-500 hover:text-gray-800 dark:hover:text-gray-200 bg-gray-100 dark:bg-gray-800 rounded-full transition menu-btn"><svg class="w-5 h-5 pointer-events-none" fill="currentColor" viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg></button>
-                        <div id="main_action_drop" class="dropdown-content absolute right-0 top-12 w-44 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-100 dark:border-gray-700 py-1.5 z-50 hidden">
-                            <a onclick="createFolder()" class="flex items-center gap-2.5 px-4 py-2 text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">Create Folder</a>
-                            <a onclick="document.getElementById('file_upload').click()" class="flex items-center gap-2.5 px-4 py-2 text-sm font-bold text-[#0078d4] hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">Upload Music</a>
+                        
+                        <div class="relative">
+                            <button onclick="toggleMenu(event, 'main_action_drop')" class="p-2 text-gray-500 hover:text-gray-800 dark:hover:text-gray-200 bg-gray-100 dark:bg-gray-800 rounded-full transition menu-btn"><svg class="w-5 h-5 pointer-events-none" fill="currentColor" viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg></button>
+                            <div id="main_action_drop" class="dropdown-content absolute right-0 top-12 w-44 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-100 dark:border-gray-700 py-1.5 z-50 hidden">
+                                <a onclick="createFolder()" class="flex items-center gap-2.5 px-4 py-2 text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">Create Folder</a>
+                                <a onclick="document.getElementById('file_upload').click()" class="flex items-center gap-2.5 px-4 py-2 text-sm font-bold text-[#0078d4] hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">Upload Music</a>
+                            </div>
                         </div>
                         <input type="file" id="file_upload" accept="audio/*" multiple class="hidden" onchange="handleFileUpload(event)">
                     </div>
@@ -183,14 +187,17 @@
                         <p class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2.5 ml-1">Recent</p>
                         <div id="recent_tracks_list" class="grid grid-cols-3 gap-2"></div>
                     </div>
-                    <div id="file_list_container" class="p-3 sm:p-5 pb-10 w-full relative">
+                    
+                    <div id="file_list_container" class="p-3 sm:p-5 pb-10 w-full relative min-h-[50%]">
                         <div class="flex flex-col justify-center items-center text-sm text-gray-400 mt-10">
                             Please sign in to access music.
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
+
     </main>
 
     <script>
@@ -199,7 +206,6 @@
         const msalInstance = new msal.PublicClientApplication(msalConfig);
         let accountId = "", currentFolderAudios = [], playingQueue = [], currentIndex = -1, playMode = 0, currentFolderId = 'root', pathHistory = [{ id: 'root', name: 'My Drive' }], wakeLock = null;
 
-        // 이름에서 확장자 분리하는 기능
         function splitName(name) {
             if(!name) return { base: '', ext: '' };
             const lastDot = name.lastIndexOf('.');
@@ -207,7 +213,6 @@
             return { base: name.substring(0, lastDot), ext: name.substring(lastDot + 1).toUpperCase() };
         }
 
-        // 모달창 켜고 끄기
         function openModal(id) {
             const modal = document.getElementById(id), card = modal.firstElementChild;
             modal.classList.remove('hidden'); modal.classList.add('flex');
@@ -290,13 +295,19 @@
             }, 50);
         }
 
-        async function fetchMyFolders(folderId, folderName, isNew = true) {
+        async function fetchMyFolders(folderId, folderName, isNewNavigation = true) {
             const container = document.getElementById('file_list_container');
             container.innerHTML = '<div class="w-full pt-1 animate-pulse space-y-3">' + Array(5).fill('<div class="h-16 bg-gray-100 dark:bg-gray-800 rounded-2xl"></div>').join('') + '</div>';
             
+            // 🔥 빵부스러기 무한 복제 및 뒤로가기 에러 완벽 차단
             currentFolderId = folderId; 
-            if(isNew && folderId !== 'root') pathHistory.push({ id: folderId, name: folderName }); 
-            else if(folderId === 'root') pathHistory = [{id:'root', name:'My Drive'}];
+            if(isNewNavigation && folderId !== 'root') {
+                if (pathHistory[pathHistory.length - 1]?.id !== folderId) {
+                    pathHistory.push({ id: folderId, name: folderName }); 
+                }
+            } else if(folderId === 'root') {
+                pathHistory = [{id:'root', name:'My Drive'}];
+            }
             
             renderBreadcrumbs();
             
@@ -314,26 +325,32 @@
                 
                 folders.forEach(f => {
                     const el = document.createElement('div');
-                    el.className = 'flex items-center justify-between p-4 mb-2 border border-gray-100 dark:border-gray-800 rounded-2xl bg-gray-50/50 dark:bg-gray-900/30 group cursor-pointer w-full';
-                    el.onclick = () => fetchMyFolders(f.id, f.name);
-                    el.innerHTML = `<div class="flex items-center gap-4 flex-1 min-w-0"><div class="w-12 h-12 shrink-0 rounded-xl bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center text-[#0078d4]"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg></div><span class="font-semibold truncate">${f.name}</span></div>`;
-                    el.append(createActionBtn(f.id, f.name, true)); 
+                    el.className = 'flex items-center justify-between p-3 sm:p-4 mb-2 border border-gray-100 dark:border-gray-800/80 rounded-[1.2rem] bg-gray-50/50 dark:bg-gray-900/30 group cursor-pointer w-full transition hover:bg-gray-100 dark:hover:bg-gray-800/50';
+                    
+                    const info = document.createElement('div');
+                    info.className = 'flex items-center gap-3 sm:gap-4 flex-1 min-w-0 pr-2';
+                    info.onclick = () => fetchMyFolders(f.id, f.name);
+                    info.innerHTML = `<div class="w-10 h-10 sm:w-12 sm:h-12 shrink-0 rounded-xl bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center text-[#0078d4]"><svg class="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg></div><span class="text-sm sm:text-base font-semibold truncate text-gray-800 dark:text-gray-200">${f.name}</span>`;
+                    
+                    el.append(info, createActionBtn(f.id, f.name, true)); 
                     container.appendChild(el);
                 });
                 
                 audios.forEach((a, i) => {
                     const { base } = splitName(a.name);
-                    const el = document.createElement('div'); el.id = `track_row_${a.id}`;
-                    el.className = 'flex items-center justify-between p-3 mb-1.5 cursor-pointer rounded-2xl transition group w-full border border-transparent hover:bg-gray-50 dark:hover:bg-gray-800/50';
+                    const el = document.createElement('div'); 
+                    el.id = `track_row_${a.id}`;
+                    el.className = 'flex items-center justify-between p-3 sm:p-3.5 mb-1.5 cursor-pointer rounded-2xl transition group w-full border border-transparent hover:bg-gray-50 dark:hover:bg-gray-800/50';
+                    
                     const info = document.createElement('div'); 
-                    info.className = 'flex items-center gap-4 flex-1 min-w-0';
+                    info.className = 'flex items-center gap-3 sm:gap-4 flex-1 min-w-0 pr-4';
                     info.onclick = () => { 
                         if(a.id === playingQueue[currentIndex]?.id && audio.src) togglePlayPause(); 
                         else { playingQueue = [...currentFolderAudios]; currentIndex = i; playTrack(i); } 
                     };
                     
-                    // 🔥 숫자 아이콘에 shrink-0 복구 완료!
-                    info.innerHTML = `<div id="track_icon_${a.id}" class="w-11 h-11 shrink-0 rounded-xl flex items-center justify-center bg-gray-100 dark:bg-gray-900 text-gray-400 font-bold text-sm">${i+1}</div><p id="track_text_${a.id}" class="text-sm font-medium truncate text-gray-800 dark:text-gray-200">${base}</p>`;
+                    // 🔥 숫자 아이콘 찌그러짐 방지 (shrink-0 추가)
+                    info.innerHTML = `<div id="track_icon_${a.id}" class="w-10 h-10 sm:w-11 sm:h-11 shrink-0 rounded-xl flex items-center justify-center bg-gray-100 dark:bg-gray-900 text-gray-400 font-bold text-sm transition">${i+1}</div><p id="track_text_${a.id}" class="text-sm sm:text-[15px] font-medium truncate text-gray-800 dark:text-gray-200 transition">${base}</p>`;
                     
                     el.append(info, createActionBtn(a.id, a.name, false)); 
                     container.appendChild(el);
@@ -349,7 +366,6 @@
             }
         }
 
-        // 🔥 드롭다운 버튼 위치 교정 완료 (top-10 사용)
         function createActionBtn(id, name, isFolder) {
             const wrap = document.createElement('div'); 
             wrap.className = 'relative flex items-center shrink-0 opacity-100 lg:opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition';
@@ -383,7 +399,7 @@
             recent.forEach(t => {
                 const { base } = splitName(t.name);
                 const chip = document.createElement('div');
-                chip.className = 'w-full px-2 py-2 rounded-xl border border-gray-200/60 dark:border-gray-700/60 bg-white dark:bg-gray-800 shadow-sm text-[10px] sm:text-xs font-semibold text-center truncate cursor-pointer active:scale-95 transition-all md:hover:border-[#0078d4] md:hover:text-[#0078d4]';
+                chip.className = 'w-full px-2 sm:px-3 py-1.5 sm:py-2 rounded-[0.8rem] border border-gray-200/60 dark:border-gray-700/60 bg-white dark:bg-gray-800 shadow-sm text-[10px] sm:text-xs font-semibold text-center truncate cursor-pointer active:scale-95 transition-all md:hover:border-[#0078d4] md:hover:text-[#0078d4]';
                 chip.innerText = base;
                 
                 chip.onclick = () => { 
@@ -400,16 +416,17 @@
             });
         }
 
-        // 🔥 뒤로가기 버튼 영역 수술 완료
+        // 🔥 뒤로가기 광클 시 에러 방지 안전장치 추가
         function renderBreadcrumbs() {
             const container = document.getElementById('breadcrumb_container'); 
             container.innerHTML = '';
             
             if (pathHistory.length > 1) {
                 const btn = document.createElement('button'); 
-                btn.className = 'mr-2 p-1 text-gray-400 hover:text-[#0078d4] dark:hover:text-blue-400 transition active:scale-90 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-800'; 
+                btn.className = 'mr-2 p-1 text-gray-400 hover:text-[#0078d4] dark:hover:text-blue-400 transition active:scale-90 flex items-center justify-center rounded-full hover:bg-gray-100 dark:bg-gray-800'; 
                 btn.innerHTML = '<svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path></svg>';
                 btn.onclick = () => { 
+                    if(pathHistory.length <= 1) return; // 안전장치
                     pathHistory.pop(); 
                     const p = pathHistory[pathHistory.length-1]; 
                     fetchMyFolders(p.id, p.name, false); 
@@ -454,12 +471,14 @@
                 const row = document.getElementById(`track_row_${a.id}`), icon = document.getElementById(`track_icon_${a.id}`), text = document.getElementById(`track_text_${a.id}`);
                 if(!row) return;
                 if(a.id === currentId && audio.src) {
-                    row.className = 'flex items-center justify-between p-3 mb-1.5 cursor-pointer rounded-2xl bg-blue-50/80 dark:bg-blue-900/30 border border-blue-100 dark:border-blue-900/40 shadow-sm transition group w-full';
-                    text.className = 'text-sm leading-tight truncate text-[#0078d4] dark:text-blue-300 font-bold';
+                    row.className = 'flex items-center justify-between p-3 sm:p-3.5 mb-1.5 cursor-pointer rounded-2xl bg-blue-50/80 dark:bg-blue-900/30 border border-blue-100 dark:border-blue-900/40 shadow-sm transition group w-full';
+                    icon.className = 'w-10 h-10 sm:w-11 sm:h-11 shrink-0 rounded-xl flex items-center justify-center transition';
+                    text.className = 'text-sm sm:text-[15px] leading-tight truncate text-[#0078d4] dark:text-blue-300 font-bold';
                     icon.innerHTML = audio.paused ? '<div class="playing-eq eq-paused"><span class="eq-bar eq-bar-1"></span><span class="eq-bar eq-bar-2"></span><span class="eq-bar eq-bar-3"></span></div>' : '<div class="playing-eq"><span class="eq-bar eq-bar-1"></span><span class="eq-bar eq-bar-2"></span><span class="eq-bar eq-bar-3"></span></div>';
                 } else {
-                    row.className = 'flex items-center justify-between p-3 mb-1.5 cursor-pointer rounded-2xl border border-transparent hover:bg-gray-50 dark:hover:bg-gray-800/50 transition group w-full';
-                    text.className = 'text-sm font-medium truncate text-gray-800 dark:text-gray-200';
+                    row.className = 'flex items-center justify-between p-3 sm:p-3.5 mb-1.5 cursor-pointer rounded-2xl border border-transparent hover:bg-gray-50 dark:hover:bg-gray-800/50 transition group w-full';
+                    icon.className = 'w-10 h-10 sm:w-11 sm:h-11 shrink-0 rounded-xl flex items-center justify-center bg-gray-100 dark:bg-gray-900 text-gray-400 font-bold text-sm transition';
+                    text.className = 'text-sm sm:text-[15px] font-medium truncate text-gray-800 dark:text-gray-200';
                     icon.innerHTML = i + 1;
                 }
             });
