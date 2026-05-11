@@ -8,7 +8,7 @@
     
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#000000">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3ClinearGradient id='grad' x1='0%25' y1='100%25' x2='100%25' y2='0%25'%3E%3Cstop offset='0%25' style='stop-color:%230078d4;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%2360a5fa;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='512' height='512' fill='url(%23grad)' /%3E%3Cpath d='M200 370V130l210-40v230' fill='none' stroke='%23ffffff' stroke-width='32' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='150' cy='370' r='50' fill='none' stroke='%23ffffff' stroke-width='32'/%3E%3Ccircle cx='360' cy='330' r='50' fill='none' stroke='%23ffffff' stroke-width='32'/%3E%3C/svg%3E">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3ClinearGradient id='grad' x1='0%25' y1='100%25' x2='100%25' y2='0%25'%3E%3Cstop offset='0%25' style='stop-color:%230078d4;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%2360a5fa;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='512' height='512' rx='112' fill='url(%23grad)' /%3E%3Cpath d='M200 370V130l210-40v230' fill='none' stroke='%23ffffff' stroke-width='32' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='150' cy='370' r='50' fill='none' stroke='%23ffffff' stroke-width='32'/%3E%3Ccircle cx='360' cy='330' r='50' fill='none' stroke='%23ffffff' stroke-width='32'/%3E%3C/svg%3E">
     <link rel="apple-touch-icon" href="data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3ClinearGradient id='grad' x1='0%25' y1='100%25' x2='100%25' y2='0%25'%3E%3Cstop offset='0%25' style='stop-color:%230078d4;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%2360a5fa;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='512' height='512' fill='url(%23grad)' /%3E%3Cpath d='M200 370V130l210-40v230' fill='none' stroke='%23ffffff' stroke-width='32' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='150' cy='370' r='50' fill='none' stroke='%23ffffff' stroke-width='32'/%3E%3Ccircle cx='360' cy='330' r='50' fill='none' stroke='%23ffffff' stroke-width='32'/%3E%3C/svg%3E">
 
     <script src="https://cdn.tailwindcss.com"></script>
@@ -81,9 +81,18 @@
                 Got music files? Upload to <a href="https://onedrive.live.com/" target="_blank" class="text-[#0078d4] dark:text-blue-400 font-bold hover:underline">OneDrive</a> and stream here.
             </p>
             <ul class="text-sm text-gray-700 dark:text-gray-300 space-y-3 mb-6 font-medium">
-                <li>✨ <strong>100% Free:</strong> No subscriptions. Minimal ads.</li>
-                <li>🔐 <strong>Zero Sign-up:</strong> Uses Microsoft account securely.</li>
-                <li>🚀 <strong>Fast:</strong> Optimized Web App experience.</li>
+                <li class="flex items-start gap-2">
+                    <span class="shrink-0 text-[#0078d4] dark:text-blue-400">✨</span> 
+                    <span><strong>100% Free:</strong> No subscriptions. Supported by minimal ads.</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <span class="shrink-0 text-[#0078d4] dark:text-blue-400">🔐</span> 
+                    <span><strong>Zero Sign-up:</strong> Uses your Microsoft account securely.</span>
+                </li>
+                <li class="flex items-start gap-2">
+                    <span class="shrink-0 text-[#0078d4] dark:text-blue-400">🚀</span> 
+                    <span><strong>Lightning Fast:</strong> Optimized Web App experience.</span>
+                </li>
             </ul>
             <div class="bg-gray-50 dark:bg-gray-800/50 rounded-2xl p-4 border border-gray-100 dark:border-gray-700/50 text-xs text-gray-600 dark:text-gray-400 font-medium">
                 <p class="font-bold text-gray-900 dark:text-white mb-2 tracking-wider uppercase">📱 Install as an App</p>
@@ -117,7 +126,12 @@
             </div>
             <div class="flex items-center gap-2 sm:gap-4">
                 <div id="wake_lock_indicator" onclick="alert('Screen kept awake')" class="hidden opacity-0 scale-95 transition-all duration-500 items-center justify-center p-1 text-yellow-600/60 dark:text-yellow-500/60 cursor-pointer"><svg class="w-5 h-5 sm:w-6 sm:h-6" viewBox="0 0 24 24" fill="none"><rect x="5" y="2" width="14" height="20" rx="3" stroke="currentColor" stroke-width="1.5"/><rect x="7" y="5" width="10" height="13" rx="1" fill="currentColor"/><path d="M11 20h2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
-                <button onclick="toggleDarkMode()" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400 transition"><svg id="theme_icon_light" class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg><svg id="theme_icon_dark" class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg></button>
+                
+                <button onclick="toggleDarkMode()" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400 transition">
+                    <svg id="theme_icon_light" class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                    <svg id="theme_icon_dark" class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                </button>
+                
                 <button id="login_button" onclick="signIn()" class="bg-[#0078d4] text-white px-4 py-1.5 sm:px-5 rounded-full text-sm font-semibold hover:opacity-90 shadow-md transition">Sign In</button>
                 <button id="logout_button" style="display: none;" onclick="signOut()" class="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white px-2 py-1.5 text-sm font-medium transition">Sign Out</button>
             </div>
@@ -143,6 +157,8 @@
                 </div>
 
                 <div class="z-10 w-full flex flex-col mt-8 sm:mt-12 max-w-md mx-auto px-2">
+                    <audio id="audio_player" class="hidden"></audio>
+                    
                     <div class="flex items-center gap-3 sm:gap-4 w-full text-xs font-medium text-gray-400">
                         <span id="current_time">0:00</span>
                         <input type="range" id="progress_bar" value="0" step="0.1" min="0" max="100" class="flex-1" disabled>
@@ -199,6 +215,17 @@
     </main>
 
     <script>
+        // 🔥 누락되었던 다크모드 스위치 함수 복구 완료
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+            localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+        }
+        
+        // 페이지 로드 시 다크모드 설정 적용
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        }
+
         const audio = document.getElementById('audio_player');
         const progressBar = document.getElementById('progress_bar');
         const currentTimeEl = document.getElementById('current_time');
@@ -225,7 +252,6 @@
         let pathHistory = [{ id: 'root', name: 'My Drive' }];
         let wakeLock = null;
 
-        // 확장자 분리 기능
         function splitName(name) {
             if(!name) return { base: '', ext: '' };
             const lastDot = name.lastIndexOf('.');
@@ -233,7 +259,6 @@
             return { base: name.substring(0, lastDot), ext: name.substring(lastDot + 1).toUpperCase() };
         }
 
-        // 모달창 켜고 끄기
         function openModal(id) {
             const modal = document.getElementById(id);
             const card = modal.firstElementChild;
@@ -279,7 +304,7 @@
             msalInstance.logoutRedirect({ account: msalInstance.getAccountByHomeId(accountId) }); 
         }
         
-        // 🔥 아주 중요한 토큰 인증 안전장치 복구
+        // 🔥 서버 401 에러 원천 차단: 토큰 안전 갱신 로직 복구
         async function getToken() {
             try {
                 const account = msalInstance.getAccountByHomeId(accountId) || msalInstance.getAllAccounts()[0];
@@ -319,7 +344,6 @@
             document.getElementById('player_card').classList.add('shimmer-active');
             
             try {
-                // 토큰 안전 확인
                 const token = await getToken();
                 if (!token) throw new Error("No Access Token");
 
@@ -379,7 +403,6 @@
             renderBreadcrumbs();
             
             try {
-                // 토큰 안전 확인
                 const token = await getToken();
                 if (!token) return;
 
@@ -430,7 +453,7 @@
                         } 
                     };
                     
-                    // 🔥 숫자 찌그러짐 방지 (shrink-0 명확히 적용)
+                    // 🔥 숫자 찌그러짐 방지 (shrink-0 복구)
                     info.innerHTML = `<div id="track_icon_${a.id}" class="w-10 h-10 sm:w-11 sm:h-11 shrink-0 rounded-xl flex items-center justify-center bg-gray-100 dark:bg-gray-900 text-gray-400 font-bold text-sm transition">${i+1}</div><p id="track_text_${a.id}" class="text-sm sm:text-[15px] font-medium truncate text-gray-800 dark:text-gray-200 transition">${base}</p>`;
                     
                     el.append(info, createActionBtn(a.id, a.name, false)); 
@@ -447,7 +470,7 @@
             }
         }
 
-        // 🔥 드롭다운 버튼 위치 및 기능 보장
+        // 🔥 폴더 점 3개 메뉴(Action Button) 뼈대 복구
         function createActionBtn(id, name, isFolder) {
             const wrap = document.createElement('div'); 
             wrap.className = 'relative flex items-center shrink-0 opacity-100 lg:opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition';
@@ -517,7 +540,6 @@
             });
         }
 
-        // 🔥 뒤로가기 버튼 안전하게 복구
         function renderBreadcrumbs() {
             const container = document.getElementById('breadcrumb_container'); 
             container.innerHTML = '';
@@ -570,8 +592,8 @@
             const el = document.getElementById('status_info');
             const dot = document.getElementById('status_dot'); 
             el.innerText = t; 
-            el.className = `text-[10px] font-bold tracking-[0.2em] uppercase ${type==='play'?'text-green-500':type==='load'?'text-[#0078d4]':'text-gray-500'}`; 
-            dot.className = `w-2 h-2 rounded-full ${type==='play'?'bg-green-500':type==='load'?'bg-[#0078d4] animate-pulse':'bg-gray-300'}`; 
+            el.className = `text-[10px] sm:text-xs font-bold tracking-[0.2em] uppercase ${type==='play'?'text-green-500':type==='load'?'text-[#0078d4] dark:text-blue-400':'text-gray-500 dark:text-gray-400'}`; 
+            dot.className = `w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full ${type==='play'?'bg-green-500':type==='load'?'bg-[#0078d4] dark:bg-blue-400 animate-pulse':'bg-gray-300 dark:bg-gray-600'}`; 
         }
 
         function togglePlayPause() { 
@@ -609,13 +631,13 @@
                 
                 if(a.id === currentId && audio.src) {
                     row.className = 'flex items-center justify-between p-3 sm:p-3.5 mb-1.5 cursor-pointer rounded-2xl bg-blue-50/80 dark:bg-blue-900/30 border border-blue-100 dark:border-blue-900/40 shadow-sm transition group w-full';
-                    icon.className = 'w-10 h-10 sm:w-11 sm:h-11 shrink-0 rounded-xl flex items-center justify-center transition';
-                    text.className = 'text-sm sm:text-[15px] leading-tight truncate text-[#0078d4] dark:text-blue-300 font-bold';
+                    icon.className = 'w-10 h-10 sm:w-11 sm:h-11 shrink-0 rounded-xl flex items-center justify-center transition text-[#0078d4] dark:text-blue-400';
+                    text.className = 'text-sm sm:text-[15px] leading-tight truncate text-[#0078d4] dark:text-blue-300 font-bold transition';
                     icon.innerHTML = audio.paused ? '<div class="playing-eq eq-paused"><span class="eq-bar eq-bar-1"></span><span class="eq-bar eq-bar-2"></span><span class="eq-bar eq-bar-3"></span></div>' : '<div class="playing-eq"><span class="eq-bar eq-bar-1"></span><span class="eq-bar eq-bar-2"></span><span class="eq-bar eq-bar-3"></span></div>';
                 } else {
                     row.className = 'flex items-center justify-between p-3 sm:p-3.5 mb-1.5 cursor-pointer rounded-2xl border border-transparent hover:bg-gray-50 dark:hover:bg-gray-800/50 transition group w-full';
                     icon.className = 'w-10 h-10 sm:w-11 sm:h-11 shrink-0 rounded-xl flex items-center justify-center bg-gray-100 dark:bg-gray-900 text-gray-400 font-bold text-sm transition';
-                    text.className = 'text-sm sm:text-[15px] font-medium truncate text-gray-800 dark:text-gray-200';
+                    text.className = 'text-sm sm:text-[15px] font-medium truncate text-gray-800 dark:text-gray-200 transition';
                     icon.innerHTML = i + 1;
                 }
             });
@@ -623,14 +645,14 @@
         
         function updateRepeatBtnUI() { 
             const btn = document.getElementById('repeat_btn'); 
-            btn.className = `absolute left-0 w-10 h-10 flex items-center justify-center transition active:scale-95 ${playMode>0?'text-[#0078d4]':'text-gray-400'}`; 
+            btn.className = `absolute left-0 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center transition active:scale-95 rounded-full md:hover:text-[#0078d4] md:dark:hover:text-blue-400 ${playMode>0?'text-[#0078d4] dark:text-blue-400':'text-gray-400'}`; 
             
             if (playMode === 2) {
-                btn.innerHTML = `<svg class="w-5 h-5 sm:w-6 relative" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path><text x="12" y="15" font-family="sans-serif" font-size="9" font-weight="bold" fill="currentColor" text-anchor="middle" stroke="none">1</text></svg>`;
+                btn.innerHTML = `<svg class="w-5 h-5 sm:w-6 sm:h-6 relative" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path><text x="12" y="15" font-family="sans-serif" font-size="9" font-weight="bold" fill="currentColor" text-anchor="middle" stroke="none">1</text></svg>`;
             } else if (playMode === 3) {
-                btn.innerHTML = `<svg class="w-5 h-5 sm:w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M2 18h1.4c1.3 0 2.5-.6 3.3-1.7l6.1-8.6c.7-1.1 2-1.7 3.3-1.7H22" /><path d="m18 2 4 4-4 4" /><path d="M2 6h1.9c1.5 0 2.9.9 3.6 2.2" /><path d="M22 18h-5.9c-1.3 0-2.6-.7-3.3-1.8l-.5-.8" /><path d="m18 14 4 4-4 4" /></svg>`;
+                btn.innerHTML = `<svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M2 18h1.4c1.3 0 2.5-.6 3.3-1.7l6.1-8.6c.7-1.1 2-1.7 3.3-1.7H22" /><path d="m18 2 4 4-4 4" /><path d="M2 6h1.9c1.5 0 2.9.9 3.6 2.2" /><path d="M22 18h-5.9c-1.3 0-2.6-.7-3.3-1.8l-.5-.8" /><path d="m18 14 4 4-4 4" /></svg>`;
             } else {
-                btn.innerHTML = `<svg class="w-5 h-5 sm:w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>`;
+                btn.innerHTML = `<svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>`;
             }
         }
         
@@ -785,7 +807,7 @@
             document.querySelectorAll('.dropdown-content').forEach(d => d.classList.add('hidden')); 
         }, true);
 
-        // 모바일 OS 체크
+        // 모바일 OS 체크: PC에서는 폰 아이콘 아예 삭제
         document.addEventListener("DOMContentLoaded", () => {
             const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
             const wakeLockIndicator = document.getElementById('wake_lock_indicator');
