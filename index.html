@@ -160,7 +160,7 @@
                     </div>
                 </div>
 
-                <div class="z-10 w-full flex flex-col mt-8 sm:mt-12 max-w-md mx-auto px-2">
+                <div class="z-10 w-full flex flex-col mt-8 sm:mt-12 max-w-md mx-auto px-2 sm:px-4">
                     <audio id="audio_player" class="hidden"></audio>
                     
                     <div class="flex items-center gap-3 sm:gap-4 w-full text-xs font-medium text-gray-400">
@@ -169,17 +169,20 @@
                         <span id="duration_time">0:00</span>
                     </div>
                     
-                    <div class="flex items-center justify-between w-full mt-6 h-16 sm:px-2">
-                        
-                        <div class="w-10 sm:w-12 h-10 sm:h-12 shrink-0"></div>
+                    <div class="relative flex items-center justify-center w-full mt-8 h-16 sm:h-20">
                         
                         <div class="flex items-center gap-6 sm:gap-8">
-                            <button onclick="playPrevTrack()" class="w-12 h-12 neumorphic rounded-full flex items-center justify-center text-gray-500 transition active:scale-95"><svg class="w-5 h-5 sm:w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg></button>
-                            <button id="play_pause_btn" onclick="togglePlayPause()" class="w-16 h-16 bg-gradient-to-tr from-[#006cbd] to-[#0078d4] text-white rounded-full flex items-center justify-center shadow-xl shadow-blue-500/20 active:scale-90 transition"><svg id="icon_play" class="w-8 h-8 translate-x-[2px]" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg><svg id="icon_pause" class="w-8 h-8 hidden" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg></button>
-                            <button onclick="playNextTrack(true)" class="w-12 h-12 neumorphic rounded-full flex items-center justify-center text-gray-500 transition active:scale-95"><svg class="w-5 h-5 sm:w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg></button>
+                            <button onclick="playPrevTrack()" class="w-12 h-12 sm:w-14 sm:h-14 neumorphic rounded-full flex items-center justify-center text-gray-500 transition active:scale-95"><svg class="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg></button>
+                            
+                            <button id="play_pause_btn" onclick="togglePlayPause()" class="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-tr from-[#006cbd] to-[#0078d4] text-white rounded-full flex items-center justify-center shadow-xl shadow-blue-500/20 active:scale-90 transition">
+                                <svg id="icon_play" class="w-8 h-8 sm:w-10 sm:h-10 translate-x-[1.5px]" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                <svg id="icon_pause" class="w-8 h-8 sm:w-10 sm:h-10 hidden" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                            </button>
+                            
+                            <button onclick="playNextTrack(true)" class="w-12 h-12 sm:w-14 sm:h-14 neumorphic rounded-full flex items-center justify-center text-gray-500 transition active:scale-95"><svg class="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg></button>
                         </div>
                         
-                        <button id="repeat_btn" onclick="toggleRepeat()" class="w-10 sm:w-12 h-10 sm:h-12 flex items-center justify-center text-gray-400 dark:text-gray-500 transition active:scale-95 rounded-full shrink-0">
+                        <button id="repeat_btn" onclick="toggleRepeat()" class="absolute right-0 w-10 sm:w-12 h-10 sm:h-12 flex items-center justify-center text-gray-400 dark:text-gray-500 transition active:scale-95 rounded-full">
                             <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                         </button>
                     </div>
@@ -294,7 +297,6 @@
             }, 300);
         }
 
-        // 🔥 바탕 클릭 시 드롭다운 닫기 완벽 지원
         window.addEventListener('click', (e) => {
             if (!e.target.closest('.menu-btn') && !e.target.closest('.dropdown-content')) {
                 document.querySelectorAll('.dropdown-content').forEach(d => d.classList.add('hidden'));
@@ -516,14 +518,13 @@
             });
         }
 
-        // 🔥 경로 길이 초과 시 압축(...) 기능 및 줄바꿈 방지 완벽 구현
         function renderBreadcrumbs() {
             const container = document.getElementById('breadcrumb_container'); 
             container.innerHTML = '';
             
             if (pathHistory.length > 1) {
                 const btn = document.createElement('button'); 
-                btn.className = 'mr-2 p-1 text-gray-400 md:hover:text-[#0078d4] md:dark:hover:text-blue-400 transition active:scale-90 flex items-center justify-center rounded-full md:hover:bg-gray-100 md:dark:hover:bg-gray-800 shrink-0'; 
+                btn.className = 'mr-2 p-1 text-gray-400 md:hover:text-[#0078d4] dark:hover:text-gray-500 md:dark:hover:text-blue-400 transition active:scale-90 flex items-center justify-center rounded-full md:hover:bg-gray-100 dark:bg-gray-800 shrink-0'; 
                 btn.innerHTML = '<svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path></svg>';
                 btn.onclick = () => { 
                     if(pathHistory.length <= 1) return;
@@ -545,7 +546,6 @@
                     }
                 });
             } else {
-                // 압축 모드
                 const rootSpan = document.createElement('span'); 
                 rootSpan.innerText = pathHistory[0].name;
                 rootSpan.className = 'breadcrumb-item transition md:hover:text-[#0078d4] truncate max-w-[80px] shrink-0';
@@ -644,7 +644,6 @@
             });
         }
         
-        // 🔥 JavaScript로 색상만 제어하여 버튼 위치 쒹- 이동 버그 차단
         function updateRepeatBtnUI() { 
             const btn = document.getElementById('repeat_btn'); 
             
