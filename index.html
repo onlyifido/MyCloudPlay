@@ -261,10 +261,19 @@
         // --------------------------------------------------
         // 🔥 글로벌 변수 및 초기화
         // --------------------------------------------------
-        function toggleDarkMode() {
+                function toggleDarkMode() {
             document.documentElement.classList.toggle('dark');
-            localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+            const isDark = document.documentElement.classList.contains('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            // 🔥 다크모드 토글 시 상단바/주소창 색상 동기화
+            document.querySelector('meta[name="theme-color"]').setAttribute('content', isDark ? '#000000' : '#f9fafb');
         }
+        
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        }
+        // 🔥 처음 페이지 로드 시 상단바/주소창 색상 동기화
+        document.querySelector('meta[name="theme-color"]').setAttribute('content', document.documentElement.classList.contains('dark') ? '#000000' : '#f9fafb');
         if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) document.documentElement.classList.add('dark');
 
         const audio = document.getElementById('audio_player'), progressBar = document.getElementById('progress_bar'), currentTimeEl = document.getElementById('current_time'), durationTimeEl = document.getElementById('duration_time'), fileInfoEl = document.getElementById('file_info'), extBadge = document.getElementById('file_ext_badge');
