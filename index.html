@@ -448,13 +448,12 @@
 
             try {
                 if (track.url) {
-                    // 샘플 트랙인 경우 (다이렉트 URL 재생)
                     audio.src = track.url;
+                    audio.load();
                     document.getElementById('player_card').classList.remove('shimmer-active');
                     setupMediaSession();
                     if(autoPlay) audio.play(); else setStatus('READY', 'standby');
                 } else {
-                    // OneDrive 실제 파일인 경우 (Graph API 토큰 필요)
                     const token = await getToken(); if (!token) throw new Error();
                     const res = await fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${track.id}/content`, { headers: { Authorization: `Bearer ${token}` } });
                     if(!res.ok) throw new Error();
@@ -468,6 +467,8 @@
                 audio.removeAttribute('src'); audio.load(); if ('mediaSession' in navigator) navigator.mediaSession.metadata = null;
             }
         }
+
+        
         function showTrackInfo() {
             if (currentIndex < 0 || !playingQueue[currentIndex]) return;
             const track = playingQueue[currentIndex];
@@ -606,14 +607,14 @@
                 const currSpan = document.createElement('span'); currSpan.innerText = pathHistory[pathHistory.length-1].name; currSpan.className = 'font-semibold text-gray-900 dark:text-white truncate max-w-[120px] sm:max-w-[200px] shrink-0'; container.appendChild(currSpan);
             }
         }
-                function saveRecentTrack(t) {
+            function saveRecentTrack(t) {
             let recent = JSON.parse(localStorage.getItem('recent_tracks') || '[]'); 
             recent = recent.filter(x => x.id !== t.id);
             
             const fId = t.folderId || currentFolderId;
             const fName = t.folderName || pathHistory[pathHistory.length-1].name;
             
-            recent.unshift({ id: t.id, name: t.name, folderId: fId, folderName: fName });
+            recent.unshift({ id: t.id, name: t.name, folderId: fId, folderName: fName, url: t.url });
             
             if(recent.length > 8) recent = recent.slice(0, 8); 
             
