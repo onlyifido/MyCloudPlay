@@ -373,6 +373,10 @@
             audio.pause(); audio.removeAttribute('src'); currentIndex = index; 
             updateActiveTrackUI(); updateMarqueeText(base);
             if (ext) { extBadge.innerText = ext; extBadge.classList.remove('hidden'); } else { extBadge.classList.add('hidden'); }
+            setTimeout(() => {
+                const activeRow = document.getElementById(`track_row_${track.id}`);
+                if(activeRow) activeRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 100);
             saveRecentTrack(track); setStatus('BUFFERING...', 'load'); 
             document.getElementById('player_card').classList.add('shimmer-active');
             try {
