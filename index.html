@@ -543,12 +543,21 @@
                 const currSpan = document.createElement('span'); currSpan.innerText = pathHistory[pathHistory.length-1].name; currSpan.className = 'font-semibold text-gray-900 dark:text-white truncate max-w-[120px] sm:max-w-[200px] shrink-0'; container.appendChild(currSpan);
             }
         }
-                // 10개까지 저장하도록 수정
-        function saveRecentTrack(t) {
-            let recent = JSON.parse(localStorage.getItem('recent_tracks') || '[]'); recent = recent.filter(x => x.id !== t.id);
-            recent.unshift({ id: t.id, name: t.name, folderId: currentFolderId, folderName: pathHistory[pathHistory.length-1].name });
-            if(recent.length > 10) recent = recent.slice(0, 10); // 최대 10개 보관
-            localStorage.setItem('recent_tracks', JSON.stringify(recent)); renderRecentUI();
+                function saveRecentTrack(t) {
+            let recent = JSON.parse(localStorage.getItem('recent_tracks') || '[]'); 
+            recent = recent.filter(x => x.id !== t.id);
+            
+            // 🔥 핵심: 곡 자체의 폴더 정보가 있다면 그걸 쓰고, 없으면 현재 위치를 저장
+            const fId = t.folderId || currentFolderId;
+            const fName = t.folderName || pathHistory[pathHistory.length-1].name;
+            
+            recent.unshift({ id: t.id, name: t.name, folderId: fId, folderName: fName });
+            
+            // 🔥 10개에서 8개로 갯수 다이어트
+            if(recent.length > 8) recent = recent.slice(0, 8); 
+            
+            localStorage.setItem('recent_tracks', JSON.stringify(recent)); 
+            renderRecentUI();
         }
 
         // 메인 화면에는 3개만 그리도록 수정
