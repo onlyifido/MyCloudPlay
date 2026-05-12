@@ -171,7 +171,7 @@
                     
                     <div class="flex items-center justify-between w-full mt-6 h-16 sm:px-2">
                         
-                        <div class="w-10 sm:w-12"></div>
+                        <div class="w-10 sm:w-12 h-10 sm:h-12 shrink-0"></div>
                         
                         <div class="flex items-center gap-6 sm:gap-8">
                             <button onclick="playPrevTrack()" class="w-12 h-12 neumorphic rounded-full flex items-center justify-center text-gray-500 transition active:scale-95"><svg class="w-5 h-5 sm:w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg></button>
@@ -179,7 +179,9 @@
                             <button onclick="playNextTrack(true)" class="w-12 h-12 neumorphic rounded-full flex items-center justify-center text-gray-500 transition active:scale-95"><svg class="w-5 h-5 sm:w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg></button>
                         </div>
                         
-                        <button id="repeat_btn" onclick="toggleRepeat()" class="w-10 sm:w-12 h-10 sm:h-12 flex items-center justify-center text-gray-400 transition active:scale-95 rounded-full"><svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg></button>
+                        <button id="repeat_btn" onclick="toggleRepeat()" class="w-10 sm:w-12 h-10 sm:h-12 flex items-center justify-center text-gray-400 dark:text-gray-500 transition active:scale-95 rounded-full shrink-0">
+                            <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -292,7 +294,7 @@
             }, 300);
         }
 
-        // 🔥 드롭다운 바깥 터치 시 닫기
+        // 🔥 바탕 클릭 시 드롭다운 닫기 완벽 지원
         window.addEventListener('click', (e) => {
             if (!e.target.closest('.menu-btn') && !e.target.closest('.dropdown-content')) {
                 document.querySelectorAll('.dropdown-content').forEach(d => d.classList.add('hidden'));
@@ -514,15 +516,14 @@
             });
         }
 
-        // 🔥 경로 길이 초과 시 압축 기능 추가
+        // 🔥 경로 길이 초과 시 압축(...) 기능 및 줄바꿈 방지 완벽 구현
         function renderBreadcrumbs() {
             const container = document.getElementById('breadcrumb_container'); 
             container.innerHTML = '';
             
-            // 뒤로가기 버튼
             if (pathHistory.length > 1) {
                 const btn = document.createElement('button'); 
-                btn.className = 'mr-2 p-1 text-gray-400 md:hover:text-[#0078d4] dark:hover:text-gray-500 md:dark:hover:text-blue-400 transition active:scale-90 flex items-center justify-center rounded-full md:hover:bg-gray-100 md:dark:hover:bg-gray-800 shrink-0'; 
+                btn.className = 'mr-2 p-1 text-gray-400 md:hover:text-[#0078d4] md:dark:hover:text-blue-400 transition active:scale-90 flex items-center justify-center rounded-full md:hover:bg-gray-100 md:dark:hover:bg-gray-800 shrink-0'; 
                 btn.innerHTML = '<svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path></svg>';
                 btn.onclick = () => { 
                     if(pathHistory.length <= 1) return;
@@ -532,24 +533,19 @@
                 container.appendChild(btn);
             }
             
-            // 압축 렌더링 로직 (경로가 3개 이상이면 ... 으로 처리)
-            if (pathHistory.length <= 2) {
+            if (pathHistory.length <= 3) {
                 pathHistory.forEach((s, i) => {
                     const span = document.createElement('span'); 
                     span.innerText = s.name;
-                    if(i === pathHistory.length-1) {
-                        span.className = 'font-semibold text-gray-900 dark:text-white truncate max-w-[150px] sm:max-w-[250px] shrink-0';
-                    } else { 
-                        span.className = 'breadcrumb-item transition md:hover:text-[#0078d4] truncate max-w-[100px] sm:max-w-[150px] shrink-0'; 
-                        span.onclick = () => { pathHistory = pathHistory.slice(0, i+1); fetchMyFolders(s.id, s.name, false); }; 
-                    }
+                    span.className = (i === pathHistory.length-1) ? 'font-semibold text-gray-900 dark:text-white truncate max-w-[150px] sm:max-w-[250px] shrink-0' : 'breadcrumb-item transition md:hover:text-[#0078d4] truncate max-w-[100px] sm:max-w-[150px] shrink-0'; 
+                    if(i !== pathHistory.length-1) span.onclick = () => { pathHistory = pathHistory.slice(0, i+1); fetchMyFolders(s.id, s.name, false); };
                     container.appendChild(span); 
                     if(i < pathHistory.length-1) {
                         const sep = document.createElement('span'); sep.className = 'breadcrumb-separator shrink-0'; sep.innerText = '/'; container.appendChild(sep);
                     }
                 });
             } else {
-                // 루트 표시
+                // 압축 모드
                 const rootSpan = document.createElement('span'); 
                 rootSpan.innerText = pathHistory[0].name;
                 rootSpan.className = 'breadcrumb-item transition md:hover:text-[#0078d4] truncate max-w-[80px] shrink-0';
@@ -558,7 +554,6 @@
                 
                 const sep1 = document.createElement('span'); sep1.className = 'breadcrumb-separator shrink-0'; sep1.innerText = '/'; container.appendChild(sep1);
                 
-                // 줄임표 및 드롭다운
                 const wrap = document.createElement('div'); wrap.className = 'relative flex items-center shrink-0';
                 const ell = document.createElement('span');
                 ell.innerText = '...';
@@ -578,7 +573,6 @@
                 
                 const sep2 = document.createElement('span'); sep2.className = 'breadcrumb-separator shrink-0'; sep2.innerText = '/'; container.appendChild(sep2);
                 
-                // 현재 위치
                 const currSpan = document.createElement('span'); 
                 currSpan.innerText = pathHistory[pathHistory.length-1].name;
                 currSpan.className = 'font-semibold text-gray-900 dark:text-white truncate max-w-[120px] sm:max-w-[200px] shrink-0';
@@ -650,10 +644,17 @@
             });
         }
         
-        // 🔥 hover 시 색상 변화 강제 제거, 색상은 오직 활성화 상태에만 의존하도록 수정
+        // 🔥 JavaScript로 색상만 제어하여 버튼 위치 쒹- 이동 버그 차단
         function updateRepeatBtnUI() { 
             const btn = document.getElementById('repeat_btn'); 
-            btn.className = `absolute right-0 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center transition active:scale-95 rounded-full ${playMode>0?'text-[#0078d4] dark:text-blue-400':'text-gray-400 dark:text-gray-500'}`; 
+            
+            if (playMode > 0) {
+                btn.classList.add('text-[#0078d4]', 'dark:text-blue-400');
+                btn.classList.remove('text-gray-400', 'dark:text-gray-500');
+            } else {
+                btn.classList.add('text-gray-400', 'dark:text-gray-500');
+                btn.classList.remove('text-[#0078d4]', 'dark:text-blue-400');
+            }
             
             if (playMode === 2) {
                 btn.innerHTML = `<svg class="w-5 h-5 sm:w-6 sm:h-6 relative" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path><text x="12" y="15" font-family="sans-serif" font-size="9" font-weight="bold" fill="currentColor" text-anchor="middle" stroke="none">1</text></svg>`;
