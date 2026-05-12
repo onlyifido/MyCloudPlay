@@ -28,8 +28,7 @@
         .dark ::-webkit-scrollbar-thumb:hover { background: rgba(107, 114, 128, 0.7); }
 
         .show { display: block !important; }
-        .breadcrumb-item { cursor: pointer; }
-        .breadcrumb-item:hover { color: #0078d4; text-decoration: underline; }
+        .breadcrumb-item:hover { color: #0078d4; cursor: pointer; }
         .breadcrumb-separator { color: #6b7280; margin: 0 4px; font-weight: 300; }
         
         .glass { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.5); }
@@ -72,8 +71,8 @@
 </head>
 <body class="fixed inset-0 w-full h-[100dvh] flex flex-col bg-gray-50 text-gray-900 dark:bg-black dark:text-gray-100 font-sans antialiased overflow-hidden transition-colors duration-300">
 
-    <div id="info_modal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/40 backdrop-blur-sm opacity-0 transition-opacity duration-300">
-        <div id="info_modal_card" class="bg-white dark:bg-gray-900 w-[90%] max-w-sm rounded-[2rem] p-6 sm:p-8 shadow-2xl border border-gray-100 dark:border-gray-800 transform scale-95 transition-transform duration-300 relative">
+    <div id="info_modal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/40 backdrop-blur-sm opacity-0 transition-opacity duration-300" onclick="closeModal('info_modal')">
+        <div id="info_modal_card" class="bg-white dark:bg-gray-900 w-[90%] max-w-sm rounded-[2rem] p-6 sm:p-8 shadow-2xl border border-gray-100 dark:border-gray-800 transform scale-95 transition-transform duration-300 relative" onclick="event.stopPropagation()">
             <button onclick="closeModal('info_modal')" class="absolute top-4 right-4 p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition rounded-full md:hover:bg-gray-100 md:dark:hover:bg-gray-800">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
@@ -94,14 +93,27 @@
         </div>
     </div>
 
-    <div id="rename_modal" class="fixed inset-0 z-[101] hidden items-center justify-center bg-black/40 backdrop-blur-sm opacity-0 transition-opacity duration-300">
-        <div id="rename_modal_card" class="bg-white dark:bg-gray-900 w-[90%] max-w-sm rounded-[2rem] p-6 sm:p-8 shadow-2xl border border-gray-100 dark:border-gray-800 transform scale-95 transition-transform duration-300 relative">
+    <div id="rename_modal" class="fixed inset-0 z-[101] hidden items-center justify-center bg-black/40 backdrop-blur-sm opacity-0 transition-opacity duration-300" onclick="closeModal('rename_modal')">
+        <div id="rename_modal_card" class="bg-white dark:bg-gray-900 w-[90%] max-w-sm rounded-[2rem] p-6 sm:p-8 shadow-2xl border border-gray-100 dark:border-gray-800 transform scale-95 transition-transform duration-300 relative" onclick="event.stopPropagation()">
             <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">Rename Item</h3>
             <textarea id="rename_textarea" spellcheck="false" class="w-full h-28 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl p-4 text-sm font-medium text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#0078d4] transition-all resize-none"></textarea>
             <div class="flex gap-3 mt-6">
                 <button onclick="closeModal('rename_modal')" class="flex-1 px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 text-sm font-bold text-gray-500 dark:text-gray-400 transition md:hover:brightness-95">Cancel</button>
                 <button id="rename_confirm_btn" class="flex-1 px-4 py-3 rounded-xl bg-[#0078d4] text-sm font-bold text-white shadow-lg shadow-blue-500/20 transition md:hover:brightness-110">Save</button>
             </div>
+        </div>
+    </div>
+
+    <div id="wake_modal" class="fixed inset-0 z-[101] hidden items-center justify-center bg-black/40 backdrop-blur-sm opacity-0 transition-opacity duration-300" onclick="closeModal('wake_modal')">
+        <div class="bg-white dark:bg-gray-900 w-[80%] max-w-xs rounded-[2rem] p-6 sm:p-8 shadow-2xl border border-gray-100 dark:border-gray-800 transform scale-95 transition-transform duration-300 text-center relative" onclick="event.stopPropagation()">
+            <div class="w-14 h-14 mx-auto bg-yellow-50 dark:bg-yellow-900/30 text-yellow-500 dark:text-yellow-400 rounded-full flex items-center justify-center mb-4">
+                <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="3"></rect><path d="M12 18h.01"></path></svg>
+            </div>
+            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Screen Kept Awake</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-6 leading-relaxed font-medium">
+                Screen auto-lock is disabled while playing to prevent playback from stopping.
+            </p>
+            <button onclick="closeModal('wake_modal')" class="w-full px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 text-sm font-bold text-gray-600 dark:text-gray-300 transition md:hover:bg-gray-200 md:dark:hover:bg-gray-700">Got it</button>
         </div>
     </div>
 
@@ -117,7 +129,7 @@
                 <button onclick="openModal('info_modal')" class="text-gray-400 hover:text-[#0078d4] dark:hover:text-blue-400 transition-colors p-1" title="About"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button>
             </div>
             <div class="flex items-center gap-2 sm:gap-4">
-                <div id="wake_lock_indicator" onclick="alert('Screen auto-lock is disabled while playing to prevent playback from stopping.')" class="hidden opacity-0 scale-95 transition-all duration-500 items-center justify-center p-1 text-yellow-600/60 dark:text-yellow-500/60 cursor-pointer"><svg class="w-5 h-5 sm:w-6 sm:h-6" viewBox="0 0 24 24" fill="none"><rect x="5" y="2" width="14" height="20" rx="3" stroke="currentColor" stroke-width="1.5"/><rect x="7" y="5" width="10" height="13" rx="1" fill="currentColor"/><path d="M11 20h2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+                <div id="wake_lock_indicator" onclick="openModal('wake_modal')" class="hidden opacity-0 scale-95 transition-all duration-500 items-center justify-center p-1 text-yellow-600/60 dark:text-yellow-500/60 cursor-pointer"><svg class="w-5 h-5 sm:w-6 sm:h-6" viewBox="0 0 24 24" fill="none"><rect x="5" y="2" width="14" height="20" rx="3" stroke="currentColor" stroke-width="1.5"/><rect x="7" y="5" width="10" height="13" rx="1" fill="currentColor"/><path d="M11 20h2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
                 
                 <button onclick="toggleDarkMode()" class="p-2 rounded-full text-gray-600 dark:text-gray-400 transition md:hover:bg-gray-200 md:dark:hover:bg-gray-800">
                     <svg id="theme_icon_light" class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
@@ -156,7 +168,10 @@
                         <input type="range" id="progress_bar" value="0" step="0.1" min="0" max="100" class="flex-1" disabled>
                         <span id="duration_time">0:00</span>
                     </div>
-                    <div class="relative flex items-center justify-center w-full mt-6 h-16">
+                    
+                    <div class="flex items-center justify-between w-full mt-6 h-16 sm:px-2">
+                        
+                        <div class="w-10 sm:w-12"></div>
                         
                         <div class="flex items-center gap-6 sm:gap-8">
                             <button onclick="playPrevTrack()" class="w-12 h-12 neumorphic rounded-full flex items-center justify-center text-gray-500 transition active:scale-95"><svg class="w-5 h-5 sm:w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg></button>
@@ -164,22 +179,30 @@
                             <button onclick="playNextTrack(true)" class="w-12 h-12 neumorphic rounded-full flex items-center justify-center text-gray-500 transition active:scale-95"><svg class="w-5 h-5 sm:w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg></button>
                         </div>
                         
-                        <button id="repeat_btn" onclick="toggleRepeat()" class="absolute right-0 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center text-gray-400 transition active:scale-95 rounded-full"><svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg></button>
+                        <button id="repeat_btn" onclick="toggleRepeat()" class="w-10 sm:w-12 h-10 sm:h-12 flex items-center justify-center text-gray-400 transition active:scale-95 rounded-full"><svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg></button>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="w-full lg:w-[55%] flex flex-col flex-1 min-h-0">
+            
+            <div id="recent_tracks_wrapper" class="hidden shrink-0 w-full mb-3 px-1">
+                <div class="flex items-center gap-2.5">
+                    <svg class="w-5 h-5 text-gray-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <div id="recent_tracks_list" class="flex-1 grid grid-cols-3 gap-2 min-w-0"></div>
+                </div>
+            </div>
+
             <div class="border border-gray-100 dark:border-gray-800 rounded-[2.5rem] bg-white dark:bg-gray-950 shadow-sm flex flex-col flex-1 min-h-0 overflow-hidden transition-colors duration-300">
                 
                 <div class="bg-gray-50/80 dark:bg-gray-900/80 border-b border-gray-100 dark:border-gray-800 px-5 sm:px-6 py-4 flex items-center justify-between shrink-0">
                     
-                    <div id="breadcrumb_container" class="flex items-center flex-wrap text-sm sm:text-base font-medium text-gray-500 dark:text-gray-400">
-                        <span class="font-semibold text-gray-900 dark:text-white">My Drive</span>
+                    <div id="breadcrumb_container" class="flex items-center text-sm sm:text-base font-medium text-gray-500 dark:text-gray-400 overflow-hidden whitespace-nowrap w-full pr-4">
+                        <span class="font-semibold text-gray-900 dark:text-white shrink-0">My Drive</span>
                     </div>
                     
-                    <div id="action_buttons" style="display: none;" class="flex items-center gap-2 relative">
+                    <div id="action_buttons" style="display: none;" class="flex items-center gap-2 relative shrink-0">
                         <button id="shuffle_folder_btn" onclick="playRandomFromFolder()" style="display: none;" class="w-9 h-9 flex items-center justify-center text-[#0078d4] bg-blue-50 dark:bg-blue-900/30 rounded-full transition active:scale-90"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M2 18h1.4c1.3 0 2.5-.6 3.3-1.7l6.1-8.6c.7-1.1 2-1.7 3.3-1.7H22" /><path d="m18 2 4 4-4 4" /><path d="M2 6h1.9c1.5 0 2.9.9 3.6 2.2" /><path d="M22 18h-5.9c-1.3 0-2.6-.7-3.3-1.8l-.5-.8" /><path d="m18 14 4 4-4 4" /></svg></button>
                         
                         <button onclick="toggleMenu(event, 'main_action_drop')" class="p-2 text-gray-500 md:hover:text-gray-800 md:dark:hover:text-gray-200 bg-gray-100 dark:bg-gray-800 rounded-full transition menu-btn"><svg class="w-5 h-5 pointer-events-none" fill="currentColor" viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg></button>
@@ -192,14 +215,6 @@
                 </div>
                 
                 <div class="flex-1 overflow-y-auto w-full relative">
-                    <div id="recent_tracks_container" class="hidden border-b border-gray-100 dark:border-gray-800 px-4 sm:px-5 py-2.5 bg-gray-50/50 dark:bg-gray-900/50 flex items-center gap-3">
-                        <svg class="w-4 h-4 text-gray-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4 2"></path>
-                        </svg>
-                        <div id="recent_tracks_list" class="flex-1 grid grid-cols-3 gap-2"></div>
-                    </div>
-                    
                     <div id="file_list_container" class="p-3 sm:p-5 pb-10 w-full relative min-h-[50%]">
                         <div class="flex flex-col justify-center items-center text-sm text-gray-400 mt-10">
                             Please sign in to access music.
@@ -277,26 +292,10 @@
             }, 300);
         }
 
-        // 🔥 배경 클릭 시 창 닫히는 기능 복구 완료
+        // 🔥 드롭다운 바깥 터치 시 닫기
         window.addEventListener('click', (e) => {
             if (!e.target.closest('.menu-btn') && !e.target.closest('.dropdown-content')) {
                 document.querySelectorAll('.dropdown-content').forEach(d => d.classList.add('hidden'));
-            }
-            
-            const infoModal = document.getElementById('info_modal');
-            if (infoModal && !infoModal.classList.contains('hidden')) {
-                const infoCard = document.getElementById('info_modal_card');
-                if (!infoCard.contains(e.target) && !e.target.closest('[onclick*="info_modal"]')) {
-                    closeModal('info_modal');
-                }
-            }
-
-            const renameModal = document.getElementById('rename_modal');
-            if (renameModal && !renameModal.classList.contains('hidden')) {
-                const renameCard = document.getElementById('rename_modal_card');
-                if (!renameCard.contains(e.target) && !e.target.closest('.dropdown-content')) {
-                    closeModal('rename_modal');
-                }
             }
         });
 
@@ -311,25 +310,16 @@
             }
         });
 
-        function signIn() { 
-            msalInstance.loginRedirect({ scopes: ["Files.ReadWrite.All"] }); 
-        }
-        
-        function signOut() { 
-            msalInstance.logoutRedirect({ account: msalInstance.getAccountByHomeId(accountId) }); 
-        }
+        function signIn() { msalInstance.loginRedirect({ scopes: ["Files.ReadWrite.All"] }); }
+        function signOut() { msalInstance.logoutRedirect({ account: msalInstance.getAccountByHomeId(accountId) }); }
         
         async function getToken() {
             try {
                 const account = msalInstance.getAccountByHomeId(accountId) || msalInstance.getAllAccounts()[0];
-                if (!account) { 
-                    signIn(); 
-                    return null; 
-                }
+                if (!account) { signIn(); return null; }
                 const response = await msalInstance.acquireTokenSilent({ scopes: ["Files.ReadWrite.All"], account: account });
                 return response.accessToken;
             } catch (error) {
-                console.warn("Token acquisition failed.", error);
                 msalInstance.acquireTokenRedirect({ scopes: ["Files.ReadWrite.All"] });
                 return null;
             }
@@ -346,12 +336,8 @@
             updateActiveTrackUI(); 
             updateMarqueeText(base);
             
-            if (ext) { 
-                extBadge.innerText = ext; 
-                extBadge.classList.remove('hidden'); 
-            } else { 
-                extBadge.classList.add('hidden'); 
-            }
+            if (ext) { extBadge.innerText = ext; extBadge.classList.remove('hidden'); } 
+            else { extBadge.classList.add('hidden'); }
             
             saveRecentTrack(track); 
             setStatus('BUFFERING...', 'load'); 
@@ -359,24 +345,19 @@
             
             try {
                 const token = await getToken();
-                if (!token) throw new Error("No Access Token");
+                if (!token) throw new Error();
 
-                const res = await fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${track.id}/content`, { 
-                    headers: { Authorization: `Bearer ${token}` } 
-                });
-                
-                if(!res.ok) throw new Error("Fetch Error");
+                const res = await fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${track.id}/content`, { headers: { Authorization: `Bearer ${token}` } });
+                if(!res.ok) throw new Error();
                 
                 const blob = await res.blob();
                 audio.src = URL.createObjectURL(blob);
                 document.getElementById('player_card').classList.remove('shimmer-active');
                 
-                // 🔥 잠금화면 8분음표 로고(Artwork) 완벽 복구
                 if ('mediaSession' in navigator) {
                     navigator.mediaSession.metadata = new MediaMetadata({ 
-                        title: base, 
-                        artist: 'Music Player',
-                        artwork: [ { src: 'data:image/svg+xml;charset=utf-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 512 512%22%3E%3Cdefs%3E%3ClinearGradient id=%22grad%22 x1=%220%25%22 y1=%22100%25%22 x2=%22100%25%22 y2=%220%25%22%3E%3Cstop offset=%220%25%22 style=%22stop-color:%230078d4;stop-opacity:1%22 /%3E%3Cstop offset=%22100%25%22 style=%22stop-color:%2360a5fa;stop-opacity:1%22 /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width=%22512%22 height=%22512%22 fill=%22url(%23grad)%22 /%3E%3Cpath d=%22M200 370V130l210-40v230%22 fill=%22none%22 stroke=%22%23ffffff%22 stroke-width=%2232%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22/%3E%3Ccircle cx=%22150%22 cy=%22370%22 r=%2250%22 fill=%22none%22 stroke=%22%23ffffff%22 stroke-width=%2232%22/%3E%3Ccircle cx=%22360%22 cy=%22330%22 r=%2250%22 fill=%22none%22 stroke=%22%23ffffff%22 stroke-width=%2232%22/%3E%3C/svg%3E', sizes: '512x512', type: 'image/svg+xml' } ]
+                        title: base, artist: 'Music Player',
+                        artwork: [ { src: 'data:image/svg+xml;charset=utf-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 512 512%22%3E%3Cdefs%3E%3ClinearGradient id=%22grad%22 x1=%220%25%22 y1=%22100%25%22 x2=%22100%25%22 y2=%220%25%22%3E%3Cstop offset=%220%25%22 style=%22stop-color:%230078d4;stop-opacity:1%22 /%3E%3Cstop offset=%22100%25%22 style=%22stop-color:%2360a5fa;stop-opacity:1%22 /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width=%22512%22 height=%22512%22 fill=%22url(%23grad)%22 /%3E%3Cpath d=%22M200 370V130l210-40v230%22 fill=%22none%22 stroke=%22%23ffffff%22 stroke-width=%2232%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22/%3E%3Ccircle cx=%22150%22 cy=%22370%22 r=%2250%22 fill=%22none%22 stroke=%22%23ffffff%22 stroke-width=%2232%22/%3E%3Ccircle cx=%22370%22 cy=%22330%22 r=%2250%22 fill=%22none%22 stroke=%22%23ffffff%22 stroke-width=%2232%22/%3E%3C/svg%3E', sizes: '512x512', type: 'image/svg+xml' } ]
                     });
                 }
                 
@@ -385,8 +366,7 @@
             } catch(e) { 
                 setStatus('ERROR', 'err'); 
                 document.getElementById('player_card').classList.remove('shimmer-active');
-                audio.removeAttribute('src'); 
-                audio.load(); 
+                audio.removeAttribute('src'); audio.load(); 
                 if ('mediaSession' in navigator) navigator.mediaSession.metadata = null;
             }
         }
@@ -396,11 +376,9 @@
             setTimeout(() => {
                 const container = fileInfoEl.parentElement;
                 if (fileInfoEl.scrollWidth > container.clientWidth) {
-                    fileInfoEl.classList.remove('short'); 
-                    fileInfoEl.style.animationDuration = `${fileInfoEl.scrollWidth / 20}s`;
+                    fileInfoEl.classList.remove('short'); fileInfoEl.style.animationDuration = `${fileInfoEl.scrollWidth / 20}s`;
                 } else { 
-                    fileInfoEl.classList.add('short'); 
-                    fileInfoEl.style.animationDuration = ''; 
+                    fileInfoEl.classList.add('short'); fileInfoEl.style.animationDuration = ''; 
                 }
             }, 50);
         }
@@ -425,11 +403,8 @@
                 const token = await getToken();
                 if (!token) return;
 
-                const res = await fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${folderId}/children`, { 
-                    headers: { Authorization: `Bearer ${token}` } 
-                });
-                
-                if (!res.ok) throw new Error("API Error");
+                const res = await fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${folderId}/children`, { headers: { Authorization: `Bearer ${token}` } });
+                if (!res.ok) throw new Error();
                 
                 const data = await res.json(); 
                 container.innerHTML = '';
@@ -443,9 +418,7 @@
                 
                 folders.forEach(f => {
                     const el = document.createElement('div');
-                    // 🔥 모바일 오버효과(hover) 제거: md:hover 만 남겨둠
                     el.className = 'flex items-center justify-between p-3 sm:p-4 mb-2 border border-gray-100 dark:border-gray-800/80 rounded-[1.2rem] bg-gray-50/50 dark:bg-gray-900/30 group cursor-pointer w-full transition md:hover:bg-gray-100 md:dark:hover:bg-gray-800/50';
-                    
                     const info = document.createElement('div');
                     info.className = 'flex items-center gap-3 sm:gap-4 flex-1 min-w-0 pr-2';
                     info.onclick = () => fetchMyFolders(f.id, f.name);
@@ -459,21 +432,13 @@
                     const { base } = splitName(a.name);
                     const el = document.createElement('div'); 
                     el.id = `track_row_${a.id}`;
-                    // 🔥 모바일 오버효과 제거 (md:hover 추가)
                     el.className = 'flex items-center justify-between p-3 sm:p-3.5 mb-1.5 cursor-pointer rounded-2xl transition group w-full border border-transparent md:hover:bg-gray-50 md:dark:hover:bg-gray-800/50';
-                    
                     const info = document.createElement('div'); 
                     info.className = 'flex items-center gap-3 sm:gap-4 flex-1 min-w-0 pr-4';
                     info.onclick = () => { 
-                        if(a.id === playingQueue[currentIndex]?.id && audio.src) {
-                            togglePlayPause(); 
-                        } else { 
-                            playingQueue = [...currentFolderAudios]; 
-                            currentIndex = i; 
-                            playTrack(i); 
-                        } 
+                        if(a.id === playingQueue[currentIndex]?.id && audio.src) { togglePlayPause(); } 
+                        else { playingQueue = [...currentFolderAudios]; currentIndex = i; playTrack(i); } 
                     };
-                    
                     info.innerHTML = `<div id="track_icon_${a.id}" class="w-10 h-10 sm:w-11 sm:h-11 shrink-0 rounded-xl flex items-center justify-center bg-gray-100 dark:bg-gray-900 text-gray-400 font-bold text-sm transition">${i+1}</div><p id="track_text_${a.id}" class="text-sm sm:text-[15px] font-medium truncate text-gray-800 dark:text-gray-200 transition">${base}</p>`;
                     
                     el.append(info, createActionBtn(a.id, a.name, false)); 
@@ -483,7 +448,6 @@
                 if (!folders.length && !audios.length) {
                     container.innerHTML = '<div class="w-full flex flex-col items-center justify-center text-sm text-gray-400 mt-10"><div class="text-3xl mb-2 opacity-50">📁</div>Folder is empty.</div>';
                 }
-                
                 updateActiveTrackUI();
             } catch(e) { 
                 container.innerHTML = '<div class="w-full flex flex-col justify-center items-center text-red-500 text-sm mt-10"><svg class="w-8 h-8 mb-3 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg><span class="opacity-80">Connection Error. Please refresh.</span></div>'; 
@@ -493,7 +457,6 @@
         function createActionBtn(id, name, isFolder) {
             const wrap = document.createElement('div'); 
             wrap.className = 'relative flex items-center shrink-0 opacity-100 lg:opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition';
-            // 버튼 hover 처리도 모바일에서 거슬리지 않도록 수정
             wrap.innerHTML = `<button onclick="toggleMenu(event, 'drop-${id}')" class="w-8 h-8 flex items-center justify-center text-gray-400 md:hover:text-gray-700 md:dark:hover:text-white rounded-full transition font-bold menu-btn">⋮</button><div id="drop-${id}" class="dropdown-content absolute right-0 top-10 w-32 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 py-1.5 z-50 hidden"><a onclick="event.stopPropagation(); requestRename('${id}', '${name.replace(/'/g,"\\'")}', ${isFolder})" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 cursor-pointer md:hover:bg-gray-100 md:dark:hover:bg-gray-700">Rename</a><a onclick="event.stopPropagation(); deleteItem('${id}', '${name.replace(/'/g,"\\'")}', ${isFolder})" class="block px-4 py-2 text-sm text-red-600 cursor-pointer md:hover:bg-red-50 md:dark:hover:bg-red-900/30">Delete</a></div>`;
             return wrap;
         }
@@ -518,10 +481,7 @@
                         body: JSON.stringify({ name: finalName }) 
                     });
                     
-                    if(res.ok) { 
-                        fetchMyFolders(currentFolderId, '', false); 
-                        closeModal('rename_modal'); 
-                    }
+                    if(res.ok) { fetchMyFolders(currentFolderId, '', false); closeModal('rename_modal'); }
                 } else {
                     closeModal('rename_modal');
                 }
@@ -533,8 +493,7 @@
             const recent = JSON.parse(localStorage.getItem('recent_tracks') || '[]');
             
             if(!recent.length) return; 
-            
-            document.getElementById('recent_tracks_container').classList.remove('hidden'); 
+            document.getElementById('recent_tracks_wrapper').classList.remove('hidden'); 
             list.innerHTML = '';
             
             recent.forEach(t => {
@@ -544,15 +503,10 @@
                 chip.innerText = base;
                 
                 chip.onclick = () => { 
-                    playingQueue = [t]; 
-                    currentIndex = 0; 
-                    playTrack(0); 
-                    
+                    playingQueue = [t]; currentIndex = 0; playTrack(0); 
                     if(currentFolderId !== t.folderId) { 
                         pathHistory = [{id:'root', name:'My Drive'}]; 
-                        if(t.folderId !== 'root') {
-                            pathHistory.push({id:t.folderId, name:t.folderName}); 
-                        }
+                        if(t.folderId !== 'root') pathHistory.push({id:t.folderId, name:t.folderName}); 
                         fetchMyFolders(t.folderId, t.folderName, false); 
                     } 
                 };
@@ -560,78 +514,75 @@
             });
         }
 
-        // 🔥 긴 경로 압축 (...) 및 클릭 시 드롭다운 팝업 복구
+        // 🔥 경로 길이 초과 시 압축 기능 추가
         function renderBreadcrumbs() {
             const container = document.getElementById('breadcrumb_container'); 
             container.innerHTML = '';
             
+            // 뒤로가기 버튼
             if (pathHistory.length > 1) {
                 const btn = document.createElement('button'); 
-                btn.className = 'mr-2 p-1 text-gray-400 md:hover:text-[#0078d4] md:dark:hover:text-blue-400 transition active:scale-90 flex items-center justify-center rounded-full md:hover:bg-gray-100 md:dark:hover:bg-gray-800'; 
+                btn.className = 'mr-2 p-1 text-gray-400 md:hover:text-[#0078d4] dark:hover:text-gray-500 md:dark:hover:text-blue-400 transition active:scale-90 flex items-center justify-center rounded-full md:hover:bg-gray-100 md:dark:hover:bg-gray-800 shrink-0'; 
                 btn.innerHTML = '<svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path></svg>';
                 btn.onclick = () => { 
                     if(pathHistory.length <= 1) return;
                     pathHistory.pop(); 
-                    const p = pathHistory[pathHistory.length-1]; 
-                    fetchMyFolders(p.id, p.name, false); 
+                    fetchMyFolders(pathHistory[pathHistory.length-1].id, pathHistory[pathHistory.length-1].name, false); 
                 }; 
                 container.appendChild(btn);
             }
             
-            if (pathHistory.length <= 3) {
+            // 압축 렌더링 로직 (경로가 3개 이상이면 ... 으로 처리)
+            if (pathHistory.length <= 2) {
                 pathHistory.forEach((s, i) => {
                     const span = document.createElement('span'); 
                     span.innerText = s.name;
-                    span.className = (i === pathHistory.length-1) ? 'font-semibold text-gray-900 dark:text-white truncate max-w-[150px] sm:max-w-[200px]' : 'breadcrumb-item transition md:hover:text-[#0078d4] truncate max-w-[100px] sm:max-w-[150px]'; 
-                    if(i !== pathHistory.length-1) span.onclick = () => { pathHistory = pathHistory.slice(0, i+1); fetchMyFolders(s.id, s.name, false); };
+                    if(i === pathHistory.length-1) {
+                        span.className = 'font-semibold text-gray-900 dark:text-white truncate max-w-[150px] sm:max-w-[250px] shrink-0';
+                    } else { 
+                        span.className = 'breadcrumb-item transition md:hover:text-[#0078d4] truncate max-w-[100px] sm:max-w-[150px] shrink-0'; 
+                        span.onclick = () => { pathHistory = pathHistory.slice(0, i+1); fetchMyFolders(s.id, s.name, false); }; 
+                    }
                     container.appendChild(span); 
                     if(i < pathHistory.length-1) {
-                        const sep = document.createElement('span'); sep.className = 'breadcrumb-separator'; sep.innerText = '/'; container.appendChild(sep);
+                        const sep = document.createElement('span'); sep.className = 'breadcrumb-separator shrink-0'; sep.innerText = '/'; container.appendChild(sep);
                     }
                 });
             } else {
-                // 압축 모드: Root / ... / Current
+                // 루트 표시
                 const rootSpan = document.createElement('span'); 
                 rootSpan.innerText = pathHistory[0].name;
-                rootSpan.className = 'breadcrumb-item transition md:hover:text-[#0078d4]';
+                rootSpan.className = 'breadcrumb-item transition md:hover:text-[#0078d4] truncate max-w-[80px] shrink-0';
                 rootSpan.onclick = () => { pathHistory = pathHistory.slice(0, 1); fetchMyFolders(pathHistory[0].id, pathHistory[0].name, false); };
                 container.appendChild(rootSpan);
                 
-                const sep1 = document.createElement('span'); sep1.className = 'breadcrumb-separator'; sep1.innerText = '/'; container.appendChild(sep1);
+                const sep1 = document.createElement('span'); sep1.className = 'breadcrumb-separator shrink-0'; sep1.innerText = '/'; container.appendChild(sep1);
                 
-                const ellipsisWrap = document.createElement('div');
-                ellipsisWrap.className = 'relative flex items-center';
-                const ellipsisBtn = document.createElement('span');
-                ellipsisBtn.className = 'breadcrumb-item font-bold px-1 tracking-widest cursor-pointer md:hover:text-[#0078d4]';
-                ellipsisBtn.innerText = '...';
-                ellipsisBtn.onclick = (e) => toggleMenu(e, 'drop-breadcrumb');
-                ellipsisWrap.appendChild(ellipsisBtn);
+                // 줄임표 및 드롭다운
+                const wrap = document.createElement('div'); wrap.className = 'relative flex items-center shrink-0';
+                const ell = document.createElement('span');
+                ell.innerText = '...';
+                ell.className = 'breadcrumb-item font-bold px-1 tracking-widest cursor-pointer md:hover:text-[#0078d4] menu-btn';
+                ell.onclick = (e) => toggleMenu(e, 'drop-breadcrumb');
+                wrap.appendChild(ell);
 
-                const drop = document.createElement('div');
-                drop.id = 'drop-breadcrumb';
+                const drop = document.createElement('div'); drop.id = 'drop-breadcrumb';
                 drop.className = 'dropdown-content absolute left-0 top-8 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-100 dark:border-gray-700 py-1.5 z-50 hidden max-h-60 overflow-y-auto';
-
                 for (let i = 1; i < pathHistory.length - 1; i++) {
-                    const a = document.createElement('a');
-                    a.className = 'block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 md:hover:bg-gray-100 md:dark:hover:bg-gray-700 cursor-pointer truncate';
+                    const a = document.createElement('a'); a.className = 'block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 md:hover:bg-gray-100 md:dark:hover:bg-gray-700 cursor-pointer truncate';
                     a.innerText = pathHistory[i].name;
-                    a.onclick = (e) => {
-                        e.stopPropagation();
-                        pathHistory = pathHistory.slice(0, i + 1);
-                        fetchMyFolders(pathHistory[i].id, pathHistory[i].name, false);
-                        drop.classList.add('hidden');
-                    };
+                    a.onclick = (e) => { e.stopPropagation(); pathHistory = pathHistory.slice(0, i + 1); fetchMyFolders(pathHistory[i].id, pathHistory[i].name, false); drop.classList.add('hidden'); };
                     drop.appendChild(a);
                 }
-                ellipsisWrap.appendChild(drop);
-                container.appendChild(ellipsisWrap);
+                wrap.appendChild(drop); container.appendChild(wrap);
                 
-                const sep2 = document.createElement('span'); sep2.className = 'breadcrumb-separator'; sep2.innerText = '/'; container.appendChild(sep2);
+                const sep2 = document.createElement('span'); sep2.className = 'breadcrumb-separator shrink-0'; sep2.innerText = '/'; container.appendChild(sep2);
                 
-                const currentSpan = document.createElement('span'); 
-                currentSpan.innerText = pathHistory[pathHistory.length-1].name;
-                currentSpan.className = 'font-semibold text-gray-900 dark:text-white truncate max-w-[150px] sm:max-w-[200px]';
-                container.appendChild(currentSpan);
+                // 현재 위치
+                const currSpan = document.createElement('span'); 
+                currSpan.innerText = pathHistory[pathHistory.length-1].name;
+                currSpan.className = 'font-semibold text-gray-900 dark:text-white truncate max-w-[120px] sm:max-w-[200px] shrink-0';
+                container.appendChild(currSpan);
             }
         }
 
@@ -699,10 +650,10 @@
             });
         }
         
-        // 🔥 반복 버튼 올렸을 때 색 안바뀌게 적용 완료
+        // 🔥 hover 시 색상 변화 강제 제거, 색상은 오직 활성화 상태에만 의존하도록 수정
         function updateRepeatBtnUI() { 
             const btn = document.getElementById('repeat_btn'); 
-            btn.className = `absolute right-0 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center transition active:scale-95 rounded-full ${playMode>0?'text-[#0078d4] dark:text-blue-400':'text-gray-400'}`; 
+            btn.className = `absolute right-0 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center transition active:scale-95 rounded-full ${playMode>0?'text-[#0078d4] dark:text-blue-400':'text-gray-400 dark:text-gray-500'}`; 
             
             if (playMode === 2) {
                 btn.innerHTML = `<svg class="w-5 h-5 sm:w-6 sm:h-6 relative" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path><text x="12" y="15" font-family="sans-serif" font-size="9" font-weight="bold" fill="currentColor" text-anchor="middle" stroke="none">1</text></svg>`;
