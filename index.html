@@ -74,12 +74,10 @@
 <body class="fixed inset-0 w-full h-[100dvh] flex flex-col bg-gray-50 text-gray-900 dark:bg-black dark:text-gray-100 font-sans antialiased overflow-hidden transition-colors duration-300">
 
     <div id="info_modal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/40 backdrop-blur-sm opacity-0 transition-opacity duration-300" onclick="closeModal('info_modal')">
-        <div id="info_modal_card" class="bg-white/90 dark:bg-gray-900/80 backdrop-blur-xl w-[90%] max-w-sm rounded-[2rem] p-6 sm:p-8 shadow-2xl border border-white/60 dark:border-gray-700/50 transform scale-95 transition-transform duration-300 relative" onclick="event.stopPropagation()">
-            
+        <div id="info_modal_card" class="bg-white/55 dark:bg-gray-900/60 backdrop-blur-2xl w-[90%] max-w-sm rounded-[2rem] p-6 sm:p-8 shadow-2xl border border-white/50 dark:border-gray-700/50 transform scale-95 transition-transform duration-300 relative" onclick="event.stopPropagation()">
             <button onclick="closeModal('info_modal')" class="absolute top-4 right-4 p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition rounded-full md:hover:bg-gray-100/50 md:dark:hover:bg-gray-800/50">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
-            
             <div class="flex items-center gap-3 mb-5">
                 <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#0078d4] to-blue-400 flex items-center justify-center shadow-md shrink-0">
                     <svg class="w-5 h-5 text-white pr-[1px] pb-[1px]" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13" /><circle cx="6" cy="18" r="3" /><circle cx="18" cy="16" r="3" /></svg>
@@ -89,12 +87,10 @@
                     <span class="text-[11px] font-bold text-[#0078d4] dark:text-blue-400 tracking-wider">VERSION 1.0.0</span>
                 </div>
             </div>
-            
             <p class="text-sm text-gray-600 dark:text-gray-300 mb-6 leading-relaxed font-medium">
                 Stream your music anytime, anywhere. <br>A fast, lightweight, zero-signup cloud player running instantly in your browser.
             </p>
-            
-            <div class="bg-blue-50/70 dark:bg-blue-900/20 rounded-2xl p-4 mb-3 border border-blue-100/70 dark:border-blue-800/30">
+            <div class="bg-blue-50/50 dark:bg-blue-900/20 rounded-2xl p-4 mb-3 border border-blue-100/50 dark:border-blue-800/30">
                 <div class="flex items-start gap-3">
                     <div class="mt-0.5 shrink-0 text-[#0078d4] dark:text-blue-400">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
@@ -105,8 +101,7 @@
                     </div>
                 </div>
             </div>
-
-            <div class="bg-gray-50/70 dark:bg-gray-800/40 rounded-2xl p-4 border border-gray-200/60 dark:border-gray-700/50">
+            <div class="bg-gray-50/50 dark:bg-gray-800/30 rounded-2xl p-4 border border-white/40 dark:border-gray-700/40">
                 <div class="flex items-start gap-3">
                     <div class="mt-0.5 shrink-0 text-gray-500 dark:text-gray-400">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
@@ -120,38 +115,39 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
-    
+
     <div id="rename_modal" class="fixed inset-0 z-[101] hidden items-center justify-center bg-black/40 backdrop-blur-sm opacity-0 transition-opacity duration-300" onclick="closeModal('rename_modal')">
-            <div id="rename_modal_card" class="bg-white/70 dark:bg-gray-900/70 backdrop-blur-2xl w-[90%] max-w-sm rounded-[2rem] p-6 sm:p-8 shadow-2xl border border-white/40 dark:border-gray-700/40 transform scale-95 transition-transform duration-300 relative" onclick="event.stopPropagation()">            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">Rename Item</h3>
-            <textarea id="rename_textarea" spellcheck="false" class="w-full h-28 bg-white/50 dark:bg-gray-800/50 border border-white/50 dark:border-gray-700/50 rounded-2xl p-4 text-sm font-medium text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#0078d4] transition-all resize-none"></textarea>            <div class="flex gap-3 mt-6">
-                <button onclick="closeModal('rename_modal')" class="flex-1 px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 text-sm font-bold text-gray-500 dark:text-gray-400 transition md:hover:brightness-95">Cancel</button>
+        <div id="rename_modal_card" class="bg-white/55 dark:bg-gray-900/60 backdrop-blur-2xl w-[90%] max-w-sm rounded-[2rem] p-6 sm:p-8 shadow-2xl border border-white/50 dark:border-gray-700/50 transform scale-95 transition-transform duration-300 relative" onclick="event.stopPropagation()">
+            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">Rename Item</h3>
+            <textarea id="rename_textarea" spellcheck="false" class="w-full h-28 bg-white/40 dark:bg-gray-800/40 border border-white/50 dark:border-gray-700/50 rounded-2xl p-4 text-sm font-medium text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#0078d4] transition-all resize-none backdrop-blur-md"></textarea>
+            <div class="flex gap-3 mt-6">
+                <button onclick="closeModal('rename_modal')" class="flex-1 px-4 py-3 rounded-xl bg-gray-100/50 dark:bg-gray-800/50 text-sm font-bold text-gray-600 dark:text-gray-300 transition md:hover:bg-gray-200/50">Cancel</button>
                 <button id="rename_confirm_btn" class="flex-1 px-4 py-3 rounded-xl bg-[#0078d4] text-sm font-bold text-white shadow-lg shadow-blue-500/20 transition md:hover:brightness-110">Save</button>
             </div>
         </div>
     </div>
 
     <div id="create_folder_modal" class="fixed inset-0 z-[101] hidden items-center justify-center bg-black/40 backdrop-blur-sm opacity-0 transition-opacity duration-300" onclick="closeModal('create_folder_modal')">
-        <div id="create_folder_modal_card" class="bg-white/70 dark:bg-gray-900/70 backdrop-blur-2xl w-[90%] max-w-sm rounded-[2rem] p-6 sm:p-8 shadow-2xl border border-white/40 dark:border-gray-700/40 transform scale-95 transition-transform duration-300 relative" onclick="event.stopPropagation()">
+        <div id="create_folder_modal_card" class="bg-white/55 dark:bg-gray-900/60 backdrop-blur-2xl w-[90%] max-w-sm rounded-[2rem] p-6 sm:p-8 shadow-2xl border border-white/50 dark:border-gray-700/50 transform scale-95 transition-transform duration-300 relative" onclick="event.stopPropagation()">
             <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">Create Folder</h3>
-            <input type="text" id="create_folder_input" placeholder="New Folder Name" spellcheck="false" autocomplete="off" class="w-full bg-white/50 dark:bg-gray-800/50 border border-white/50 dark:border-gray-700/50 rounded-2xl p-4 text-sm font-medium text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#0078d4] transition-all">
+            <input type="text" id="create_folder_input" placeholder="New Folder Name" spellcheck="false" autocomplete="off" class="w-full bg-white/40 dark:bg-gray-800/40 border border-white/50 dark:border-gray-700/50 rounded-2xl p-4 text-sm font-medium text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#0078d4] transition-all backdrop-blur-md">
             <div class="flex gap-3 mt-6">
-                <button onclick="closeModal('create_folder_modal')" class="flex-1 px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 text-sm font-bold text-gray-500 dark:text-gray-400 transition md:hover:brightness-95">Cancel</button>
+                <button onclick="closeModal('create_folder_modal')" class="flex-1 px-4 py-3 rounded-xl bg-gray-100/50 dark:bg-gray-800/50 text-sm font-bold text-gray-600 dark:text-gray-300 transition md:hover:bg-gray-200/50">Cancel</button>
                 <button id="create_folder_confirm_btn" class="flex-1 px-4 py-3 rounded-xl bg-[#0078d4] text-sm font-bold text-white shadow-lg shadow-blue-500/20 transition md:hover:brightness-110">Create</button>
             </div>
         </div>
     </div>
 
     <div id="track_info_modal" class="fixed inset-0 z-[101] hidden items-center justify-center bg-black/40 backdrop-blur-sm opacity-0 transition-opacity duration-300" onclick="closeModal('track_info_modal')">
-        <div id="track_info_modal_card" class="bg-white/70 dark:bg-gray-900/70 backdrop-blur-2xl w-[90%] max-w-sm rounded-[2rem] p-6 sm:p-8 shadow-2xl border border-white/40 dark:border-gray-700/40 transform scale-95 transition-transform duration-300 relative" onclick="event.stopPropagation()">
+        <div id="track_info_modal_card" class="bg-white/55 dark:bg-gray-900/60 backdrop-blur-2xl w-[90%] max-w-sm rounded-[2rem] p-6 sm:p-8 shadow-2xl border border-white/50 dark:border-gray-700/50 transform scale-95 transition-transform duration-300 relative" onclick="event.stopPropagation()">
             <div class="flex justify-between items-center mb-5">
                 <h3 class="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
                     <svg class="w-5 h-5 text-[#0078d4]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     File Details
                 </h3>
-                <button onclick="closeModal('track_info_modal')" class="p-2 -mr-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition rounded-full md:hover:bg-gray-100 md:dark:hover:bg-gray-800">
+                <button onclick="closeModal('track_info_modal')" class="p-2 -mr-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition rounded-full md:hover:bg-gray-100/50 md:dark:hover:bg-gray-800/50">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
             </div>
@@ -161,26 +157,26 @@
     </div>
 
     <div id="wake_modal" class="fixed inset-0 z-[101] hidden items-center justify-center bg-black/40 backdrop-blur-sm opacity-0 transition-opacity duration-300" onclick="closeModal('wake_modal')">
-        <div class="bg-white/70 dark:bg-gray-900/70 backdrop-blur-2xl w-[80%] max-w-xs rounded-[2rem] p-6 sm:p-8 shadow-2xl border border-white/40 dark:border-gray-700/40 transform scale-95 transition-transform duration-300 text-center relative" onclick="event.stopPropagation()">
-            <div class="w-14 h-14 mx-auto bg-yellow-50 dark:bg-yellow-900/30 text-yellow-500 dark:text-yellow-400 rounded-full flex items-center justify-center mb-4">
+        <div id="wake_modal_card" class="bg-white/55 dark:bg-gray-900/60 backdrop-blur-2xl w-[80%] max-w-xs rounded-[2rem] p-6 sm:p-8 shadow-2xl border border-white/50 dark:border-gray-700/50 transform scale-95 transition-transform duration-300 text-center relative" onclick="event.stopPropagation()">
+            <div class="w-14 h-14 mx-auto bg-yellow-50/50 dark:bg-yellow-900/30 text-yellow-500 dark:text-yellow-400 rounded-full flex items-center justify-center mb-4 border border-yellow-100/50 dark:border-yellow-800/30">
                 <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="3"></rect><path d="M12 18h.01"></path></svg>
             </div>
             <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Screen Kept Awake</h3>
-            <p class="text-sm text-gray-600 dark:text-gray-400 mb-6 leading-relaxed font-medium">
+            <p class="text-sm text-gray-600 dark:text-gray-300 mb-6 leading-relaxed font-medium">
                 Screen auto-lock is disabled while playing to prevent playback from stopping.
             </p>
-            <button onclick="closeModal('wake_modal')" class="w-full px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 text-sm font-bold text-gray-600 dark:text-gray-300 transition md:hover:bg-gray-200 md:dark:hover:bg-gray-700">Got it</button>
+            <button onclick="closeModal('wake_modal')" class="w-full px-4 py-3 rounded-xl bg-gray-100/50 dark:bg-gray-800/50 text-sm font-bold text-gray-700 dark:text-gray-200 transition md:hover:bg-gray-200/50 border border-white/30 dark:border-gray-700/30">Got it</button>
         </div>
     </div>
     
     <div id="recent_history_modal" class="fixed inset-0 z-[101] hidden items-center justify-center bg-black/40 backdrop-blur-sm opacity-0 transition-opacity duration-300" onclick="closeModal('recent_history_modal')">
-        <div id="recent_history_modal_card" class="bg-white/70 dark:bg-gray-900/70 backdrop-blur-2xl w-[90%] max-w-sm rounded-[2rem] p-6 sm:p-8 shadow-2xl border border-white/40 dark:border-gray-700/40 transform scale-95 transition-transform duration-300 relative max-h-[80vh] flex flex-col" onclick="event.stopPropagation()">
+        <div id="recent_history_modal_card" class="bg-white/55 dark:bg-gray-900/60 backdrop-blur-2xl w-[90%] max-w-sm rounded-[2rem] p-6 sm:p-8 shadow-2xl border border-white/50 dark:border-gray-700/50 transform scale-95 transition-transform duration-300 relative max-h-[80vh] flex flex-col" onclick="event.stopPropagation()">
             <div class="flex justify-between items-center mb-5 shrink-0">
                 <h3 class="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
                     <svg class="w-5 h-5 text-[#0078d4]" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     Recent Tracks
                 </h3>
-                <button onclick="closeModal('recent_history_modal')" class="p-2 -mr-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition rounded-full md:hover:bg-gray-100 md:dark:hover:bg-gray-800">
+                <button onclick="closeModal('recent_history_modal')" class="p-2 -mr-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition rounded-full md:hover:bg-gray-100/50 md:dark:hover:bg-gray-800/50">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
             </div>
@@ -188,7 +184,6 @@
                 </div>
         </div>
     </div>
-
     <header class="z-50 glass shrink-0 transition-colors duration-300">
         <div class="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 max-w-[1400px] w-full mx-auto">
             <div class="flex items-center gap-3">
