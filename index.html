@@ -603,7 +603,24 @@
         async function handleFileUpload(e) { const files = e.target.files; if(!files.length) return; const t = await getToken(); if (!t) return; const container = document.getElementById('file_list_container'); container.innerHTML = '<div class="h-full flex flex-col items-center justify-center text-sm text-[#0078d4] font-medium mt-10"><svg class="animate-spin w-8 h-8 mb-3" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Uploading...</div>';
             try { for(let f of files) { const res = await fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${currentFolderId}:/${encodeURIComponent(f.name)}:/createUploadSession`, { method:'POST', headers:{'Authorization':`Bearer ${t}`,'Content-Type':'application/json'} }); const s = await res.json(); await fetch(s.uploadUrl, { method:'PUT', headers:{'Content-Length':f.size,'Content-Range':`bytes 0-${f.size-1}/${f.size}`}, body:f }); } } catch(err) { alert(`Upload failed.`); } e.target.value = ''; fetchMyFolders(currentFolderId, pathHistory[pathHistory.length - 1].name, false); 
         }
-        async function requestWakeLock() { try { if('wakeLock' in navigator) wakeLock = await navigator.wakeLock.request('screen'); } catch(e){} }
+        // 🔥 화면 자동 꺼짐 방지 (Wake Lock) 로직 강화
+        async function requestWakeLock() { 
+            try { 
+                if('wakeLock' in navigator) {
+                    wakeLock = await navigator.wakeLock.request('screen'); 
+                }
+            } catch(e) { 
+                // 아이폰 저전력 모드이거나, 브라우저 정책상 막히면 이쪽으로 빠집니다.
+                console.log("Wake Lock 막힘:", e); 
+            } 
+        }
+
+        // 🔥 핵심: 화면 밖으로 나갔다 들어와도 (재생 중이라면) 다시 화면 켜짐 유지!
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible' && !audio.paused) {
+                requestWakeLock();
+            }
+        });
         audio.addEventListener('timeupdate', () => { if(!audio.duration) return; progressBar.value = (audio.currentTime / audio.duration) * 100; currentTimeEl.innerText = formatTime(audio.currentTime); });
         audio.addEventListener('loadedmetadata', () => { durationTimeEl.innerText = formatTime(audio.duration); progressBar.disabled = false; });
         audio.addEventListener('play', () => { document.getElementById('icon_play').classList.add('hidden'); document.getElementById('icon_pause').classList.remove('hidden'); setStatus('NOW PLAYING', 'play'); updateActiveTrackUI(); requestWakeLock(); });
