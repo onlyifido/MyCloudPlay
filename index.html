@@ -122,7 +122,7 @@
                     <svg class="w-5 h-5 text-[#0078d4]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     File Details
                 </h3>
-                <button onclick="closeModal('track_info_modal')" class="p-2 -mr-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition rounded-full">
+                <button onclick="closeModal('track_info_modal')" class="p-2 -mr-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition rounded-full md:hover:bg-gray-100 md:dark:hover:bg-gray-800">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
             </div>
@@ -175,7 +175,7 @@
             <div id="player_card" class="isolate border border-gray-100 dark:border-gray-800 rounded-[2.5rem] p-6 sm:p-10 bg-white dark:bg-gray-900 flex flex-col justify-center relative transition-colors duration-300" style="clip-path: inset(0 round 2.5rem);">
                 <div class="absolute -top-32 -right-32 w-64 h-64 bg-blue-400/20 dark:bg-blue-900/20 rounded-full blur-[80px] pointer-events-none -z-10"></div>
                 
-                <div id="file_ext_badge" onclick="showTrackInfo()" class="absolute top-6 right-8 px-2.5 py-1 rounded-lg bg-gray-100/80 dark:bg-gray-800/80 text-[10px] font-extrabold text-gray-500 dark:text-gray-400 uppercase tracking-widest hidden cursor-pointer md:hover:bg-gray-200 md:dark:hover:bg-gray-700 transition active:scale-95 border border-gray-200/50 dark:border-gray-700/50 shadow-sm" title="View Track Info">MP3</div>
+                <div id="file_ext_badge" onclick="event.stopPropagation(); showTrackInfo()" class="absolute top-6 right-8 px-2.5 py-1 rounded-lg bg-gray-100/80 dark:bg-gray-800/80 text-[10px] font-extrabold text-gray-500 dark:text-gray-400 uppercase tracking-widest hidden cursor-pointer md:hover:bg-gray-200 md:dark:hover:bg-gray-700 transition active:scale-95 border border-gray-200/50 dark:border-gray-700/50 shadow-sm" title="View Track Info">MP3</div>
 
                 <div class="z-10 w-full text-center flex flex-col items-center pt-2 sm:pt-4">
                     <div class="flex items-center gap-2 mb-3 justify-center">
@@ -243,8 +243,8 @@
                         
                         <button onclick="toggleMenu(event, 'main_action_drop')" class="p-2 text-gray-500 md:hover:text-gray-800 md:dark:hover:text-gray-200 bg-gray-100 dark:bg-gray-800 rounded-full transition menu-btn"><svg class="w-5 h-5 pointer-events-none" fill="currentColor" viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg></button>
                         <div id="main_action_drop" class="dropdown-content absolute right-0 top-12 w-44 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-100 dark:border-gray-700 py-1.5 z-50 hidden">
-                            <a onclick="createFolder()" class="flex items-center gap-2.5 px-4 py-2 text-sm font-medium cursor-pointer md:hover:bg-gray-100 md:dark:hover:bg-gray-700">Create Folder</a>
-                            <a onclick="document.getElementById('file_upload').click()" class="flex items-center gap-2.5 px-4 py-2 text-sm font-bold text-[#0078d4] cursor-pointer md:hover:bg-gray-100 md:dark:hover:bg-gray-700">Upload Music</a>
+                            <a onclick="event.stopPropagation(); createFolder()" class="flex items-center gap-2.5 px-4 py-2 text-sm font-medium cursor-pointer md:hover:bg-gray-100 md:dark:hover:bg-gray-700">Create Folder</a>
+                            <a onclick="event.stopPropagation(); document.getElementById('file_upload').click()" class="flex items-center gap-2.5 px-4 py-2 text-sm font-bold text-[#0078d4] cursor-pointer md:hover:bg-gray-100 md:dark:hover:bg-gray-700">Upload Music</a>
                         </div>
                         <input type="file" id="file_upload" accept="audio/*" multiple class="hidden" onchange="handleFileUpload(event)">
                     </div>
@@ -302,6 +302,7 @@
         let pathHistory = [{ id: 'root', name: 'My Drive' }];
         let wakeLock = null;
 
+        // 🔥 새기능: 용량 단위 변환
         function formatBytes(bytes, decimals = 2) {
             if (!+bytes) return '0 Bytes';
             const k = 1024, dm = decimals < 0 ? 0 : decimals;
@@ -339,7 +340,7 @@
             }, 300);
         }
 
-        // 🔥 새기능: 트랙 고급 정보 모달
+        // 🔥 새기능: 트랙 정보 조회
         function showTrackInfo() {
             if (currentIndex < 0 || !playingQueue[currentIndex]) return;
             const track = playingQueue[currentIndex];
@@ -349,7 +350,6 @@
             const audioData = track.audio || {};
             const bitrate = audioData.bitrate ? `${Math.round(audioData.bitrate / 1000)} kbps` : 'Unknown';
             
-            // MS Graph API는 오디오 정보가 없으면 안 줄 수도 있으므로 방어 코드 작성
             content.innerHTML = `
                 <div class="flex flex-col py-2 border-b border-gray-100 dark:border-gray-800">
                     <span class="text-[10px] text-[#0078d4] dark:text-blue-400 font-bold uppercase tracking-widest mb-1">File Name</span>
@@ -371,20 +371,17 @@
             openModal('track_info_modal');
         }
 
-        // 🔥 모든 모달창 배경 클릭 시 닫기 연동
+        // 🔥 바탕화면 클릭 시 닫힘 기능 완벽 적용
         window.addEventListener('click', (e) => {
-            // 드롭다운 메뉴
             if (!e.target.closest('.menu-btn') && !e.target.closest('.dropdown-content')) {
                 document.querySelectorAll('.dropdown-content').forEach(d => d.classList.add('hidden'));
             }
             
-            // 등록된 모든 모달창
             const modals = ['info_modal', 'rename_modal', 'wake_modal', 'create_folder_modal', 'track_info_modal'];
             modals.forEach(id => {
                 const m = document.getElementById(id);
                 if (m && !m.classList.contains('hidden')) {
                     const c = m.firstElementChild;
-                    // 모달 창 내부 클릭이 아니고, 트리거 버튼 클릭이 아니면 닫기
                     if (!c.contains(e.target) && !e.target.closest(`[onclick*="${id}"]`) && !e.target.closest('#file_ext_badge')) {
                         closeModal(id);
                     }
@@ -559,7 +556,9 @@
             const textarea = document.getElementById('rename_textarea');
             textarea.value = isFolder ? fullName : base; 
             openModal('rename_modal');
-            textarea.focus();
+            
+            // 모달 열림 애니메이션 대기 후 포커스
+            setTimeout(() => textarea.focus(), 50);
             
             document.getElementById('rename_confirm_btn').onclick = async () => {
                 const newBase = textarea.value.trim();
@@ -581,25 +580,32 @@
             };
         }
 
-        // 🔥 기존 기능 갈아엎고 새로 추가한 커스텀 모달 폴더 생성 로직
+        // 🔥 새기능: 폴더 생성 커스텀 모달
         function createFolder() { 
+            // 메뉴 닫기
+            document.getElementById('main_action_drop').classList.add('hidden');
+            
             const input = document.getElementById('create_folder_input');
             input.value = '';
             openModal('create_folder_modal');
-            input.focus();
+            
+            // iOS 키보드 자연스러운 호출을 위한 지연 포커스
+            setTimeout(() => input.focus(), 50);
             
             document.getElementById('create_folder_confirm_btn').onclick = async () => {
                 const n = input.value.trim();
                 if (n) {
                     const t = await getToken();
                     if (!t) return;
-                    closeModal('create_folder_modal'); 
-                    await fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${currentFolderId}/children`, {
-                        method:'POST',
-                        headers:{'Authorization':`Bearer ${t}`,'Content-Type':'application/json'},
-                        body:JSON.stringify({name:n, folder:{}})
-                    });
-                    fetchMyFolders(currentFolderId, pathHistory[pathHistory.length-1].name, false);
+                    
+                    closeModal('create_folder_modal');
+                    
+                    await fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${currentFolderId}/children`, { 
+                        method:'POST', 
+                        headers:{'Authorization':`Bearer ${t}`,'Content-Type':'application/json'}, 
+                        body:JSON.stringify({name:n, folder:{}}) 
+                    }); 
+                    fetchMyFolders(currentFolderId, pathHistory[pathHistory.length-1].name, false); 
                 } else {
                     closeModal('create_folder_modal');
                 }
