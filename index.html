@@ -361,23 +361,41 @@
         // --------------------------------------------------
         // 🔥 새기능 및 복구 로직 (트랙 정보, 폴더 생성)
         // --------------------------------------------------
-        function showTrackInfo() {
+                function showTrackInfo() {
             if (currentIndex < 0 || !playingQueue[currentIndex]) return;
-            const track = playingQueue[currentIndex], content = document.getElementById('track_info_content');
-            const size = track.size ? formatBytes(track.size) : 'Unknown', audioData = track.audio || {};
+            const track = playingQueue[currentIndex];
+            const content = document.getElementById('track_info_content');
+            
+            const size = track.size ? formatBytes(track.size) : 'Unknown';
+            const ext = splitName(track.name).ext || 'Unknown';
+            const audioData = track.audio || {};
+            
+            // MS Graph API에서 제공하는 추가 메타데이터들 (없으면 파일명이나 Unknown 처리)
             const bitrate = audioData.bitrate ? `${Math.round(audioData.bitrate / 1000)} kbps` : 'Unknown';
+            const title = audioData.title || splitName(track.name).base;
+            const artist = audioData.artist || 'Unknown Artist';
+            const album = audioData.album || 'Unknown Album';
+            
             content.innerHTML = `
                 <div class="flex flex-col py-2 border-b border-gray-100 dark:border-gray-800">
                     <span class="text-[10px] text-[#0078d4] dark:text-blue-400 font-bold uppercase tracking-widest mb-1">File Name</span>
                     <span class="text-gray-900 dark:text-gray-100 font-medium break-all leading-snug">${track.name}</span>
                 </div>
                 <div class="flex justify-between items-center py-2.5 border-b border-gray-100 dark:border-gray-800">
-                    <span class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Format</span>
-                    <span class="text-gray-900 dark:text-gray-100 font-bold">${splitName(track.name).ext || 'Unknown'}</span>
+                    <span class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Title</span>
+                    <span class="text-gray-900 dark:text-gray-100 font-bold text-right truncate max-w-[65%]">${title}</span>
                 </div>
                 <div class="flex justify-between items-center py-2.5 border-b border-gray-100 dark:border-gray-800">
-                    <span class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">File Size</span>
-                    <span class="text-gray-900 dark:text-gray-100 font-bold">${size}</span>
+                    <span class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Artist</span>
+                    <span class="text-gray-900 dark:text-gray-100 font-bold text-right truncate max-w-[65%]">${artist}</span>
+                </div>
+                <div class="flex justify-between items-center py-2.5 border-b border-gray-100 dark:border-gray-800">
+                    <span class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Album</span>
+                    <span class="text-gray-900 dark:text-gray-100 font-bold text-right truncate max-w-[65%]">${album}</span>
+                </div>
+                <div class="flex justify-between items-center py-2.5 border-b border-gray-100 dark:border-gray-800">
+                    <span class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Format / Size</span>
+                    <span class="text-gray-900 dark:text-gray-100 font-bold">${ext} / ${size}</span>
                 </div>
                 <div class="flex justify-between items-center py-2.5">
                     <span class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Audio Bitrate</span>
