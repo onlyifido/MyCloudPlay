@@ -242,7 +242,7 @@
         <div class="w-full lg:w-[55%] flex flex-col flex-1 min-h-0">
             <div id="recent_tracks_wrapper" class="hidden shrink-0 w-full mb-3 px-1">
                 <div class="flex items-center gap-2.5">
-                    <svg onclick="openRecentHistoryModal()" class="w-6 h-6 p-0.5 text-gray-400 cursor-pointer md:hover:text-[#0078d4] transition shrink-0 rounded-full md:hover:bg-gray-100 md:dark:hover:bg-gray-800" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+<svg onclick="event.stopPropagation(); openRecentHistoryModal()" class="w-6 h-6 p-0.5 text-gray-400 cursor-pointer md:hover:text-[#0078d4] transition shrink-0 rounded-full md:hover:bg-gray-100 md:dark:hover:bg-gray-800" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     <div id="recent_tracks_list" class="flex-1 grid grid-cols-3 gap-2 min-w-0"></div>
                 </div>
             </div>
