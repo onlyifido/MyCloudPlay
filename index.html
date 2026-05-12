@@ -146,6 +146,22 @@
             <button onclick="closeModal('wake_modal')" class="w-full px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 text-sm font-bold text-gray-600 dark:text-gray-300 transition md:hover:bg-gray-200 md:dark:hover:bg-gray-700">Got it</button>
         </div>
     </div>
+    
+    <div id="recent_history_modal" class="fixed inset-0 z-[101] hidden items-center justify-center bg-black/40 backdrop-blur-sm opacity-0 transition-opacity duration-300" onclick="closeModal('recent_history_modal')">
+        <div id="recent_history_modal_card" class="bg-white dark:bg-gray-900 w-[90%] max-w-sm rounded-[2rem] p-6 sm:p-8 shadow-2xl border border-gray-100 dark:border-gray-800 transform scale-95 transition-transform duration-300 relative max-h-[80vh] flex flex-col" onclick="event.stopPropagation()">
+            <div class="flex justify-between items-center mb-5 shrink-0">
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                    <svg class="w-5 h-5 text-[#0078d4]" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    Recent Tracks
+                </h3>
+                <button onclick="closeModal('recent_history_modal')" class="p-2 -mr-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition rounded-full md:hover:bg-gray-100 md:dark:hover:bg-gray-800">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <div class="overflow-y-auto pr-1 no-scrollbar space-y-2" id="recent_history_content">
+                </div>
+        </div>
+    </div>
 
     <header class="z-50 glass shrink-0 transition-colors duration-300">
         <div class="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 max-w-[1400px] w-full mx-auto">
@@ -226,7 +242,7 @@
         <div class="w-full lg:w-[55%] flex flex-col flex-1 min-h-0">
             <div id="recent_tracks_wrapper" class="hidden shrink-0 w-full mb-3 px-1">
                 <div class="flex items-center gap-2.5">
-                    <svg class="w-5 h-5 text-gray-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <svg onclick="openRecentHistoryModal()" class="w-6 h-6 p-0.5 text-gray-400 cursor-pointer md:hover:text-[#0078d4] transition shrink-0 rounded-full md:hover:bg-gray-100 md:dark:hover:bg-gray-800" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     <div id="recent_tracks_list" class="flex-1 grid grid-cols-3 gap-2 min-w-0"></div>
                 </div>
             </div>
@@ -320,7 +336,7 @@
             if (!e.target.closest('.menu-btn') && !e.target.closest('.dropdown-content')) {
                 document.querySelectorAll('.dropdown-content').forEach(d => d.classList.add('hidden'));
             }
-            ['info_modal', 'rename_modal', 'wake_modal', 'create_folder_modal', 'track_info_modal'].forEach(id => {
+            ['info_modal', 'rename_modal', 'wake_modal', 'create_folder_modal', 'track_info_modal', 'recent_history_modal'].forEach(id => {
                 const m = document.getElementById(id);
                 if (m && !m.classList.contains('hidden') && !m.firstElementChild.contains(e.target) && !e.target.closest(`[onclick*="${id}"]`) && !e.target.closest('#file_ext_badge')) closeModal(id);
             });
@@ -497,17 +513,7 @@
         // --------------------------------------------------
         // 🔥 기타 UI 로직 (최근 곡, 빵부스러기, 컨트롤러)
         // --------------------------------------------------
-        function renderRecentUI() {
-            const list = document.getElementById('recent_tracks_list'), recent = JSON.parse(localStorage.getItem('recent_tracks') || '[]');
-            if(!recent.length) return; document.getElementById('recent_tracks_wrapper').classList.remove('hidden'); list.innerHTML = '';
-            recent.forEach(t => {
-                const { base } = splitName(t.name); const chip = document.createElement('div');
-                chip.className = 'w-full px-2 sm:px-3 py-1.5 sm:py-2 rounded-[0.8rem] border border-gray-200/60 dark:border-gray-700/60 bg-white dark:bg-gray-800 shadow-sm text-[10px] sm:text-xs font-semibold text-center truncate cursor-pointer active:scale-95 transition-all md:hover:border-[#0078d4] md:hover:text-[#0078d4]';
-                chip.innerText = base;
-                chip.onclick = () => { playingQueue = [t]; currentIndex = 0; playTrack(0); if(currentFolderId !== t.folderId) { pathHistory = [{id:'root', name:'My Drive'}]; if(t.folderId !== 'root') pathHistory.push({id:t.folderId, name:t.folderName}); fetchMyFolders(t.folderId, t.folderName, false); } };
-                list.appendChild(chip);
-            });
-        }
+        
         function renderBreadcrumbs() {
             const container = document.getElementById('breadcrumb_container'); container.innerHTML = '';
             if (pathHistory.length > 1) {
@@ -537,10 +543,57 @@
                 const currSpan = document.createElement('span'); currSpan.innerText = pathHistory[pathHistory.length-1].name; currSpan.className = 'font-semibold text-gray-900 dark:text-white truncate max-w-[120px] sm:max-w-[200px] shrink-0'; container.appendChild(currSpan);
             }
         }
+                // 10개까지 저장하도록 수정
         function saveRecentTrack(t) {
             let recent = JSON.parse(localStorage.getItem('recent_tracks') || '[]'); recent = recent.filter(x => x.id !== t.id);
             recent.unshift({ id: t.id, name: t.name, folderId: currentFolderId, folderName: pathHistory[pathHistory.length-1].name });
-            if(recent.length > 3) recent = recent.slice(0, 3); localStorage.setItem('recent_tracks', JSON.stringify(recent)); renderRecentUI();
+            if(recent.length > 10) recent = recent.slice(0, 10); // 최대 10개 보관
+            localStorage.setItem('recent_tracks', JSON.stringify(recent)); renderRecentUI();
+        }
+
+        // 메인 화면에는 3개만 그리도록 수정
+        function renderRecentUI() {
+            const list = document.getElementById('recent_tracks_list'), recent = JSON.parse(localStorage.getItem('recent_tracks') || '[]');
+            if(!recent.length) return; document.getElementById('recent_tracks_wrapper').classList.remove('hidden'); list.innerHTML = '';
+            
+            // 메인 UI에는 앞의 3개만 렌더링
+            recent.slice(0, 3).forEach(t => {
+                const { base } = splitName(t.name); const chip = document.createElement('div');
+                chip.className = 'w-full px-2 sm:px-3 py-1.5 sm:py-2 rounded-[0.8rem] border border-gray-200/60 dark:border-gray-700/60 bg-white dark:bg-gray-800 shadow-sm text-[10px] sm:text-xs font-semibold text-center truncate cursor-pointer active:scale-95 transition-all md:hover:border-[#0078d4] md:hover:text-[#0078d4]';
+                chip.innerText = base;
+                chip.onclick = () => { playingQueue = [t]; currentIndex = 0; playTrack(0); if(currentFolderId !== t.folderId) { pathHistory = [{id:'root', name:'My Drive'}]; if(t.folderId !== 'root') pathHistory.push({id:t.folderId, name:t.folderName}); fetchMyFolders(t.folderId, t.folderName, false); } };
+                list.appendChild(chip);
+            });
+        }
+
+        // 🔥 새 모달창에 10개 리스트를 뿌려주는 함수 (새로 추가)
+        function openRecentHistoryModal() {
+            const content = document.getElementById('recent_history_content');
+            const recent = JSON.parse(localStorage.getItem('recent_tracks') || '[]');
+            content.innerHTML = '';
+            
+            if (!recent.length) {
+                content.innerHTML = '<div class="text-sm text-gray-400 text-center py-4">No recent tracks.</div>';
+            } else {
+                recent.forEach(t => {
+                    const { base } = splitName(t.name);
+                    const item = document.createElement('div');
+                    item.className = 'flex items-center justify-between p-3 rounded-xl bg-gray-50/50 dark:bg-gray-800/30 border border-gray-100 dark:border-gray-700/50 cursor-pointer active:scale-95 transition md:hover:bg-blue-50 md:dark:hover:bg-blue-900/20 md:hover:border-blue-200 md:dark:hover:border-blue-800/50 group';
+                    item.innerHTML = `<span class="text-sm font-medium text-gray-800 dark:text-gray-200 truncate group-hover:text-[#0078d4] dark:group-hover:text-blue-400 transition">${base}</span>
+                                      <span class="text-[10px] text-gray-400 shrink-0 ml-2 border border-gray-200 dark:border-gray-700 px-2 py-0.5 rounded-md truncate max-w-[80px]">${t.folderName}</span>`;
+                    item.onclick = () => {
+                        closeModal('recent_history_modal');
+                        playingQueue = [t]; currentIndex = 0; playTrack(0);
+                        if(currentFolderId !== t.folderId) { 
+                            pathHistory = [{id:'root', name:'My Drive'}]; 
+                            if(t.folderId !== 'root') pathHistory.push({id:t.folderId, name:t.folderName}); 
+                            fetchMyFolders(t.folderId, t.folderName, false); 
+                        }
+                    };
+                    content.appendChild(item);
+                });
+            }
+            openModal('recent_history_modal');
         }
         function updateMarqueeText(text) {
             fileInfoEl.innerText = text;
