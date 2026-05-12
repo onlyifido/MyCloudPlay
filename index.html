@@ -28,7 +28,8 @@
         .dark ::-webkit-scrollbar-thumb:hover { background: rgba(107, 114, 128, 0.7); }
 
         .show { display: block !important; }
-        .breadcrumb-item:hover { color: #0078d4; text-decoration: underline; cursor: pointer; }
+        .breadcrumb-item { cursor: pointer; }
+        .breadcrumb-item:hover { color: #0078d4; text-decoration: underline; }
         .breadcrumb-separator { color: #6b7280; margin: 0 4px; font-weight: 300; }
         
         .glass { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.5); }
@@ -73,7 +74,7 @@
 
     <div id="info_modal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/40 backdrop-blur-sm opacity-0 transition-opacity duration-300">
         <div id="info_modal_card" class="bg-white dark:bg-gray-900 w-[90%] max-w-sm rounded-[2rem] p-6 sm:p-8 shadow-2xl border border-gray-100 dark:border-gray-800 transform scale-95 transition-transform duration-300 relative">
-            <button onclick="closeModal('info_modal')" class="absolute top-4 right-4 p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition rounded-full hover:bg-gray-100 dark:hover:bg-gray-800">
+            <button onclick="closeModal('info_modal')" class="absolute top-4 right-4 p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition rounded-full md:hover:bg-gray-100 md:dark:hover:bg-gray-800">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
             <h3 class="text-xl sm:text-2xl font-extrabold text-gray-900 dark:text-white mb-3">🎵 Your Cloud Player</h3>
@@ -98,8 +99,8 @@
             <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">Rename Item</h3>
             <textarea id="rename_textarea" spellcheck="false" class="w-full h-28 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl p-4 text-sm font-medium text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#0078d4] transition-all resize-none"></textarea>
             <div class="flex gap-3 mt-6">
-                <button onclick="closeModal('rename_modal')" class="flex-1 px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 text-sm font-bold text-gray-500 dark:text-gray-400 hover:brightness-95 transition">Cancel</button>
-                <button id="rename_confirm_btn" class="flex-1 px-4 py-3 rounded-xl bg-[#0078d4] text-sm font-bold text-white shadow-lg shadow-blue-500/20 hover:brightness-110 transition">Save</button>
+                <button onclick="closeModal('rename_modal')" class="flex-1 px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 text-sm font-bold text-gray-500 dark:text-gray-400 transition md:hover:brightness-95">Cancel</button>
+                <button id="rename_confirm_btn" class="flex-1 px-4 py-3 rounded-xl bg-[#0078d4] text-sm font-bold text-white shadow-lg shadow-blue-500/20 transition md:hover:brightness-110">Save</button>
             </div>
         </div>
     </div>
@@ -116,15 +117,15 @@
                 <button onclick="openModal('info_modal')" class="text-gray-400 hover:text-[#0078d4] dark:hover:text-blue-400 transition-colors p-1" title="About"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button>
             </div>
             <div class="flex items-center gap-2 sm:gap-4">
-                <div id="wake_lock_indicator" onclick="alert('Screen kept awake')" class="hidden opacity-0 scale-95 transition-all duration-500 items-center justify-center p-1 text-yellow-600/60 dark:text-yellow-500/60 cursor-pointer"><svg class="w-5 h-5 sm:w-6 sm:h-6" viewBox="0 0 24 24" fill="none"><rect x="5" y="2" width="14" height="20" rx="3" stroke="currentColor" stroke-width="1.5"/><rect x="7" y="5" width="10" height="13" rx="1" fill="currentColor"/><path d="M11 20h2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+                <div id="wake_lock_indicator" onclick="alert('Screen auto-lock is disabled while playing to prevent playback from stopping.')" class="hidden opacity-0 scale-95 transition-all duration-500 items-center justify-center p-1 text-yellow-600/60 dark:text-yellow-500/60 cursor-pointer"><svg class="w-5 h-5 sm:w-6 sm:h-6" viewBox="0 0 24 24" fill="none"><rect x="5" y="2" width="14" height="20" rx="3" stroke="currentColor" stroke-width="1.5"/><rect x="7" y="5" width="10" height="13" rx="1" fill="currentColor"/><path d="M11 20h2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
                 
-                <button onclick="toggleDarkMode()" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-400 transition">
+                <button onclick="toggleDarkMode()" class="p-2 rounded-full text-gray-600 dark:text-gray-400 transition md:hover:bg-gray-200 md:dark:hover:bg-gray-800">
                     <svg id="theme_icon_light" class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
                     <svg id="theme_icon_dark" class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
                 </button>
                 
-                <button id="login_button" onclick="signIn()" class="bg-[#0078d4] text-white px-4 py-1.5 sm:px-5 rounded-full text-sm font-semibold hover:opacity-90 shadow-md transition">Sign In</button>
-                <button id="logout_button" style="display: none;" onclick="signOut()" class="text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white px-2 py-1.5 text-sm font-medium transition">Sign Out</button>
+                <button id="login_button" onclick="signIn()" class="bg-[#0078d4] text-white px-4 py-1.5 sm:px-5 rounded-full text-sm font-semibold shadow-md transition md:hover:opacity-90">Sign In</button>
+                <button id="logout_button" style="display: none;" onclick="signOut()" class="text-gray-500 md:hover:text-gray-900 dark:text-gray-400 md:dark:hover:text-white px-2 py-1.5 text-sm font-medium transition">Sign Out</button>
             </div>
         </div>
     </header>
@@ -156,12 +157,14 @@
                         <span id="duration_time">0:00</span>
                     </div>
                     <div class="relative flex items-center justify-center w-full mt-6 h-16">
-                        <button id="repeat_btn" onclick="toggleRepeat()" class="absolute left-0 w-10 h-10 flex items-center justify-center text-gray-400 transition active:scale-95"><svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg></button>
+                        
                         <div class="flex items-center gap-6 sm:gap-8">
                             <button onclick="playPrevTrack()" class="w-12 h-12 neumorphic rounded-full flex items-center justify-center text-gray-500 transition active:scale-95"><svg class="w-5 h-5 sm:w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg></button>
                             <button id="play_pause_btn" onclick="togglePlayPause()" class="w-16 h-16 bg-gradient-to-tr from-[#006cbd] to-[#0078d4] text-white rounded-full flex items-center justify-center shadow-xl shadow-blue-500/20 active:scale-90 transition"><svg id="icon_play" class="w-8 h-8 translate-x-[2px]" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg><svg id="icon_pause" class="w-8 h-8 hidden" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg></button>
                             <button onclick="playNextTrack(true)" class="w-12 h-12 neumorphic rounded-full flex items-center justify-center text-gray-500 transition active:scale-95"><svg class="w-5 h-5 sm:w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg></button>
                         </div>
+                        
+                        <button id="repeat_btn" onclick="toggleRepeat()" class="absolute right-0 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center text-gray-400 transition active:scale-95 rounded-full"><svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg></button>
                     </div>
                 </div>
             </div>
@@ -171,6 +174,7 @@
             <div class="border border-gray-100 dark:border-gray-800 rounded-[2.5rem] bg-white dark:bg-gray-950 shadow-sm flex flex-col flex-1 min-h-0 overflow-hidden transition-colors duration-300">
                 
                 <div class="bg-gray-50/80 dark:bg-gray-900/80 border-b border-gray-100 dark:border-gray-800 px-5 sm:px-6 py-4 flex items-center justify-between shrink-0">
+                    
                     <div id="breadcrumb_container" class="flex items-center flex-wrap text-sm sm:text-base font-medium text-gray-500 dark:text-gray-400">
                         <span class="font-semibold text-gray-900 dark:text-white">My Drive</span>
                     </div>
@@ -178,19 +182,22 @@
                     <div id="action_buttons" style="display: none;" class="flex items-center gap-2 relative">
                         <button id="shuffle_folder_btn" onclick="playRandomFromFolder()" style="display: none;" class="w-9 h-9 flex items-center justify-center text-[#0078d4] bg-blue-50 dark:bg-blue-900/30 rounded-full transition active:scale-90"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M2 18h1.4c1.3 0 2.5-.6 3.3-1.7l6.1-8.6c.7-1.1 2-1.7 3.3-1.7H22" /><path d="m18 2 4 4-4 4" /><path d="M2 6h1.9c1.5 0 2.9.9 3.6 2.2" /><path d="M22 18h-5.9c-1.3 0-2.6-.7-3.3-1.8l-.5-.8" /><path d="m18 14 4 4-4 4" /></svg></button>
                         
-                        <button onclick="toggleMenu(event, 'main_action_drop')" class="p-2 text-gray-500 hover:text-gray-800 dark:hover:text-gray-200 bg-gray-100 dark:bg-gray-800 rounded-full transition menu-btn"><svg class="w-5 h-5 pointer-events-none" fill="currentColor" viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg></button>
+                        <button onclick="toggleMenu(event, 'main_action_drop')" class="p-2 text-gray-500 md:hover:text-gray-800 md:dark:hover:text-gray-200 bg-gray-100 dark:bg-gray-800 rounded-full transition menu-btn"><svg class="w-5 h-5 pointer-events-none" fill="currentColor" viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg></button>
                         <div id="main_action_drop" class="dropdown-content absolute right-0 top-12 w-44 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-100 dark:border-gray-700 py-1.5 z-50 hidden">
-                            <a onclick="createFolder()" class="flex items-center gap-2.5 px-4 py-2 text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">Create Folder</a>
-                            <a onclick="document.getElementById('file_upload').click()" class="flex items-center gap-2.5 px-4 py-2 text-sm font-bold text-[#0078d4] hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">Upload Music</a>
+                            <a onclick="createFolder()" class="flex items-center gap-2.5 px-4 py-2 text-sm font-medium cursor-pointer md:hover:bg-gray-100 md:dark:hover:bg-gray-700">Create Folder</a>
+                            <a onclick="document.getElementById('file_upload').click()" class="flex items-center gap-2.5 px-4 py-2 text-sm font-bold text-[#0078d4] cursor-pointer md:hover:bg-gray-100 md:dark:hover:bg-gray-700">Upload Music</a>
                         </div>
                         <input type="file" id="file_upload" accept="audio/*" multiple class="hidden" onchange="handleFileUpload(event)">
                     </div>
                 </div>
                 
                 <div class="flex-1 overflow-y-auto w-full relative">
-                    <div id="recent_tracks_container" class="hidden border-b border-gray-100 dark:border-gray-800 px-5 py-3 bg-gray-50/50 dark:bg-gray-900/50 backdrop-blur-md sticky top-0 z-20">
-                        <p class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2.5 ml-1">Recent</p>
-                        <div id="recent_tracks_list" class="grid grid-cols-3 gap-2"></div>
+                    <div id="recent_tracks_container" class="hidden border-b border-gray-100 dark:border-gray-800 px-4 sm:px-5 py-2.5 bg-gray-50/50 dark:bg-gray-900/50 flex items-center gap-3">
+                        <svg class="w-4 h-4 text-gray-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4 2"></path>
+                        </svg>
+                        <div id="recent_tracks_list" class="flex-1 grid grid-cols-3 gap-2"></div>
                     </div>
                     
                     <div id="file_list_container" class="p-3 sm:p-5 pb-10 w-full relative min-h-[50%]">
@@ -270,24 +277,20 @@
             }, 300);
         }
 
-        // 🔥 배경 클릭 시 드롭다운 및 모달 닫기 복구 완료
+        // 🔥 배경 클릭 시 창 닫히는 기능 복구 완료
         window.addEventListener('click', (e) => {
-            // 드롭다운 닫기
             if (!e.target.closest('.menu-btn') && !e.target.closest('.dropdown-content')) {
                 document.querySelectorAll('.dropdown-content').forEach(d => d.classList.add('hidden'));
             }
             
-            // Info 모달 닫기 (배경 터치)
             const infoModal = document.getElementById('info_modal');
             if (infoModal && !infoModal.classList.contains('hidden')) {
                 const infoCard = document.getElementById('info_modal_card');
-                // 카드를 클릭한 게 아니고, 열기 버튼을 누른 게 아니면 닫기
                 if (!infoCard.contains(e.target) && !e.target.closest('[onclick*="info_modal"]')) {
                     closeModal('info_modal');
                 }
             }
 
-            // Rename 모달 닫기 (배경 터치)
             const renameModal = document.getElementById('rename_modal');
             if (renameModal && !renameModal.classList.contains('hidden')) {
                 const renameCard = document.getElementById('rename_modal_card');
@@ -368,7 +371,7 @@
                 audio.src = URL.createObjectURL(blob);
                 document.getElementById('player_card').classList.remove('shimmer-active');
                 
-                // 🔥 잃어버렸던 잠금화면 8분음표 로고(Artwork) 완벽 복구
+                // 🔥 잠금화면 8분음표 로고(Artwork) 완벽 복구
                 if ('mediaSession' in navigator) {
                     navigator.mediaSession.metadata = new MediaMetadata({ 
                         title: base, 
@@ -440,7 +443,8 @@
                 
                 folders.forEach(f => {
                     const el = document.createElement('div');
-                    el.className = 'flex items-center justify-between p-3 sm:p-4 mb-2 border border-gray-100 dark:border-gray-800/80 rounded-[1.2rem] bg-gray-50/50 dark:bg-gray-900/30 group cursor-pointer w-full transition hover:bg-gray-100 dark:hover:bg-gray-800/50';
+                    // 🔥 모바일 오버효과(hover) 제거: md:hover 만 남겨둠
+                    el.className = 'flex items-center justify-between p-3 sm:p-4 mb-2 border border-gray-100 dark:border-gray-800/80 rounded-[1.2rem] bg-gray-50/50 dark:bg-gray-900/30 group cursor-pointer w-full transition md:hover:bg-gray-100 md:dark:hover:bg-gray-800/50';
                     
                     const info = document.createElement('div');
                     info.className = 'flex items-center gap-3 sm:gap-4 flex-1 min-w-0 pr-2';
@@ -455,7 +459,8 @@
                     const { base } = splitName(a.name);
                     const el = document.createElement('div'); 
                     el.id = `track_row_${a.id}`;
-                    el.className = 'flex items-center justify-between p-3 sm:p-3.5 mb-1.5 cursor-pointer rounded-2xl transition group w-full border border-transparent hover:bg-gray-50 dark:hover:bg-gray-800/50';
+                    // 🔥 모바일 오버효과 제거 (md:hover 추가)
+                    el.className = 'flex items-center justify-between p-3 sm:p-3.5 mb-1.5 cursor-pointer rounded-2xl transition group w-full border border-transparent md:hover:bg-gray-50 md:dark:hover:bg-gray-800/50';
                     
                     const info = document.createElement('div'); 
                     info.className = 'flex items-center gap-3 sm:gap-4 flex-1 min-w-0 pr-4';
@@ -488,7 +493,8 @@
         function createActionBtn(id, name, isFolder) {
             const wrap = document.createElement('div'); 
             wrap.className = 'relative flex items-center shrink-0 opacity-100 lg:opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition';
-            wrap.innerHTML = `<button onclick="toggleMenu(event, 'drop-${id}')" class="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-700 dark:hover:text-white rounded-full transition font-bold menu-btn">⋮</button><div id="drop-${id}" class="dropdown-content absolute right-0 top-10 w-32 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 py-1.5 z-50 hidden"><a onclick="event.stopPropagation(); requestRename('${id}', '${name.replace(/'/g,"\\'")}', ${isFolder})" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">Rename</a><a onclick="event.stopPropagation(); deleteItem('${id}', '${name.replace(/'/g,"\\'")}', ${isFolder})" class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 cursor-pointer">Delete</a></div>`;
+            // 버튼 hover 처리도 모바일에서 거슬리지 않도록 수정
+            wrap.innerHTML = `<button onclick="toggleMenu(event, 'drop-${id}')" class="w-8 h-8 flex items-center justify-center text-gray-400 md:hover:text-gray-700 md:dark:hover:text-white rounded-full transition font-bold menu-btn">⋮</button><div id="drop-${id}" class="dropdown-content absolute right-0 top-10 w-32 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 py-1.5 z-50 hidden"><a onclick="event.stopPropagation(); requestRename('${id}', '${name.replace(/'/g,"\\'")}', ${isFolder})" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 cursor-pointer md:hover:bg-gray-100 md:dark:hover:bg-gray-700">Rename</a><a onclick="event.stopPropagation(); deleteItem('${id}', '${name.replace(/'/g,"\\'")}', ${isFolder})" class="block px-4 py-2 text-sm text-red-600 cursor-pointer md:hover:bg-red-50 md:dark:hover:bg-red-900/30">Delete</a></div>`;
             return wrap;
         }
 
@@ -554,13 +560,14 @@
             });
         }
 
+        // 🔥 긴 경로 압축 (...) 및 클릭 시 드롭다운 팝업 복구
         function renderBreadcrumbs() {
             const container = document.getElementById('breadcrumb_container'); 
             container.innerHTML = '';
             
             if (pathHistory.length > 1) {
                 const btn = document.createElement('button'); 
-                btn.className = 'mr-2 p-1 text-gray-400 hover:text-[#0078d4] dark:hover:text-blue-400 transition active:scale-90 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-800'; 
+                btn.className = 'mr-2 p-1 text-gray-400 md:hover:text-[#0078d4] md:dark:hover:text-blue-400 transition active:scale-90 flex items-center justify-center rounded-full md:hover:bg-gray-100 md:dark:hover:bg-gray-800'; 
                 btn.innerHTML = '<svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path></svg>';
                 btn.onclick = () => { 
                     if(pathHistory.length <= 1) return;
@@ -571,26 +578,61 @@
                 container.appendChild(btn);
             }
             
-            pathHistory.forEach((s, i) => {
-                const span = document.createElement('span'); 
-                span.innerText = s.name;
-                if(i === pathHistory.length-1) {
-                    span.className = 'font-semibold text-gray-900 dark:text-white';
-                } else { 
-                    span.className = 'breadcrumb-item transition dark:hover:text-[#0078d4]'; 
-                    span.onclick = () => { 
-                        pathHistory = pathHistory.slice(0, i+1); 
-                        fetchMyFolders(s.id, s.name, false); 
-                    }; 
+            if (pathHistory.length <= 3) {
+                pathHistory.forEach((s, i) => {
+                    const span = document.createElement('span'); 
+                    span.innerText = s.name;
+                    span.className = (i === pathHistory.length-1) ? 'font-semibold text-gray-900 dark:text-white truncate max-w-[150px] sm:max-w-[200px]' : 'breadcrumb-item transition md:hover:text-[#0078d4] truncate max-w-[100px] sm:max-w-[150px]'; 
+                    if(i !== pathHistory.length-1) span.onclick = () => { pathHistory = pathHistory.slice(0, i+1); fetchMyFolders(s.id, s.name, false); };
+                    container.appendChild(span); 
+                    if(i < pathHistory.length-1) {
+                        const sep = document.createElement('span'); sep.className = 'breadcrumb-separator'; sep.innerText = '/'; container.appendChild(sep);
+                    }
+                });
+            } else {
+                // 압축 모드: Root / ... / Current
+                const rootSpan = document.createElement('span'); 
+                rootSpan.innerText = pathHistory[0].name;
+                rootSpan.className = 'breadcrumb-item transition md:hover:text-[#0078d4]';
+                rootSpan.onclick = () => { pathHistory = pathHistory.slice(0, 1); fetchMyFolders(pathHistory[0].id, pathHistory[0].name, false); };
+                container.appendChild(rootSpan);
+                
+                const sep1 = document.createElement('span'); sep1.className = 'breadcrumb-separator'; sep1.innerText = '/'; container.appendChild(sep1);
+                
+                const ellipsisWrap = document.createElement('div');
+                ellipsisWrap.className = 'relative flex items-center';
+                const ellipsisBtn = document.createElement('span');
+                ellipsisBtn.className = 'breadcrumb-item font-bold px-1 tracking-widest cursor-pointer md:hover:text-[#0078d4]';
+                ellipsisBtn.innerText = '...';
+                ellipsisBtn.onclick = (e) => toggleMenu(e, 'drop-breadcrumb');
+                ellipsisWrap.appendChild(ellipsisBtn);
+
+                const drop = document.createElement('div');
+                drop.id = 'drop-breadcrumb';
+                drop.className = 'dropdown-content absolute left-0 top-8 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-100 dark:border-gray-700 py-1.5 z-50 hidden max-h-60 overflow-y-auto';
+
+                for (let i = 1; i < pathHistory.length - 1; i++) {
+                    const a = document.createElement('a');
+                    a.className = 'block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 md:hover:bg-gray-100 md:dark:hover:bg-gray-700 cursor-pointer truncate';
+                    a.innerText = pathHistory[i].name;
+                    a.onclick = (e) => {
+                        e.stopPropagation();
+                        pathHistory = pathHistory.slice(0, i + 1);
+                        fetchMyFolders(pathHistory[i].id, pathHistory[i].name, false);
+                        drop.classList.add('hidden');
+                    };
+                    drop.appendChild(a);
                 }
-                container.appendChild(span); 
-                if(i < pathHistory.length-1) {
-                    const sep = document.createElement('span');
-                    sep.className = 'breadcrumb-separator';
-                    sep.innerText = '/';
-                    container.appendChild(sep);
-                }
-            });
+                ellipsisWrap.appendChild(drop);
+                container.appendChild(ellipsisWrap);
+                
+                const sep2 = document.createElement('span'); sep2.className = 'breadcrumb-separator'; sep2.innerText = '/'; container.appendChild(sep2);
+                
+                const currentSpan = document.createElement('span'); 
+                currentSpan.innerText = pathHistory[pathHistory.length-1].name;
+                currentSpan.className = 'font-semibold text-gray-900 dark:text-white truncate max-w-[150px] sm:max-w-[200px]';
+                container.appendChild(currentSpan);
+            }
         }
 
         function saveRecentTrack(t) {
@@ -649,7 +691,7 @@
                     text.className = 'text-sm sm:text-[15px] leading-tight truncate text-[#0078d4] dark:text-blue-300 font-bold transition';
                     icon.innerHTML = audio.paused ? '<div class="playing-eq eq-paused"><span class="eq-bar eq-bar-1"></span><span class="eq-bar eq-bar-2"></span><span class="eq-bar eq-bar-3"></span></div>' : '<div class="playing-eq"><span class="eq-bar eq-bar-1"></span><span class="eq-bar eq-bar-2"></span><span class="eq-bar eq-bar-3"></span></div>';
                 } else {
-                    row.className = 'flex items-center justify-between p-3 sm:p-3.5 mb-1.5 cursor-pointer rounded-2xl border border-transparent hover:bg-gray-50 dark:hover:bg-gray-800/50 transition group w-full';
+                    row.className = 'flex items-center justify-between p-3 sm:p-3.5 mb-1.5 cursor-pointer rounded-2xl border border-transparent md:hover:bg-gray-50 md:dark:hover:bg-gray-800/50 transition group w-full';
                     icon.className = 'w-10 h-10 sm:w-11 sm:h-11 shrink-0 rounded-xl flex items-center justify-center bg-gray-100 dark:bg-gray-900 text-gray-400 font-bold text-sm transition';
                     text.className = 'text-sm sm:text-[15px] font-medium truncate text-gray-800 dark:text-gray-200 transition';
                     icon.innerHTML = i + 1;
@@ -657,9 +699,10 @@
             });
         }
         
+        // 🔥 반복 버튼 올렸을 때 색 안바뀌게 적용 완료
         function updateRepeatBtnUI() { 
             const btn = document.getElementById('repeat_btn'); 
-            btn.className = `absolute left-0 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center transition active:scale-95 rounded-full md:hover:text-[#0078d4] md:dark:hover:text-blue-400 ${playMode>0?'text-[#0078d4] dark:text-blue-400':'text-gray-400'}`; 
+            btn.className = `absolute right-0 w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center transition active:scale-95 rounded-full ${playMode>0?'text-[#0078d4] dark:text-blue-400':'text-gray-400'}`; 
             
             if (playMode === 2) {
                 btn.innerHTML = `<svg class="w-5 h-5 sm:w-6 sm:h-6 relative" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path><text x="12" y="15" font-family="sans-serif" font-size="9" font-weight="bold" fill="currentColor" text-anchor="middle" stroke="none">1</text></svg>`;
@@ -817,7 +860,6 @@
             return `${m}:${r < 10 ? '0' : ''}${r}`; 
         }
 
-        // 모바일 OS 체크: PC에서는 폰 아이콘 아예 삭제
         document.addEventListener("DOMContentLoaded", () => {
             const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
             const wakeLockIndicator = document.getElementById('wake_lock_indicator');
