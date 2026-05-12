@@ -104,6 +104,33 @@
         </div>
     </div>
 
+    <div id="create_folder_modal" class="fixed inset-0 z-[101] hidden items-center justify-center bg-black/40 backdrop-blur-sm opacity-0 transition-opacity duration-300" onclick="closeModal('create_folder_modal')">
+        <div id="create_folder_modal_card" class="bg-white dark:bg-gray-900 w-[90%] max-w-sm rounded-[2rem] p-6 sm:p-8 shadow-2xl border border-gray-100 dark:border-gray-800 transform scale-95 transition-transform duration-300 relative" onclick="event.stopPropagation()">
+            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">Create Folder</h3>
+            <input type="text" id="create_folder_input" placeholder="New Folder Name" spellcheck="false" autocomplete="off" class="w-full bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl p-4 text-sm font-medium text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#0078d4] transition-all">
+            <div class="flex gap-3 mt-6">
+                <button onclick="closeModal('create_folder_modal')" class="flex-1 px-4 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 text-sm font-bold text-gray-500 dark:text-gray-400 transition md:hover:brightness-95">Cancel</button>
+                <button id="create_folder_confirm_btn" class="flex-1 px-4 py-3 rounded-xl bg-[#0078d4] text-sm font-bold text-white shadow-lg shadow-blue-500/20 transition md:hover:brightness-110">Create</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="track_info_modal" class="fixed inset-0 z-[101] hidden items-center justify-center bg-black/40 backdrop-blur-sm opacity-0 transition-opacity duration-300" onclick="closeModal('track_info_modal')">
+        <div id="track_info_modal_card" class="bg-white dark:bg-gray-900 w-[90%] max-w-sm rounded-[2rem] p-6 sm:p-8 shadow-2xl border border-gray-100 dark:border-gray-800 transform scale-95 transition-transform duration-300 relative" onclick="event.stopPropagation()">
+            <div class="flex justify-between items-center mb-5">
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                    <svg class="w-5 h-5 text-[#0078d4]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    File Details
+                </h3>
+                <button onclick="closeModal('track_info_modal')" class="p-2 -mr-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition rounded-full">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <div class="space-y-4 text-sm" id="track_info_content">
+                </div>
+        </div>
+    </div>
+
     <div id="wake_modal" class="fixed inset-0 z-[101] hidden items-center justify-center bg-black/40 backdrop-blur-sm opacity-0 transition-opacity duration-300" onclick="closeModal('wake_modal')">
         <div class="bg-white dark:bg-gray-900 w-[80%] max-w-xs rounded-[2rem] p-6 sm:p-8 shadow-2xl border border-gray-100 dark:border-gray-800 transform scale-95 transition-transform duration-300 text-center relative" onclick="event.stopPropagation()">
             <div class="w-14 h-14 mx-auto bg-yellow-50 dark:bg-yellow-900/30 text-yellow-500 dark:text-yellow-400 rounded-full flex items-center justify-center mb-4">
@@ -148,7 +175,7 @@
             <div id="player_card" class="isolate border border-gray-100 dark:border-gray-800 rounded-[2.5rem] p-6 sm:p-10 bg-white dark:bg-gray-900 flex flex-col justify-center relative transition-colors duration-300" style="clip-path: inset(0 round 2.5rem);">
                 <div class="absolute -top-32 -right-32 w-64 h-64 bg-blue-400/20 dark:bg-blue-900/20 rounded-full blur-[80px] pointer-events-none -z-10"></div>
                 
-                <div id="file_ext_badge" class="absolute top-6 right-8 px-2 py-0.5 rounded-md bg-gray-50 dark:bg-gray-800 text-[9px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest hidden">MP3</div>
+                <div id="file_ext_badge" onclick="showTrackInfo()" class="absolute top-6 right-8 px-2.5 py-1 rounded-lg bg-gray-100/80 dark:bg-gray-800/80 text-[10px] font-extrabold text-gray-500 dark:text-gray-400 uppercase tracking-widest hidden cursor-pointer md:hover:bg-gray-200 md:dark:hover:bg-gray-700 transition active:scale-95 border border-gray-200/50 dark:border-gray-700/50 shadow-sm" title="View Track Info">MP3</div>
 
                 <div class="z-10 w-full text-center flex flex-col items-center pt-2 sm:pt-4">
                     <div class="flex items-center gap-2 mb-3 justify-center">
@@ -268,13 +295,20 @@
         let playingQueue = [];
         let currentIndex = -1;
         
-        // 🔥 재생 상태 변수 분리 독립
         let isShuffle = false;
-        let repeatMode = 0; // 0: 꺼짐, 1: 전체반복, 2: 한곡반복
+        let repeatMode = 0; 
         
         let currentFolderId = 'root';
         let pathHistory = [{ id: 'root', name: 'My Drive' }];
         let wakeLock = null;
+
+        function formatBytes(bytes, decimals = 2) {
+            if (!+bytes) return '0 Bytes';
+            const k = 1024, dm = decimals < 0 ? 0 : decimals;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
+        }
 
         function splitName(name) {
             if(!name) return { base: '', ext: '' };
@@ -305,10 +339,57 @@
             }, 300);
         }
 
+        // 🔥 새기능: 트랙 고급 정보 모달
+        function showTrackInfo() {
+            if (currentIndex < 0 || !playingQueue[currentIndex]) return;
+            const track = playingQueue[currentIndex];
+            const content = document.getElementById('track_info_content');
+            
+            const size = track.size ? formatBytes(track.size) : 'Unknown';
+            const audioData = track.audio || {};
+            const bitrate = audioData.bitrate ? `${Math.round(audioData.bitrate / 1000)} kbps` : 'Unknown';
+            
+            // MS Graph API는 오디오 정보가 없으면 안 줄 수도 있으므로 방어 코드 작성
+            content.innerHTML = `
+                <div class="flex flex-col py-2 border-b border-gray-100 dark:border-gray-800">
+                    <span class="text-[10px] text-[#0078d4] dark:text-blue-400 font-bold uppercase tracking-widest mb-1">File Name</span>
+                    <span class="text-gray-900 dark:text-gray-100 font-medium break-all leading-snug">${track.name}</span>
+                </div>
+                <div class="flex justify-between items-center py-2.5 border-b border-gray-100 dark:border-gray-800">
+                    <span class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Format</span>
+                    <span class="text-gray-900 dark:text-gray-100 font-bold">${splitName(track.name).ext || 'Unknown'}</span>
+                </div>
+                <div class="flex justify-between items-center py-2.5 border-b border-gray-100 dark:border-gray-800">
+                    <span class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">File Size</span>
+                    <span class="text-gray-900 dark:text-gray-100 font-bold">${size}</span>
+                </div>
+                <div class="flex justify-between items-center py-2.5">
+                    <span class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Audio Bitrate</span>
+                    <span class="text-gray-900 dark:text-gray-100 font-bold">${bitrate}</span>
+                </div>
+            `;
+            openModal('track_info_modal');
+        }
+
+        // 🔥 모든 모달창 배경 클릭 시 닫기 연동
         window.addEventListener('click', (e) => {
+            // 드롭다운 메뉴
             if (!e.target.closest('.menu-btn') && !e.target.closest('.dropdown-content')) {
                 document.querySelectorAll('.dropdown-content').forEach(d => d.classList.add('hidden'));
             }
+            
+            // 등록된 모든 모달창
+            const modals = ['info_modal', 'rename_modal', 'wake_modal', 'create_folder_modal', 'track_info_modal'];
+            modals.forEach(id => {
+                const m = document.getElementById(id);
+                if (m && !m.classList.contains('hidden')) {
+                    const c = m.firstElementChild;
+                    // 모달 창 내부 클릭이 아니고, 트리거 버튼 클릭이 아니면 닫기
+                    if (!c.contains(e.target) && !e.target.closest(`[onclick*="${id}"]`) && !e.target.closest('#file_ext_badge')) {
+                        closeModal(id);
+                    }
+                }
+            });
         });
 
         msalInstance.handleRedirectPromise().then(res => {
@@ -500,6 +581,31 @@
             };
         }
 
+        // 🔥 기존 기능 갈아엎고 새로 추가한 커스텀 모달 폴더 생성 로직
+        function createFolder() { 
+            const input = document.getElementById('create_folder_input');
+            input.value = '';
+            openModal('create_folder_modal');
+            input.focus();
+            
+            document.getElementById('create_folder_confirm_btn').onclick = async () => {
+                const n = input.value.trim();
+                if (n) {
+                    const t = await getToken();
+                    if (!t) return;
+                    closeModal('create_folder_modal'); 
+                    await fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${currentFolderId}/children`, {
+                        method:'POST',
+                        headers:{'Authorization':`Bearer ${t}`,'Content-Type':'application/json'},
+                        body:JSON.stringify({name:n, folder:{}})
+                    });
+                    fetchMyFolders(currentFolderId, pathHistory[pathHistory.length-1].name, false);
+                } else {
+                    closeModal('create_folder_modal');
+                }
+            };
+        }
+
         function renderRecentUI() {
             const list = document.getElementById('recent_tracks_list');
             const recent = JSON.parse(localStorage.getItem('recent_tracks') || '[]');
@@ -615,14 +721,12 @@
             }
         }
 
-        // 🔥 엔진 1: 반복 모드 스위치 (0:꺼짐, 1:전체, 2:한곡)
         function toggleRepeat() { 
             repeatMode = (repeatMode + 1) % 3; 
             audio.loop = (repeatMode === 2); 
             updateRepeatBtnUI(); 
         }
 
-        // 🔥 엔진 2: 셔플 모드 스위치 (On/Off)
         function toggleShuffle() {
             isShuffle = !isShuffle;
             updateShuffleBtnUI();
@@ -659,10 +763,8 @@
             });
         }
         
-        // 🔥 UI 분리: 반복 버튼 색상 및 아이콘 변경
         function updateRepeatBtnUI() { 
             const btn = document.getElementById('repeat_btn'); 
-            
             if (repeatMode > 0) {
                 btn.classList.add('text-[#0078d4]', 'dark:text-blue-400');
                 btn.classList.remove('text-gray-400', 'dark:text-gray-500');
@@ -672,7 +774,6 @@
             }
             
             const baseClass = "w-5 h-5 sm:w-6 sm:h-6";
-            
             if (repeatMode === 2) {
                 btn.innerHTML = `<svg class="${baseClass} relative" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path><text x="12" y="15" font-family="sans-serif" font-size="9" font-weight="bold" fill="currentColor" text-anchor="middle" stroke="none">1</text></svg>`;
             } else {
@@ -680,7 +781,6 @@
             }
         }
 
-        // 🔥 UI 분리: 셔플 버튼 색상 변경
         function updateShuffleBtnUI() {
             const btn = document.getElementById('shuffle_btn'); 
             if (isShuffle) {
@@ -692,7 +792,6 @@
             }
         }
         
-        // 탐색기의 전체 랜덤 재생 버튼 클릭 시 (셔플 ON 강제 적용)
         function playRandomFromFolder() { 
             if(!currentFolderAudios.length) return; 
             isShuffle = true; 
@@ -703,28 +802,22 @@
             playTrack(currentIndex); 
         }
         
-        // 🔥 다음 트랙 재생 로직 (셔플/반복 완전 분리 적용)
         function playNextTrack(isManual = false) { 
             if(!playingQueue.length) return; 
             
             if(repeatMode === 2 && !isManual) {
-                // 한 곡 반복일 때 (수동으로 넘기지 않은 자연 종료 시)
                 playTrack(currentIndex); 
             } else if(isShuffle) { 
-                // 셔플이 켜져 있을 때
                 let n = currentIndex; 
                 if(playingQueue.length > 1) {
                     while(n === currentIndex) n = Math.floor(Math.random() * playingQueue.length); 
                 }
                 playTrack(n); 
             } else if(currentIndex + 1 < playingQueue.length) {
-                // 일반 다음 곡
                 playTrack(currentIndex + 1); 
             } else if(repeatMode === 1) {
-                // 전체 반복일 때 마지막 곡에서 처음으로
                 playTrack(0); 
             } else { 
-                // 끝 (전부 꺼짐 상태)
                 setStatus('FINISHED', 'standby'); 
                 audio.removeAttribute('src'); 
                 audio.load(); 
@@ -739,20 +832,6 @@
             if(!playingQueue.length) return; 
             if(audio.currentTime > 3) audio.currentTime = 0; 
             else if(currentIndex > 0) playTrack(currentIndex - 1); 
-        }
-        
-        async function createFolder() { 
-            const n = prompt("New folder name:"); 
-            if(n) { 
-                const t = await getToken(); 
-                if (!t) return;
-                await fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${currentFolderId}/children`, { 
-                    method:'POST', 
-                    headers:{'Authorization':`Bearer ${t}`,'Content-Type':'application/json'}, 
-                    body:JSON.stringify({name:n, folder:{}}) 
-                }); 
-                fetchMyFolders(currentFolderId, '', false); 
-            } 
         }
         
         async function deleteItem(id, n, isF) { 
