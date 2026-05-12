@@ -73,7 +73,7 @@
 </head>
 <body class="fixed inset-0 w-full h-[100dvh] flex flex-col bg-gray-50 text-gray-900 dark:bg-black dark:text-gray-100 font-sans antialiased overflow-hidden transition-colors duration-300">
 
-    <div id="info_modal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-gray-900/20 dark:bg-black/50 backdrop-blur-sm opacity-0 transition-opacity duration-300" onclick="closeModal('info_modal')">
+    <div id="info_modal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/10 dark:bg-black/50 backdrop-blur-sm opacity-0 transition-opacity duration-300" onclick="closeModal('info_modal')">
         <div id="info_modal_card" class="bg-white/70 dark:bg-gray-900/70 backdrop-blur-2xl w-[90%] max-w-sm rounded-[2rem] p-6 sm:p-8 shadow-2xl border border-white/60 dark:border-gray-700/50 transform scale-95 transition-transform duration-300 relative" onclick="event.stopPropagation()">
             <button onclick="closeModal('info_modal')" class="absolute top-4 right-4 p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition rounded-full md:hover:bg-gray-100/50 md:dark:hover:bg-gray-800/50">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
@@ -118,7 +118,7 @@
         </div>
     </div>
 
-    <div id="rename_modal" class="fixed inset-0 z-[101] hidden items-center justify-center bg-gray-900/20 dark:bg-black/50 backdrop-blur-sm opacity-0 transition-opacity duration-300" onclick="closeModal('rename_modal')">
+    <div id="rename_modal" class="fixed inset-0 z-[101] hidden items-center justify-center bg-black/10 dark:bg-black/50 backdrop-blur-sm opacity-0 transition-opacity duration-300" onclick="closeModal('rename_modal')">
         <div id="rename_modal_card" class="bg-white/70 dark:bg-gray-900/70 backdrop-blur-2xl w-[90%] max-w-sm rounded-[2rem] p-6 sm:p-8 shadow-2xl border border-white/60 dark:border-gray-700/50 transform scale-95 transition-transform duration-300 relative" onclick="event.stopPropagation()">
             <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">Rename Item</h3>
             <textarea id="rename_textarea" spellcheck="false" class="w-full h-28 bg-white/60 dark:bg-gray-800/40 border border-white/60 dark:border-gray-700/50 rounded-2xl p-4 text-sm font-medium text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#0078d4] transition-all resize-none backdrop-blur-md"></textarea>
@@ -129,7 +129,7 @@
         </div>
     </div>
 
-    <div id="create_folder_modal" class="fixed inset-0 z-[101] hidden items-center justify-center bg-gray-900/20 dark:bg-black/50 backdrop-blur-sm opacity-0 transition-opacity duration-300" onclick="closeModal('create_folder_modal')">
+    <div id="create_folder_modal" class="fixed inset-0 z-[101] hidden items-center justify-center bg-black/10 dark:bg-black/50 backdrop-blur-sm opacity-0 transition-opacity duration-300" onclick="closeModal('create_folder_modal')">
         <div id="create_folder_modal_card" class="bg-white/70 dark:bg-gray-900/70 backdrop-blur-2xl w-[90%] max-w-sm rounded-[2rem] p-6 sm:p-8 shadow-2xl border border-white/60 dark:border-gray-700/50 transform scale-95 transition-transform duration-300 relative" onclick="event.stopPropagation()">
             <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">Create Folder</h3>
             <input type="text" id="create_folder_input" placeholder="New Folder Name" spellcheck="false" autocomplete="off" class="w-full bg-white/60 dark:bg-gray-800/40 border border-white/60 dark:border-gray-700/50 rounded-2xl p-4 text-sm font-medium text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#0078d4] transition-all backdrop-blur-md">
@@ -140,7 +140,7 @@
         </div>
     </div>
 
-    <div id="track_info_modal" class="fixed inset-0 z-[101] hidden items-center justify-center bg-gray-900/20 dark:bg-black/50 backdrop-blur-sm opacity-0 transition-opacity duration-300" onclick="closeModal('track_info_modal')">
+    <div id="track_info_modal" class="fixed inset-0 z-[101] hidden items-center justify-center bg-black/10 dark:bg-black/50 backdrop-blur-sm opacity-0 transition-opacity duration-300" onclick="closeModal('track_info_modal')">
         <div id="track_info_modal_card" class="bg-white/70 dark:bg-gray-900/70 backdrop-blur-2xl w-[90%] max-w-sm rounded-[2rem] p-6 sm:p-8 shadow-2xl border border-white/60 dark:border-gray-700/50 transform scale-95 transition-transform duration-300 relative" onclick="event.stopPropagation()">
             <div class="flex justify-between items-center mb-5">
                 <h3 class="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
@@ -156,7 +156,7 @@
         </div>
     </div>
 
-    <div id="wake_modal" class="fixed inset-0 z-[101] hidden items-center justify-center bg-gray-900/20 dark:bg-black/50 backdrop-blur-sm opacity-0 transition-opacity duration-300" onclick="closeModal('wake_modal')">
+    <div id="wake_modal" class="fixed inset-0 z-[101] hidden items-center justify-center bg-black/10 dark:bg-black/50 backdrop-blur-sm opacity-0 transition-opacity duration-300" onclick="closeModal('wake_modal')">
         <div id="wake_modal_card" class="bg-white/70 dark:bg-gray-900/70 backdrop-blur-2xl w-[80%] max-w-xs rounded-[2rem] p-6 sm:p-8 shadow-2xl border border-white/60 dark:border-gray-700/50 transform scale-95 transition-transform duration-300 text-center relative" onclick="event.stopPropagation()">
             <div class="w-14 h-14 mx-auto bg-yellow-50/70 dark:bg-yellow-900/30 text-yellow-500 dark:text-yellow-400 rounded-full flex items-center justify-center mb-4 border border-yellow-100/60 dark:border-yellow-800/30">
                 <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="3"></rect><path d="M12 18h.01"></path></svg>
@@ -169,7 +169,7 @@
         </div>
     </div>
     
-    <div id="recent_history_modal" class="fixed inset-0 z-[101] hidden items-center justify-center bg-gray-900/20 dark:bg-black/50 backdrop-blur-sm opacity-0 transition-opacity duration-300" onclick="closeModal('recent_history_modal')">
+    <div id="recent_history_modal" class="fixed inset-0 z-[101] hidden items-center justify-center bg-black/10 dark:bg-black/50 backdrop-blur-sm opacity-0 transition-opacity duration-300" onclick="closeModal('recent_history_modal')">
         <div id="recent_history_modal_card" class="bg-white/70 dark:bg-gray-900/70 backdrop-blur-2xl w-[90%] max-w-sm rounded-[2rem] p-6 sm:p-8 shadow-2xl border border-white/60 dark:border-gray-700/50 transform scale-95 transition-transform duration-300 relative max-h-[80vh] flex flex-col" onclick="event.stopPropagation()">
             <div class="flex justify-between items-center mb-5 shrink-0">
                 <h3 class="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
