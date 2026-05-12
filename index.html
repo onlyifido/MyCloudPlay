@@ -19,7 +19,6 @@
     <script type="text/javascript" src="https://alcdn.msauth.net/browser/2.30.0/js/msal-browser.min.js"></script>
     
     <style>
-            /* 아이폰 상/하단바 다크모드 동기화 강제 적용 */
         html { background-color: #f9fafb; }
         html.dark { background-color: #000000; }
         body { touch-action: manipulation; }
@@ -264,7 +263,7 @@
         // --------------------------------------------------
         // 🔥 글로벌 변수 및 초기화
         // --------------------------------------------------
-                function toggleDarkMode() {
+        function toggleDarkMode() {
             document.documentElement.classList.toggle('dark');
             const isDark = document.documentElement.classList.contains('dark');
             localStorage.setItem('theme', isDark ? 'dark' : 'light');
