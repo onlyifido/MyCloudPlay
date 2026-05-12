@@ -74,35 +74,56 @@
 <body class="fixed inset-0 w-full h-[100dvh] flex flex-col bg-gray-50 text-gray-900 dark:bg-black dark:text-gray-100 font-sans antialiased overflow-hidden transition-colors duration-300">
 
     <div id="info_modal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/40 backdrop-blur-sm opacity-0 transition-opacity duration-300" onclick="closeModal('info_modal')">
-        <div id="info_modal_card" class="bg-white/70 dark:bg-gray-900/70 backdrop-blur-2xl w-[90%] max-w-sm rounded-[2rem] p-6 sm:p-8 shadow-2xl border border-white/40 dark:border-gray-700/40 transform scale-95 transition-transform duration-300 relative" onclick="event.stopPropagation()">
-            <button onclick="closeModal('info_modal')" class="absolute top-4 right-4 p-2 text-gray-500 hover:text-gray-900 dark:hover:text-white transition rounded-full md:hover:bg-gray-100/50 md:dark:hover:bg-gray-800/50">
+        <div id="info_modal_card" class="bg-white/90 dark:bg-gray-900/80 backdrop-blur-xl w-[90%] max-w-sm rounded-[2rem] p-6 sm:p-8 shadow-2xl border border-white/60 dark:border-gray-700/50 transform scale-95 transition-transform duration-300 relative" onclick="event.stopPropagation()">
+            
+            <button onclick="closeModal('info_modal')" class="absolute top-4 right-4 p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition rounded-full md:hover:bg-gray-100/50 md:dark:hover:bg-gray-800/50">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
-            <div class="flex items-center gap-2 mb-3">
-                <h3 class="text-xl sm:text-2xl font-extrabold text-gray-900 dark:text-white">MyCloudPlay</h3>
-                <span class="px-2 py-0.5 rounded-md bg-blue-100 dark:bg-blue-900/30 text-[#0078d4] dark:text-blue-400 text-[10px] font-bold">v1.0.0</span>
+            
+            <div class="flex items-center gap-3 mb-5">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#0078d4] to-blue-400 flex items-center justify-center shadow-md shrink-0">
+                    <svg class="w-5 h-5 text-white pr-[1px] pb-[1px]" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13" /><circle cx="6" cy="18" r="3" /><circle cx="18" cy="16" r="3" /></svg>
+                </div>
+                <div class="flex flex-col justify-center">
+                    <h3 class="text-xl font-extrabold text-gray-900 dark:text-white leading-tight">MyCloudPlay</h3>
+                    <span class="text-[11px] font-bold text-[#0078d4] dark:text-blue-400 tracking-wider">VERSION 1.0.0</span>
+                </div>
             </div>
             
-            <p class="text-sm text-gray-700 dark:text-gray-300 mb-5 leading-relaxed font-medium">
-                Stream your music anytime, anywhere. <br>A fast, lightweight, and zero-signup cloud player running instantly in your browser.
+            <p class="text-sm text-gray-600 dark:text-gray-300 mb-6 leading-relaxed font-medium">
+                Stream your music anytime, anywhere. <br>A fast, lightweight, zero-signup cloud player running instantly in your browser.
             </p>
             
-            <div class="bg-blue-50/50 dark:bg-blue-900/20 rounded-2xl p-4 mb-5 border border-blue-100/50 dark:border-blue-800/30">
-                <p class="flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300 mb-2">
-                    <span class="shrink-0 text-[#0078d4] dark:text-blue-400 mt-0.5">🔒</span> 
-                    <span class="leading-tight"><strong>Privacy First:</strong> Your files stream directly from <a href="https://onedrive.live.com/" target="_blank" class="text-[#0078d4] dark:text-blue-400 font-bold hover:underline">OneDrive</a> to your device. We do not collect or store any of your files or personal data on external servers.</span>
-                </p>
+            <div class="bg-blue-50/70 dark:bg-blue-900/20 rounded-2xl p-4 mb-3 border border-blue-100/70 dark:border-blue-800/30">
+                <div class="flex items-start gap-3">
+                    <div class="mt-0.5 shrink-0 text-[#0078d4] dark:text-blue-400">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                    </div>
+                    <div class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+                        <strong class="text-gray-900 dark:text-white">Privacy First</strong><br>
+                        Files stream directly from <a href="https://onedrive.live.com/" target="_blank" class="text-[#0078d4] dark:text-blue-400 font-bold hover:underline">OneDrive</a>. We do not collect or store your personal data.
+                    </div>
+                </div>
             </div>
 
-            <div class="bg-gray-50/50 dark:bg-gray-800/40 rounded-2xl p-4 border border-white/50 dark:border-gray-700/50 text-xs text-gray-600 dark:text-gray-400 font-medium">
-                <p class="font-bold text-gray-900 dark:text-white mb-2 tracking-wider uppercase flex items-center gap-1.5">
-                    💡 Install as an App
-                </p>
-                <p class="mb-1"><strong>iOS:</strong> Share &rarr; Add to Home Screen</p>
-                <p><strong>Android:</strong> Menu &rarr; Add to Home screen</p>
+            <div class="bg-gray-50/70 dark:bg-gray-800/40 rounded-2xl p-4 border border-gray-200/60 dark:border-gray-700/50">
+                <div class="flex items-start gap-3">
+                    <div class="mt-0.5 shrink-0 text-gray-500 dark:text-gray-400">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                    </div>
+                    <div class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+                        <strong class="text-gray-900 dark:text-white uppercase tracking-wider text-xs">Install as an App</strong>
+                        <div class="mt-1 space-y-1 text-xs">
+                            <p><strong>iOS:</strong> Share &rarr; Add to Home Screen</p>
+                            <p><strong>Android:</strong> Menu &rarr; Add to Home screen</p>
+                        </div>
+                    </div>
+                </div>
             </div>
+
         </div>
     </div>
+    
     <div id="rename_modal" class="fixed inset-0 z-[101] hidden items-center justify-center bg-black/40 backdrop-blur-sm opacity-0 transition-opacity duration-300" onclick="closeModal('rename_modal')">
             <div id="rename_modal_card" class="bg-white/70 dark:bg-gray-900/70 backdrop-blur-2xl w-[90%] max-w-sm rounded-[2rem] p-6 sm:p-8 shadow-2xl border border-white/40 dark:border-gray-700/40 transform scale-95 transition-transform duration-300 relative" onclick="event.stopPropagation()">            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">Rename Item</h3>
             <textarea id="rename_textarea" spellcheck="false" class="w-full h-28 bg-white/50 dark:bg-gray-800/50 border border-white/50 dark:border-gray-700/50 rounded-2xl p-4 text-sm font-medium text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#0078d4] transition-all resize-none"></textarea>            <div class="flex gap-3 mt-6">
