@@ -216,7 +216,7 @@
             <div id="player_card" class="isolate border border-gray-100 dark:border-gray-800 rounded-[2.5rem] p-6 sm:p-10 bg-white dark:bg-gray-900 flex flex-col justify-center relative transition-colors duration-300" style="clip-path: inset(0 round 2.5rem);">
                 <div class="absolute -top-32 -right-32 w-64 h-64 bg-blue-400/20 dark:bg-blue-900/20 rounded-full blur-[80px] pointer-events-none -z-10"></div>
                 
-                <div id="file_ext_badge" onclick="event.stopPropagation(); showTrackInfo()" class="absolute z-50 top-6 right-8 px-2.5 py-1 rounded-lg bg-gray-100/80 dark:bg-gray-800/80 text-[10px] font-extrabold text-gray-500 dark:text-gray-400 uppercase tracking-widest hidden cursor-pointer md:hover:bg-gray-200 md:dark:hover:bg-gray-700 transition active:scale-95 border border-gray-300/50 dark:border-gray-700/50 shadow-sm" title="View Track Info">MP3</div>
+                <div id="file_ext_badge" onclick="event.stopPropagation(); showTrackInfo()" class="absolute z-50 top-6 right-8 px-2.5 py-1 rounded-lg bg-gray-100/80 dark:bg-gray-800/80 text-[10px] font-extrabold text-gray-500 dark:text-gray-400 uppercase tracking-widest hidden cursor-pointer md:hover:bg-gray-200 md:dark:hover:bg-gray-700 transition active:scale-95 border border-gray-150/50 dark:border-gray-700/50 shadow-sm" title="View Track Info">MP3</div>
 
                 <div class="z-10 w-full text-center flex flex-col items-center pt-2 sm:pt-4">
                     <div class="flex items-center gap-2 mb-3 justify-center">
@@ -428,23 +428,23 @@
             const album = audioData.album || 'Unknown Album';
             
             content.innerHTML = `
-                <div class="flex flex-col py-2 border-b border-gray-300 dark:border-gray-700/50">
+                <div class="flex flex-col py-2 border-b border-gray-150 dark:border-gray-700/50">
                     <span class="text-[10px] text-[#0078d4] dark:text-blue-400 font-bold uppercase tracking-widest mb-1">File Name</span>
                     <span class="text-gray-900 dark:text-gray-100 font-medium break-all leading-snug">${track.name}</span>
                 </div>
-                <div class="flex justify-between items-center py-2.5 border-b border-gray-300 dark:border-gray-700/50">
+                <div class="flex justify-between items-center py-2.5 border-b border-gray-150 dark:border-gray-700/50">
                     <span class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Title</span>
                     <span class="text-gray-900 dark:text-gray-100 font-bold text-right truncate max-w-[65%]">${title}</span>
                 </div>
-                <div class="flex justify-between items-center py-2.5 border-b border-gray-300 dark:border-gray-700/50">
+                <div class="flex justify-between items-center py-2.5 border-b border-gray-150 dark:border-gray-700/50">
                     <span class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Artist</span>
                     <span class="text-gray-900 dark:text-gray-100 font-bold text-right truncate max-w-[65%]">${artist}</span>
                 </div>
-                <div class="flex justify-between items-center py-2.5 border-b border-gray-300 dark:border-gray-700/50">
+                <div class="flex justify-between items-center py-2.5 border-b border-gray-150 dark:border-gray-700/50">
                     <span class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Album</span>
                     <span class="text-gray-900 dark:text-gray-100 font-bold text-right truncate max-w-[65%]">${album}</span>
                 </div>
-                <div class="flex justify-between items-center py-2.5 border-b border-gray-300 dark:border-gray-700/50">
+                <div class="flex justify-between items-center py-2.5 border-b border-gray-150 dark:border-gray-700/50">
                     <span class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Format / Size</span>
                     <span class="text-gray-900 dark:text-gray-100 font-bold">${ext} / ${size}</span>
                 </div>
@@ -555,35 +555,30 @@
             let recent = JSON.parse(localStorage.getItem('recent_tracks') || '[]'); 
             recent = recent.filter(x => x.id !== t.id);
             
-            // 🔥 핵심: 곡 자체의 폴더 정보가 있다면 그걸 쓰고, 없으면 현재 위치를 저장
             const fId = t.folderId || currentFolderId;
             const fName = t.folderName || pathHistory[pathHistory.length-1].name;
             
             recent.unshift({ id: t.id, name: t.name, folderId: fId, folderName: fName });
             
-            // 🔥 10개에서 8개로 갯수 다이어트
             if(recent.length > 8) recent = recent.slice(0, 8); 
             
             localStorage.setItem('recent_tracks', JSON.stringify(recent)); 
             renderRecentUI();
         }
 
-        // 메인 화면에는 3개만 그리도록 수정
         function renderRecentUI() {
             const list = document.getElementById('recent_tracks_list'), recent = JSON.parse(localStorage.getItem('recent_tracks') || '[]');
             if(!recent.length) return; document.getElementById('recent_tracks_wrapper').classList.remove('hidden'); list.innerHTML = '';
             
-            // 메인 UI에는 앞의 3개만 렌더링
             recent.slice(0, 3).forEach(t => {
                 const { base } = splitName(t.name); const chip = document.createElement('div');
-                chip.className = 'w-full px-2 sm:px-3 py-1.5 sm:py-2 rounded-[0.8rem] border border-gray-300/60 dark:border-gray-700/60 bg-white dark:bg-gray-800 shadow-sm text-[10px] sm:text-xs font-semibold text-center truncate cursor-pointer active:scale-95 transition-all md:hover:border-[#0078d4] md:hover:text-[#0078d4]';
+                chip.className = 'w-full px-2 sm:px-3 py-1.5 sm:py-2 rounded-[0.8rem] border border-gray-150/60 dark:border-gray-700/60 bg-white dark:bg-gray-800 shadow-sm text-[10px] sm:text-xs font-semibold text-center truncate cursor-pointer active:scale-95 transition-all md:hover:border-[#0078d4] md:hover:text-[#0078d4]';
                 chip.innerText = base;
                 chip.onclick = () => { playingQueue = [t]; currentIndex = 0; playTrack(0); if(currentFolderId !== t.folderId) { pathHistory = [{id:'root', name:'My Drive'}]; if(t.folderId !== 'root') pathHistory.push({id:t.folderId, name:t.folderName}); fetchMyFolders(t.folderId, t.folderName, false); } };
                 list.appendChild(chip);
             });
         }
 
-        // 🔥 새 모달창에 10개 리스트를 뿌려주는 함수 (새로 추가)
         function openRecentHistoryModal() {
             const content = document.getElementById('recent_history_content');
             const recent = JSON.parse(localStorage.getItem('recent_tracks') || '[]');
@@ -597,7 +592,7 @@
                     const item = document.createElement('div');
                     item.className = 'flex items-center justify-between p-3 rounded-xl bg-gray-50/50 dark:bg-gray-800/30 border border-gray-100 dark:border-gray-700/50 cursor-pointer active:scale-95 transition md:hover:bg-blue-50 md:dark:hover:bg-blue-900/20 md:hover:border-blue-200 md:dark:hover:border-blue-800/50 group';
                     item.innerHTML = `<span class="text-sm font-medium text-gray-800 dark:text-gray-200 truncate group-hover:text-[#0078d4] dark:group-hover:text-blue-400 transition">${base}</span>
-                                      <span class="text-[10px] text-gray-400 shrink-0 ml-2 border border-gray-300 dark:border-gray-700 px-2 py-0.5 rounded-md truncate max-w-[80px]">${t.folderName}</span>`;
+                                      <span class="text-[10px] text-gray-400 shrink-0 ml-2 border border-gray-150 dark:border-gray-700 px-2 py-0.5 rounded-md truncate max-w-[80px]">${t.folderName}</span>`;
                     item.onclick = () => {
                         closeModal('recent_history_modal');
                         playingQueue = [t]; currentIndex = 0; playTrack(0);
@@ -673,12 +668,10 @@
         async function handleFileUpload(e) { const files = e.target.files; if(!files.length) return; const t = await getToken(); if (!t) return; const container = document.getElementById('file_list_container'); container.innerHTML = '<div class="h-full flex flex-col items-center justify-center text-sm text-[#0078d4] font-medium mt-10"><svg class="animate-spin w-8 h-8 mb-3" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Uploading...</div>';
             try { for(let f of files) { const res = await fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${currentFolderId}:/${encodeURIComponent(f.name)}:/createUploadSession`, { method:'POST', headers:{'Authorization':`Bearer ${t}`,'Content-Type':'application/json'} }); const s = await res.json(); await fetch(s.uploadUrl, { method:'PUT', headers:{'Content-Length':f.size,'Content-Range':`bytes 0-${f.size-1}/${f.size}`}, body:f }); } } catch(err) { alert(`Upload failed.`); } e.target.value = ''; fetchMyFolders(currentFolderId, pathHistory[pathHistory.length - 1].name, false); 
         }
-                // 🔥 화면 자동 꺼짐 방지 및 아이콘 표시
         async function requestWakeLock() { 
             try { 
                 if('wakeLock' in navigator) {
                     wakeLock = await navigator.wakeLock.request('screen'); 
-                    // 아이콘 시각적 켜기
                     const ind = document.getElementById('wake_lock_indicator');
                     if(ind) { ind.classList.remove('opacity-0', 'scale-95'); ind.classList.add('opacity-100', 'scale-100'); }
                 }
@@ -687,7 +680,6 @@
             } 
         }
 
-        // 🔥 핵심: 화면 밖으로 나갔다 들어와도 (재생 중이라면) 다시 화면 켜짐 유지!
         document.addEventListener('visibilitychange', () => {
             if (document.visibilityState === 'visible' && !audio.paused) {
                 requestWakeLock();
@@ -708,7 +700,6 @@
                 wakeLock.release(); 
                 wakeLock = null; 
             } 
-            // 아이콘 시각적 끄기
             const ind = document.getElementById('wake_lock_indicator');
             if(ind) { ind.classList.add('opacity-0', 'scale-95'); ind.classList.remove('opacity-100', 'scale-100'); }
         });
