@@ -327,16 +327,15 @@
         const audio = document.getElementById('audio_player'), progressBar = document.getElementById('progress_bar'), currentTimeEl = document.getElementById('current_time'), durationTimeEl = document.getElementById('duration_time'), fileInfoEl = document.getElementById('file_info'), extBadge = document.getElementById('file_ext_badge');
         const msalConfig = { auth: { clientId: "8a7108a1-d00c-4f7c-bbed-f4a4df25b81a", authority: "https://login.microsoftonline.com/common", redirectUri: "https://mycloudplay.vercel.app/" }, cache: { cacheLocation: "localStorage" } };
         const msalInstance = new msal.PublicClientApplication(msalConfig);
-        // [수정 전] let accountId = "", currentFolderAudios = [], playingQueue = [], currentIndex = -1, isShuffle = false, repeatMode = 0, currentFolderId = 'root' ...
-        
-        // [수정 후] (아래 코드로 교체)
         let accountId = "", currentFolderAudios = [], playingQueue = [], currentIndex = -1;
         let isShuffle = localStorage.getItem('isShuffle') === 'true';
         let repeatMode = parseInt(localStorage.getItem('repeatMode') || '0');
         let currentFolderId = 'root', pathHistory = [{ id: 'root', name: 'My Drive' }], wakeLock = null;
         let folderCache = JSON.parse(localStorage.getItem('folder_cache') || '{}');
-
-    
+        
+        // 🔥 추가: 스트리밍 주소(URL) 미리 발급받아 저장하는 창고
+        let urlCache = {};
+        
         function formatBytes(bytes, decimals = 2) {
             if (!+bytes) return '0 Bytes';
             const k = 1024, dm = decimals < 0 ? 0 : decimals, sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'], i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -433,12 +432,16 @@
                             msalInstance.logoutRedirect({ account: msalInstance.getAccountByHomeId(accountId) }); }
 
         
+                // 전역 변수에 추가
+        let isRetrying = false; 
+
         async function playTrack(index, autoPlay = true) {
             if (index < 0 || index >= playingQueue.length) return;
             const track = playingQueue[index]; const { base, ext } = splitName(track.name);
             audio.pause(); audio.removeAttribute('src'); currentIndex = index; 
             updateActiveTrackUI(); updateMarqueeText(base);
             if (ext) { extBadge.innerText = ext; extBadge.classList.remove('hidden'); } else { extBadge.classList.add('hidden'); }
+            
             setTimeout(() => { const activeRow = document.getElementById(`track_row_${track.id}`); if(activeRow) activeRow.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 100);
             saveRecentTrack(track); setStatus('BUFFERING...', 'load'); 
             document.getElementById('player_card').classList.add('shimmer-active');
@@ -450,18 +453,13 @@
                     audio.src = track.url; audio.load();
                 } else {
                     const token = await getToken(); if (!token) throw new Error();
-                    
-                    // 🔥 변경 1: $select 옵션을 빼서 API가 안전하게 모든 데이터를 다 주도록 원복
                     const res = await fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${track.id}`, { headers: { Authorization: `Bearer ${token}` } });
                     if(!res.ok) throw new Error();
                     const data = await res.json();
-                    
                     const streamUrl = data['@microsoft.graph.downloadUrl'];
-                    if (!streamUrl) throw new Error("Stream URL missing"); // URL을 못 받아왔을 때의 안전장치
+                    if (!streamUrl) throw new Error("Stream URL missing");
                     
                     audio.src = streamUrl; 
-                    
-                    // 🔥 변경 2: 모바일 브라우저(Safari)가 스트리밍 주소를 확실히 물어오도록 강제 로드
                     audio.load(); 
                 }
                 
@@ -469,21 +467,34 @@
                 setupMediaSession();
                 
                 if(autoPlay) {
-                    // 모바일 자동 재생 실패(사용자 상호작용 지연) 방지를 위한 play 프로미스 처리
                     const playPromise = audio.play();
                     if (playPromise !== undefined) {
-                        playPromise.catch(error => {
-                            console.log("Autoplay prevented by browser:", error);
-                            setStatus('READY', 'standby'); // 폰 설정상 막히면 일시정지 상태로 둠
-                        });
+                        playPromise.then(() => { isRetrying = false; }) // 재생 성공 시 리트라이 플래그 해제
+                        .catch(error => { setStatus('READY', 'standby'); });
                     }
                 } else setStatus('READY', 'standby');
 
             } catch(e) { 
-                setStatus('ERROR', 'err'); document.getElementById('player_card').classList.remove('shimmer-active');
-                audio.removeAttribute('src'); audio.load(); if ('mediaSession' in navigator) navigator.mediaSession.metadata = null;
+                // 🔥 자동 복구 로직: 에러 발생 시 한 번만 다시 시도
+                if (!isRetrying) {
+                    isRetrying = true;
+                    console.log("Retrying playback...");
+                    playTrack(index, autoPlay);
+                } else {
+                    setStatus('ERROR', 'err'); 
+                    document.getElementById('player_card').classList.remove('shimmer-active');
+                    audio.removeAttribute('src'); audio.load();
+                }
             }
         }
+
+        // 오디오 에러 이벤트 리스너 추가 (주소 만료 대비)
+        audio.onerror = () => {
+            if (!isRetrying && currentIndex !== -1) {
+                isRetrying = true;
+                playTrack(currentIndex, true);
+            }
+        };
         
         function showTrackInfo() {
             if (currentIndex < 0 || !playingQueue[currentIndex]) return;
@@ -702,16 +713,55 @@
         }
 
         function renderRecentUI() {
-            const list = document.getElementById('recent_tracks_list'), recent = JSON.parse(localStorage.getItem('recent_tracks') || '[]');
-            if(!recent.length) return; document.getElementById('recent_tracks_wrapper').classList.remove('hidden'); list.innerHTML = '';
+            const container = document.getElementById('recent_history_content');
+            const chipsContainer = document.getElementById('recent_chips_container');
+            const recent = JSON.parse(localStorage.getItem('recent_tracks') || '[]');
             
-            recent.slice(0, 3).forEach(t => {
-                const { base } = splitName(t.name); const chip = document.createElement('div');
-                chip.className = 'w-full px-2 sm:px-3 py-1.5 sm:py-2 rounded-[0.8rem] border border-gray-150/60 dark:border-gray-700/60 bg-white dark:bg-gray-800 shadow-sm text-[10px] sm:text-xs font-semibold text-center truncate cursor-pointer active:scale-95 transition-all md:hover:border-[#0078d4] md:hover:text-[#0078d4]';
-                chip.innerText = base;
-                chip.onclick = () => { playingQueue = [t]; currentIndex = 0; playTrack(0); if(currentFolderId !== t.folderId) { pathHistory = [{id:'root', name:'My Drive'}]; if(t.folderId !== 'root') pathHistory.push({id:t.folderId, name:t.folderName}); fetchMyFolders(t.folderId, t.folderName, false); } };
-                list.appendChild(chip);
+            container.innerHTML = ''; chipsContainer.innerHTML = '';
+            if(!recent.length) {
+                container.innerHTML = '<div class="text-center py-10 text-gray-400 text-sm">No recent history</div>';
+                return;
+            }
+            
+            recent.forEach(t => {
+                const { base } = splitName(t.name);
+                // 모달 내부 리스트
+                const item = document.createElement('div');
+                item.className = 'p-3 rounded-xl bg-gray-50/50 dark:bg-gray-800/30 border border-gray-100 dark:border-gray-700/30 cursor-pointer transition md:hover:bg-blue-50 md:dark:hover:bg-blue-900/20';
+                // 🔥 수정된 함수 호출
+                item.onclick = () => playRecentTrack(t.id, t.name, t.folderId, t.url);
+                item.innerHTML = `<p class="text-sm font-medium text-gray-800 dark:text-gray-200 truncate">${base}</p><p class="text-[10px] text-gray-400 mt-0.5">${t.folderName || 'Unknown Folder'}</p>`;
+                container.appendChild(item);
+
+                // 상단 칩스 (최대 3개)
+                if(chipsContainer.children.length < 3) {
+                    const chip = document.createElement('button');
+                    chip.className = 'px-4 py-2 rounded-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-xs font-medium text-gray-600 dark:text-gray-300 whitespace-nowrap transition md:hover:border-[#0078d4]';
+                    // 🔥 수정된 함수 호출
+                    chip.onclick = () => playRecentTrack(t.id, t.name, t.folderId, t.url);
+                    chip.innerText = base;
+                    chipsContainer.appendChild(chip);
+                }
             });
+        }
+
+                async function playRecentTrack(id, name, folderId, url) {
+            // 1. 캐시에서 해당 폴더의 곡 리스트가 있는지 확인
+            if (folderCache[folderId]) {
+                const items = folderCache[folderId].value;
+                playingQueue = items.filter(i => i.file && i.file.mimeType?.includes('audio'));
+            } else {
+                // 캐시에 없다면 단일 곡으로라도 큐를 만듦
+                playingQueue = [{ id, name, url }];
+            }
+            
+            // 2. 현재 클릭한 곡의 인덱스 찾기
+            currentIndex = playingQueue.findIndex(t => t.id === id);
+            if (currentIndex === -1) currentIndex = 0;
+            
+            // 3. 재생 시작
+            playTrack(currentIndex);
+            closeModal('recent_history_modal');
         }
 
         function openRecentHistoryModal() {
