@@ -327,7 +327,7 @@
         const audio = document.getElementById('audio_player'), progressBar = document.getElementById('progress_bar'), currentTimeEl = document.getElementById('current_time'), durationTimeEl = document.getElementById('duration_time'), fileInfoEl = document.getElementById('file_info'), extBadge = document.getElementById('file_ext_badge');
         const msalConfig = { auth: { clientId: "8a7108a1-d00c-4f7c-bbed-f4a4df25b81a", authority: "https://login.microsoftonline.com/common", redirectUri: "https://mycloudplay.vercel.app/" }, cache: { cacheLocation: "localStorage" } };
         const msalInstance = new msal.PublicClientApplication(msalConfig);
-        let accountId = "", currentFolderAudios = [], playingQueue = [], currentIndex = -1, isShuffle = false, repeatMode = 0, currentFolderId = 'root', pathHistory = [{ id: 'root', name: 'My Drive' }], wakeLock = null;
+        let accountId = "", currentFolderAudios = [], playingQueue = [], currentIndex = -1, isShuffle = false, repeatMode = 0, currentFolderId = 'root', pathHistory = [{ id: 'root', name: 'My Drive' }], wakeLock = null, folderCache = {};
 
     
         function formatBytes(bytes, decimals = 2) {
@@ -520,6 +520,7 @@
                 const n = input.value.trim(); if (n) {
                     const t = await getToken(); if (!t) return; closeModal('create_folder_modal');
                     await fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${currentFolderId}/children`, { method:'POST', headers:{'Authorization':`Bearer ${t}`,'Content-Type':'application/json'}, body:JSON.stringify({name:n, folder:{}}) }); 
+                    delete folderCache[currentFolderId];
                     fetchMyFolders(currentFolderId, pathHistory[pathHistory.length-1].name, false);
                 } else closeModal('create_folder_modal');
             };
@@ -527,18 +528,45 @@
 
         async function fetchMyFolders(folderId, folderName, isNewNavigation = true) {
             const container = document.getElementById('file_list_container');
-            container.innerHTML = '<div class="w-full pt-1 animate-pulse space-y-3">' + Array(5).fill('<div class="h-16 bg-gray-100 dark:bg-gray-800 rounded-2xl"></div>').join('') + '</div>';
             currentFolderId = folderId; 
-            if(isNewNavigation && folderId !== 'root') { if (pathHistory[pathHistory.length - 1]?.id !== folderId) pathHistory.push({ id: folderId, name: folderName }); } else if(folderId === 'root') pathHistory = [{id:'root', name:'My Drive'}];
+            
+            if(isNewNavigation && folderId !== 'root') { 
+                if (pathHistory[pathHistory.length - 1]?.id !== folderId) pathHistory.push({ id: folderId, name: folderName }); 
+            } else if(folderId === 'root') {
+                pathHistory = [{id:'root', name:'My Drive'}];
+            }
             renderBreadcrumbs();
+
+            // 🔥 핵심 마법: 캐시(메모리)에 이미 데이터가 있으면 로딩 화면을 스킵하고 즉시 렌더링 후 종료!
+            if (folderCache[folderId]) {
+                renderItems(folderCache[folderId]);
+                return;
+            }
+
+            container.innerHTML = '<div class="w-full pt-1 animate-pulse space-y-3">' + Array(5).fill('<div class="h-16 bg-gray-100 dark:bg-gray-800 rounded-2xl"></div>').join('') + '</div>';
+            
             try {
                 const token = await getToken(); if (!token) return;
                 const res = await fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${folderId}/children`, { headers: { Authorization: `Bearer ${token}` } });
                 if (!res.ok) throw new Error();
-                const data = await res.json(); container.innerHTML = '';
+                const data = await res.json(); 
+                
+                // 🔥 새로 받아온 데이터는 다음번을 위해 캐시에 무조건 저장
+                folderCache[folderId] = data; 
+                
+                renderItems(data);
+            } catch(e) { 
+                container.innerHTML = '<div class="w-full flex flex-col justify-center items-center text-red-500 text-sm mt-10"><svg class="w-8 h-8 mb-3 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg><span class="opacity-80">Connection Error. Please refresh.</span></div>'; 
+            }
+
+            // 중복 코드를 방지하기 위해 렌더링 부분만 따로 분리 (내부 함수)
+            function renderItems(data) {
+                container.innerHTML = '';
                 const items = data.value.sort((a,b) => a.name.localeCompare(b.name));
                 const folders = items.filter(i => i.folder), audios = items.filter(i => i.file && i.file.mimeType?.includes('audio'));
-                currentFolderAudios = audios; document.getElementById('shuffle_folder_btn').style.display = audios.length ? 'flex' : 'none';
+                currentFolderAudios = audios; 
+                document.getElementById('shuffle_folder_btn').style.display = audios.length ? 'flex' : 'none';
+                
                 folders.forEach(f => {
                     const el = document.createElement('div'); el.className = 'flex items-center justify-between p-3 sm:p-4 mb-2 border border-gray-100 dark:border-gray-800/80 rounded-[1.2rem] bg-gray-50/50 dark:bg-gray-900/30 group cursor-pointer w-full transition md:hover:bg-gray-100 md:dark:hover:bg-gray-800/50';
                     const info = document.createElement('div'); info.className = 'flex items-center gap-3 sm:gap-4 flex-1 min-w-0 pr-2';
@@ -546,6 +574,7 @@
                     info.innerHTML = `<div class="w-10 h-10 sm:w-12 sm:h-12 shrink-0 rounded-xl bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center text-[#0078d4]"><svg class="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg></div><span class="text-sm sm:text-base font-semibold truncate text-gray-800 dark:text-gray-200">${f.name}</span>`;
                     el.append(info, createActionBtn(f.id, f.name, true)); container.appendChild(el);
                 });
+                
                 audios.forEach((a, i) => {
                     const { base } = splitName(a.name);
                     const el = document.createElement('div'); el.id = `track_row_${a.id}`; el.className = 'flex items-center justify-between p-3 sm:p-3.5 mb-1.5 cursor-pointer rounded-2xl transition group w-full border border-transparent md:hover:bg-gray-50 md:dark:hover:bg-gray-800/50';
@@ -554,9 +583,10 @@
                     info.innerHTML = `<div id="track_icon_${a.id}" class="w-10 h-10 sm:w-11 sm:h-11 shrink-0 rounded-xl flex items-center justify-center bg-gray-100 dark:bg-gray-900 text-gray-400 font-bold text-sm transition">${i+1}</div><p id="track_text_${a.id}" class="text-sm sm:text-[15px] font-medium truncate text-gray-800 dark:text-gray-200 transition">${base}</p>`;
                     el.append(info, createActionBtn(a.id, a.name, false)); container.appendChild(el);
                 });
+                
                 if (!folders.length && !audios.length) container.innerHTML = '<div class="w-full flex flex-col items-center justify-center text-sm text-gray-400 mt-10"><div class="text-3xl mb-2 opacity-50">📁</div>Folder is empty.</div>';
                 updateActiveTrackUI();
-            } catch(e) { container.innerHTML = '<div class="w-full flex flex-col justify-center items-center text-red-500 text-sm mt-10"><svg class="w-8 h-8 mb-3 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg><span class="opacity-80">Connection Error. Please refresh.</span></div>'; }
+            }
         }
 
         function createActionBtn(id, name, isFolder) {
@@ -573,7 +603,9 @@
                     const finalName = isFolder ? newBase : (ext ? `${newBase}.${ext.toLowerCase()}` : newBase);
                     const token = await getToken(); if (!token) return;
                     const res = await fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${id}`, { method: 'PATCH', headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ name: finalName }) });
-                    if(res.ok) { fetchMyFolders(currentFolderId, '', false); closeModal('rename_modal'); }
+                    if(res.ok) { 
+                        delete folderCache[currentFolderId];
+                        fetchMyFolders(currentFolderId, '', false); closeModal('rename_modal'); }
                 } else closeModal('rename_modal');
             };
         }
@@ -720,9 +752,13 @@
             else { setStatus('FINISHED', 'standby'); audio.removeAttribute('src'); audio.load(); if('mediaSession' in navigator) navigator.mediaSession.metadata = null; updateActiveTrackUI(); document.getElementById('icon_pause').classList.add('hidden'); document.getElementById('icon_play').classList.remove('hidden'); } 
         }
         function playPrevTrack() { if(!playingQueue.length) return; if(audio.currentTime > 3) audio.currentTime = 0; else if(currentIndex > 0) playTrack(currentIndex - 1); }
-        async function deleteItem(id, n, isF) { if(confirm(`Delete ${isF?'folder':'track'} '${n}'?`)) { const t = await getToken(); if (!t) return; await fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${id}`, { method:'DELETE', headers:{'Authorization':`Bearer ${t}`} }); fetchMyFolders(currentFolderId, '', false); } }
+        async function deleteItem(id, n, isF) { if(confirm(`Delete ${isF?'folder':'track'} '${n}'?`)) { const t = await getToken(); if (!t) return; await fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${id}`, { method:'DELETE', headers:{'Authorization':`Bearer ${t}`} }); 
+                                                                                                       delete folderCache[currentFolderId];
+                                                                                                       fetchMyFolders(currentFolderId, '', false); } }
         async function handleFileUpload(e) { const files = e.target.files; if(!files.length) return; const t = await getToken(); if (!t) return; const container = document.getElementById('file_list_container'); container.innerHTML = '<div class="h-full flex flex-col items-center justify-center text-sm text-[#0078d4] font-medium mt-10"><svg class="animate-spin w-8 h-8 mb-3" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Uploading...</div>';
-            try { for(let f of files) { const res = await fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${currentFolderId}:/${encodeURIComponent(f.name)}:/createUploadSession`, { method:'POST', headers:{'Authorization':`Bearer ${t}`,'Content-Type':'application/json'} }); const s = await res.json(); await fetch(s.uploadUrl, { method:'PUT', headers:{'Content-Length':f.size,'Content-Range':`bytes 0-${f.size-1}/${f.size}`}, body:f }); } } catch(err) { alert(`Upload failed.`); } e.target.value = ''; fetchMyFolders(currentFolderId, pathHistory[pathHistory.length - 1].name, false); 
+            try { for(let f of files) { const res = await fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${currentFolderId}:/${encodeURIComponent(f.name)}:/createUploadSession`, { method:'POST', headers:{'Authorization':`Bearer ${t}`,'Content-Type':'application/json'} }); const s = await res.json(); await fetch(s.uploadUrl, { method:'PUT', headers:{'Content-Length':f.size,'Content-Range':`bytes 0-${f.size-1}/${f.size}`}, body:f }); } } catch(err) { alert(`Upload failed.`); } e.target.value = ''; 
+                                            delete folderCache[currentFolderId];
+                                            fetchMyFolders(currentFolderId, pathHistory[pathHistory.length - 1].name, false); 
         }
         async function requestWakeLock() { 
             try { 
