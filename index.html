@@ -331,8 +331,6 @@
         let repeatMode = parseInt(localStorage.getItem('repeatMode') || '0');
         let currentFolderId = 'root', pathHistory = [{ id: 'root', name: 'My Drive' }], wakeLock = null;
         let folderCache = JSON.parse(localStorage.getItem('folder_cache') || '{}');
-        
-        // 🔥 추가: 스트리밍 주소(URL) 미리 발급받아 저장하는 창고
         let urlCache = {};
         
         function formatBytes(bytes, decimals = 2) {
@@ -431,7 +429,6 @@
                             msalInstance.logoutRedirect({ account: msalInstance.getAccountByHomeId(accountId) }); }
 
         
-                // 전역 변수에 추가
         let isRetrying = false; 
 
         async function playTrack(index, autoPlay = true) {
@@ -451,11 +448,9 @@
                 if (track.url) {
                     audio.src = track.url; audio.load();
                 } else if (urlCache[track.id]) {
-                    // 🔥 프리패치 캐시 확인: 미리 받아둔 다음 곡 주소가 있다면 API 통신 없이 즉시 꽂아넣음 (딜레이 0초)
                     audio.src = urlCache[track.id]; 
                     audio.load();
                 } else {
-                    // 캐시가 없을 때만 API 통신
                     const token = await getToken(); if (!token) throw new Error();
                     const res = await fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${track.id}`, { headers: { Authorization: `Bearer ${token}` } });
                     if(!res.ok) throw new Error();
@@ -476,12 +471,10 @@
                         playPromise.then(() => { 
                             isRetrying = false; 
                             
-                            // 🔥 다음 곡 다이렉트 주소 프리패칭 (데이터 소모 없이 텍스트 주소만 미리 발급)
                             let nextIdx = isShuffle ? Math.floor(Math.random() * playingQueue.length) : (index + 1 < playingQueue.length ? index + 1 : (repeatMode === 1 ? 0 : -1));
                             
                             if (nextIdx !== -1 && !playingQueue[nextIdx].url) {
                                 const nextId = playingQueue[nextIdx].id;
-                                // 1초 뒤에 백그라운드에서 조용히 API를 찔러서 다음 곡 주소를 캐시에 저장
                                 setTimeout(async () => {
                                     if (urlCache[nextId]) return;
                                     try {
@@ -503,7 +496,6 @@
                 if (!isRetrying) {
                     isRetrying = true;
                     console.log("Retrying playback...");
-                    // 에러 났을 때는 캐시 지우고 다시 시도
                     delete urlCache[track.id]; 
                     playTrack(index, autoPlay);
                 } else {
@@ -513,7 +505,6 @@
                 }
             }
         }
-        // 오디오 에러 이벤트 리스너 추가 (주소 만료 대비)
         audio.onerror = () => {
             if (!isRetrying && currentIndex !== -1) {
                 isRetrying = true;
@@ -587,18 +578,14 @@
             } else if(folderId === 'root') pathHistory = [{id:'root', name:'My Drive'}];
             renderBreadcrumbs();
 
-            // 1. 캐시가 있으면 0.01초 만에 화면에 먼저 뿌림 (최고의 체감 속도)
             if (folderCache[folderId]) {
                 renderItems(folderCache[folderId]);
-                // 2. 화면엔 캐시를 띄워두고, 뒷단에서 조용히 원드라이브 최신 상태 확인
                 fetchFromAPI(folderId, true);
             } else {
-                // 캐시가 아예 없을 때만 로딩 바 표시
                 container.innerHTML = '<div class="w-full pt-1 animate-pulse space-y-3">' + Array(5).fill('<div class="h-16 bg-gray-100 dark:bg-gray-800 rounded-2xl"></div>').join('') + '</div>';
                 fetchFromAPI(folderId, false);
             }
 
-            // API 호출 및 프리패치 담당 내부 함수
             async function fetchFromAPI(targetId, isBackground) {
                 try {
                     const token = await getToken(); if(!token) return;
@@ -612,12 +599,10 @@
                     folderCache[targetId] = data;
                     localStorage.setItem('folder_cache', JSON.stringify(folderCache));
 
-                    // 3. 백그라운드 체크 결과, 변경사항이 생겼을 때만 화면을 싹 새로고침 (오류/깜빡임 최소화)
                     if (currentFolderId === targetId && (!isBackground || oldDataStr !== newDataStr)) {
                         renderItems(data);
                     }
 
-                    // 4. 안전한 폴더 프리패칭: 눈에 보이는 폴더 중 상위 3개만 백그라운드에서 미리 캐싱 (API 과부하 방지)
                     const foldersToPrefetch = data.value.filter(i => i.folder).slice(0, 3);
                     foldersToPrefetch.forEach(f => {
                         if(!folderCache[f.id]) {
@@ -672,7 +657,6 @@
                     const finalName = isFolder ? newBase : (ext ? `${newBase}.${ext.toLowerCase()}` : newBase);
                     closeModal('rename_modal');
                     
-                    // 🔥 낙관적 UI: 통신을 기다리지 않고 화면의 글씨부터 즉시 변경!
                     const textEl = document.getElementById(isFolder ? `folder_text_${id}` : `track_text_${id}`);
                     const oldText = textEl ? textEl.innerText : '';
                     if(textEl) textEl.innerText = isFolder ? finalName : newBase;
@@ -682,10 +666,8 @@
                     
                     if(res.ok) { 
                         delete folderCache[currentFolderId]; 
-                        // 조용히 뒷단 동기화
                         fetchMyFolders(currentFolderId, pathHistory[pathHistory.length-1].name, false); 
                     } else {
-                        // 통신 실패 시 원래 이름으로 몰래 복구
                         if(textEl) textEl.innerText = oldText;
                         alert('Rename failed.');
                     }
@@ -739,9 +721,8 @@
 
         function renderRecentUI() {
             const container = document.getElementById('recent_history_content');
-            // 🔥 수정됨: HTML ID와 완벽하게 일치하도록 수정
             const chipsContainer = document.getElementById('recent_tracks_list'); 
-            const wrapper = document.getElementById('recent_tracks_wrapper'); // 칩스 전체 틀
+            const wrapper = document.getElementById('recent_tracks_wrapper');
             const recent = JSON.parse(localStorage.getItem('recent_tracks') || '[]');
             
             container.innerHTML = ''; 
@@ -749,18 +730,21 @@
             
             if(!recent.length) {
                 container.innerHTML = '<div class="text-center py-10 text-gray-400 text-sm">No recent history</div>';
-                if (wrapper) wrapper.classList.add('hidden'); // 곡이 없으면 칩스 영역 숨기기
+                if (wrapper) wrapper.classList.add('hidden');
                 return;
             }
             
-            if (wrapper) wrapper.classList.remove('hidden'); // 곡이 있으면 칩스 영역 띄우기
+            if (wrapper) wrapper.classList.remove('hidden');
             
             recent.forEach(t => {
                 const { base } = splitName(t.name);
                 // 모달 내부 리스트
                 const item = document.createElement('div');
                 item.className = 'p-3 rounded-xl bg-gray-50/50 dark:bg-gray-800/30 border border-gray-100 dark:border-gray-700/30 cursor-pointer transition md:hover:bg-blue-50 md:dark:hover:bg-blue-900/20';
-                item.onclick = () => playRecentTrack(t.id, t.name, t.folderId, t.url);
+                
+                // 🔥 통일된 함수 호출 적용
+                item.onclick = () => playRecentTrack(t);
+                
                 item.innerHTML = `<p class="text-sm font-medium text-gray-800 dark:text-gray-200 truncate">${base}</p><p class="text-[10px] text-gray-400 mt-0.5">${t.folderName || 'Unknown Folder'}</p>`;
                 container.appendChild(item);
 
@@ -768,32 +752,65 @@
                 if(chipsContainer && chipsContainer.children.length < 3) {
                     const chip = document.createElement('button');
                     chip.className = 'px-4 py-2 rounded-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-xs font-medium text-gray-600 dark:text-gray-300 whitespace-nowrap transition md:hover:border-[#0078d4] truncate';
-                    chip.onclick = () => playRecentTrack(t.id, t.name, t.folderId, t.url);
+                    
+                    // 🔥 통일된 함수 호출 적용
+                    chip.onclick = () => playRecentTrack(t);
+                    
                     chip.innerText = base;
                     chipsContainer.appendChild(chip);
                 }
             });
         }
 
-                async function playRecentTrack(id, name, folderId, url) {
-            // 1. 캐시에서 해당 폴더의 곡 리스트가 있는지 확인
-            if (folderCache[folderId]) {
-                const items = folderCache[folderId].value;
-                playingQueue = items.filter(i => i.file && i.file.mimeType?.includes('audio'));
-            } else {
-                // 캐시에 없다면 단일 곡으로라도 큐를 만듦
-                playingQueue = [{ id, name, url }];
-            }
-            
-            // 2. 현재 클릭한 곡의 인덱스 찾기
-            currentIndex = playingQueue.findIndex(t => t.id === id);
-            if (currentIndex === -1) currentIndex = 0;
-            
-            // 3. 재생 시작
-            playTrack(currentIndex);
+        async function playRecentTrack(t) {
             closeModal('recent_history_modal');
-        }
 
+            // 1. 해당 곡의 폴더로 화면 이동
+            if (currentFolderId !== t.folderId) {
+                pathHistory = [{id:'root', name:'My Drive'}];
+                if(t.folderId !== 'root') pathHistory.push({id: t.folderId, name: t.folderName});
+                fetchMyFolders(t.folderId, t.folderName, false);
+            }
+
+            // 🔥 재생 큐(Queue) 완벽 복구 함수
+            const restoreQueue = (folderData) => {
+                // 이름순으로 정렬해서 UI와 순서 맞추기
+                const items = [...folderData.value].sort((a,b) => a.name.localeCompare(b.name));
+                playingQueue = items.filter(i => i.file && i.file.mimeType?.includes('audio'));
+                currentIndex = playingQueue.findIndex(item => item.id === t.id);
+                if(currentIndex === -1) currentIndex = 0;
+            };
+
+            if (folderCache[t.folderId]) {
+                // 2-A. 캐시가 있으면: 즉시 전체 큐를 복구하고 재생
+                restoreQueue(folderCache[t.folderId]);
+                playTrack(currentIndex);
+            } else {
+                // 2-B. 캐시가 없으면: 딜레이 없이 당장 소리가 나게 클릭한 1곡만 먼저 재생
+                playingQueue = [t];
+                currentIndex = 0;
+                playTrack(0);
+
+                // 그리고 뒷단에서 서버에 몰래 접속해 전체 폴더 리스트를 가져와 큐를 꽉 채워넣음
+                try {
+                    const token = await getToken();
+                    if(token) {
+                        const res = await fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${t.folderId}/children`, { headers: { Authorization: `Bearer ${token}` } });
+                        if(res.ok) {
+                            const data = await res.json();
+                            folderCache[t.folderId] = data; // 캐시 업데이트
+                            localStorage.setItem('folder_cache', JSON.stringify(folderCache));
+                            
+                            // 재생 중인 곡이 안 바뀌었을 때만 전체 리스트로 무혈입성 교체
+                            if (playingQueue.length === 1 && playingQueue[0].id === t.id) {
+                                restoreQueue(data);
+                            }
+                        }
+                    }
+                } catch(e) {}
+            }
+        }
+        
         function openRecentHistoryModal() {
             const content = document.getElementById('recent_history_content');
             const recent = JSON.parse(localStorage.getItem('recent_tracks') || '[]');
@@ -808,20 +825,16 @@
                     item.className = 'flex items-center justify-between p-3 rounded-xl bg-gray-50/50 dark:bg-gray-800/30 border border-gray-100 dark:border-gray-700/50 cursor-pointer active:scale-95 transition md:hover:bg-blue-50 md:dark:hover:bg-blue-900/20 md:hover:border-blue-200 md:dark:hover:border-blue-800/50 group';
                     item.innerHTML = `<span class="text-sm font-medium text-gray-800 dark:text-gray-200 truncate group-hover:text-[#0078d4] dark:group-hover:text-blue-400 transition">${base}</span>
                                       <span class="text-[10px] text-gray-400 shrink-0 ml-2 border border-gray-150 dark:border-gray-700 px-2 py-0.5 rounded-md truncate max-w-[80px]">${t.folderName}</span>`;
-                    item.onclick = () => {
-                        closeModal('recent_history_modal');
-                        playingQueue = [t]; currentIndex = 0; playTrack(0);
-                        if(currentFolderId !== t.folderId) { 
-                            pathHistory = [{id:'root', name:'My Drive'}]; 
-                            if(t.folderId !== 'root') pathHistory.push({id:t.folderId, name:t.folderName}); 
-                            fetchMyFolders(t.folderId, t.folderName, false); 
-                        }
-                    };
+                    
+                    // 🔥 변경: 낡은 하드코딩 재생 로직을 버리고 최신 재생 엔진에 연결!
+                    item.onclick = () => playRecentTrack(t);
+                    
                     content.appendChild(item);
                 });
             }
             openModal('recent_history_modal');
         }
+        
         function updateMarqueeText(text) {
             fileInfoEl.innerText = text;
             setTimeout(() => {
@@ -838,13 +851,13 @@
         function toggleRepeat() { 
             repeatMode = (repeatMode + 1) % 3; 
             audio.loop = (repeatMode === 2); 
-            localStorage.setItem('repeatMode', repeatMode); // 🔥 상태 저장
+            localStorage.setItem('repeatMode', repeatMode); 
             updateRepeatBtnUI(); 
         }
         
         function toggleShuffle() { 
             isShuffle = !isShuffle; 
-            localStorage.setItem('isShuffle', isShuffle); // 🔥 상태 저장
+            localStorage.setItem('isShuffle', isShuffle); 
             updateShuffleBtnUI(); 
         }
         function toggleMenu(e, id) { e.stopPropagation(); document.querySelectorAll('.dropdown-content').forEach(d => { if(d.id !== id) d.classList.add('hidden'); }); document.getElementById(id).classList.toggle('hidden'); }
@@ -955,17 +968,14 @@
             const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent), indicator = document.getElementById('wake_lock_indicator');
             if (!isMobile) indicator.remove(); else { indicator.classList.remove('hidden'); indicator.classList.add('flex'); }
             
-            // 🔥 앱 실행 시 저장된 재생 모드 버튼 UI에 반영
             updateRepeatBtnUI();
             updateShuffleBtnUI();
 
-            // 🔥 스페이스바 재생/일시정지 단축키
             document.addEventListener('keydown', (e) => {
-                // 폴더 만들기, 이름 바꾸기 창 등에 글자를 입력 중일 때는 멈춤 방지
                 if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
                 
                 if (e.code === 'Space') {
-                    e.preventDefault(); // 스페이스바 누를 때 화면 내려가는 것 방지
+                    e.preventDefault(); 
                     togglePlayPause();
                 }
             });
