@@ -424,7 +424,9 @@
             } catch (e) { msalInstance.acquireTokenRedirect({ scopes: ["Files.ReadWrite.All"] }); return null; }
         }
         function signIn() { msalInstance.loginRedirect({ scopes: ["Files.ReadWrite.All"] }); }
-        function signOut() { msalInstance.logoutRedirect({ account: msalInstance.getAccountByHomeId(accountId) }); }
+        function signOut() { localStorage.removeItem('folder_cache');
+                            localStorage.removeItem('recent_tracks');
+                            msalInstance.logoutRedirect({ account: msalInstance.getAccountByHomeId(accountId) }); }
 
         
         async function playTrack(index, autoPlay = true) {
