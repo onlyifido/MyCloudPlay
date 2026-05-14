@@ -324,8 +324,7 @@
         if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) document.documentElement.classList.add('dark');
 
         const audio = document.getElementById('audio_player'), progressBar = document.getElementById('progress_bar'), currentTimeEl = document.getElementById('current_time'), durationTimeEl = document.getElementById('duration_time'), fileInfoEl = document.getElementById('file_info'), extBadge = document.getElementById('file_ext_badge');
-        const msalConfig = { auth: { clientId: "8a7108a1-d00c-4f7c-bbed-f4a4df25b81a", authority: "https://login.microsoftonline.com/common", redirectUri: "https://mycloudplay.vercel.app/" }, cache: { cacheLocation: "localStorage" } };
-        const msalInstance = new msal.PublicClientApplication(msalConfig);
+const msalConfig = { auth: { clientId: "8a7108a1-d00c-4f7c-bbed-f4a4df25b81a", authority: "https://login.microsoftonline.com/common", redirectUri: window.location.origin + "/" }, cache: { cacheLocation: "localStorage" } };        const msalInstance = new msal.PublicClientApplication(msalConfig);
         let accountId = "", currentFolderAudios = [], playingQueue = [], currentIndex = -1;
         let isShuffle = localStorage.getItem('isShuffle') === 'true';
         let repeatMode = parseInt(localStorage.getItem('repeatMode') || '0');
