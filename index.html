@@ -450,7 +450,12 @@
             try {
                 if (track.url) {
                     audio.src = track.url; audio.load();
+                } else if (urlCache[track.id]) {
+                    // 🔥 프리패치 캐시 확인: 미리 받아둔 다음 곡 주소가 있다면 API 통신 없이 즉시 꽂아넣음 (딜레이 0초)
+                    audio.src = urlCache[track.id]; 
+                    audio.load();
                 } else {
+                    // 캐시가 없을 때만 API 통신
                     const token = await getToken(); if (!token) throw new Error();
                     const res = await fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${track.id}`, { headers: { Authorization: `Bearer ${token}` } });
                     if(!res.ok) throw new Error();
@@ -468,16 +473,38 @@
                 if(autoPlay) {
                     const playPromise = audio.play();
                     if (playPromise !== undefined) {
-                        playPromise.then(() => { isRetrying = false; }) // 재생 성공 시 리트라이 플래그 해제
+                        playPromise.then(() => { 
+                            isRetrying = false; 
+                            
+                            // 🔥 다음 곡 다이렉트 주소 프리패칭 (데이터 소모 없이 텍스트 주소만 미리 발급)
+                            let nextIdx = isShuffle ? Math.floor(Math.random() * playingQueue.length) : (index + 1 < playingQueue.length ? index + 1 : (repeatMode === 1 ? 0 : -1));
+                            
+                            if (nextIdx !== -1 && !playingQueue[nextIdx].url) {
+                                const nextId = playingQueue[nextIdx].id;
+                                // 1초 뒤에 백그라운드에서 조용히 API를 찔러서 다음 곡 주소를 캐시에 저장
+                                setTimeout(async () => {
+                                    if (urlCache[nextId]) return;
+                                    try {
+                                        const token = await getToken(); if (!token) return;
+                                        const res = await fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${nextId}`, { headers: { Authorization: `Bearer ${token}` } });
+                                        if (res.ok) {
+                                            const data = await res.json();
+                                            if (data['@microsoft.graph.downloadUrl']) urlCache[nextId] = data['@microsoft.graph.downloadUrl'];
+                                        }
+                                    } catch(e) {}
+                                }, 1000);
+                            }
+                        })
                         .catch(error => { setStatus('READY', 'standby'); });
                     }
                 } else setStatus('READY', 'standby');
 
             } catch(e) { 
-                // 🔥 자동 복구 로직: 에러 발생 시 한 번만 다시 시도
                 if (!isRetrying) {
                     isRetrying = true;
                     console.log("Retrying playback...");
+                    // 에러 났을 때는 캐시 지우고 다시 시도
+                    delete urlCache[track.id]; 
                     playTrack(index, autoPlay);
                 } else {
                     setStatus('ERROR', 'err'); 
@@ -486,7 +513,6 @@
                 }
             }
         }
-
         // 오디오 에러 이벤트 리스너 추가 (주소 만료 대비)
         audio.onerror = () => {
             if (!isRetrying && currentIndex !== -1) {
