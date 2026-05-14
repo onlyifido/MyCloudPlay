@@ -335,8 +335,6 @@
         let repeatMode = parseInt(localStorage.getItem('repeatMode') || '0');
         let currentFolderId = 'root', pathHistory = [{ id: 'root', name: 'My Drive' }], wakeLock = null;
         let folderCache = JSON.parse(localStorage.getItem('folder_cache') || '{}');
-        let nextTrackBlobUrl = null; 
-        let prefetchIndex = -1;
 
     
         function formatBytes(bytes, decimals = 2) {
@@ -449,43 +447,31 @@
 
             try {
                 if (track.url) {
+                    // 샘플 트랙 (기존 다이렉트 URL 유지)
                     audio.src = track.url; audio.load();
                 } else {
-                    // 🔥 오디오 프리패치 확인: 이미 백그라운드에서 다운로드 받은 Blob이 내장되어 있다면 즉시 사용 (딜레이 0초)
-                    if (prefetchIndex === index && nextTrackBlobUrl) {
-                        audio.src = nextTrackBlobUrl;
-                        prefetchIndex = -1; // 사용 완료 후 초기화
-                    } else {
-                        // 프리패치된 게 없으면 그때 다운로드
-                        const token = await getToken(); if (!token) throw new Error();
-                        const res = await fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${track.id}/content`, { headers: { Authorization: `Bearer ${token}` } });
-                        if(!res.ok) throw new Error();
-                        const blob = await res.blob(); audio.src = URL.createObjectURL(blob);
-                    }
+                    const token = await getToken(); if (!token) throw new Error();
+                    
+                    // 🔥 핵심 변경: /content 로 무식하게 전체 다운로드 하던 것을 버리고, 
+                    // 파일의 다이렉트 다운로드 주소(URL)만 요청합니다. (0.05초 만에 응답옴)
+                    const res = await fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${track.id}?$select=id,@microsoft.graph.downloadUrl`, { headers: { Authorization: `Bearer ${token}` } });
+                    if(!res.ok) throw new Error();
+                    const data = await res.json();
+                    
+                    // 🔥 브라우저야, 이 주소에서 네가 필요한 만큼만 알아서 스트리밍해라!
+                    audio.src = data['@microsoft.graph.downloadUrl']; 
                 }
-                document.getElementById('player_card').classList.remove('shimmer-active'); setupMediaSession();
+                
+                document.getElementById('player_card').classList.remove('shimmer-active'); 
+                setupMediaSession();
+                
                 if(autoPlay) audio.play(); else setStatus('READY', 'standby');
-
-                // 🔥 현재 곡이 재생 성공하면 백그라운드에서 조용히 '다음 곡' 1개만 미리 다운로드 (오디오 프리패칭)
-                if(index + 1 < playingQueue.length && !playingQueue[index + 1].url) {
-                    setTimeout(async () => {
-                        const token = await getToken(); if (!token) return;
-                        fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${playingQueue[index+1].id}/content`, { headers: { Authorization: `Bearer ${token}` } })
-                        .then(r => r.blob())
-                        .then(b => {
-                            if(nextTrackBlobUrl) URL.revokeObjectURL(nextTrackBlobUrl); // 메모리 누수 방지
-                            nextTrackBlobUrl = URL.createObjectURL(b);
-                            prefetchIndex = index + 1;
-                        }).catch(e => console.log("Prefetch failed", e));
-                    }, 2000); // 2초 뒤 조용히 시작
-                }
 
             } catch(e) { 
                 setStatus('ERROR', 'err'); document.getElementById('player_card').classList.remove('shimmer-active');
                 audio.removeAttribute('src'); audio.load(); if ('mediaSession' in navigator) navigator.mediaSession.metadata = null;
             }
         }
-
         
         function showTrackInfo() {
             if (currentIndex < 0 || !playingQueue[currentIndex]) return;
