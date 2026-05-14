@@ -72,7 +72,7 @@
     </style>
 </head>
 <body class="fixed inset-0 w-full h-[100dvh] flex flex-col bg-gray-50 text-gray-900 dark:bg-black dark:text-gray-100 font-sans antialiased overflow-hidden transition-colors duration-300">
-
+<body oncontextmenu="return false;" class="select-none fixed inset-0 w-full h-[100dvh] flex flex-col bg-gray-50 text-gray-900 dark:bg-black dark:text-gray-100 font-sans antialiased overflow-hidden transition-colors duration-300">
     <div id="info_modal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/10 dark:bg-black/50 backdrop-blur-sm opacity-0 transition-opacity duration-300" onclick="closeModal('info_modal')">
         <div id="info_modal_card" class="bg-white/70 dark:bg-gray-900/70 backdrop-blur-2xl w-[90%] max-w-sm rounded-[2rem] p-6 sm:p-8 shadow-2xl border border-white/60 dark:border-gray-700/50 transform scale-95 transition-transform duration-300 relative" onclick="event.stopPropagation()">
             <button onclick="closeModal('info_modal')" class="absolute top-4 right-4 p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition rounded-full md:hover:bg-gray-100/50 md:dark:hover:bg-gray-800/50">
@@ -327,9 +327,15 @@
         const audio = document.getElementById('audio_player'), progressBar = document.getElementById('progress_bar'), currentTimeEl = document.getElementById('current_time'), durationTimeEl = document.getElementById('duration_time'), fileInfoEl = document.getElementById('file_info'), extBadge = document.getElementById('file_ext_badge');
         const msalConfig = { auth: { clientId: "8a7108a1-d00c-4f7c-bbed-f4a4df25b81a", authority: "https://login.microsoftonline.com/common", redirectUri: "https://mycloudplay.vercel.app/" }, cache: { cacheLocation: "localStorage" } };
         const msalInstance = new msal.PublicClientApplication(msalConfig);
-        let accountId = "", currentFolderAudios = [], playingQueue = [], currentIndex = -1, isShuffle = false, repeatMode = 0, currentFolderId = 'root', pathHistory = [{ id: 'root', name: 'My Drive' }], wakeLock = null;
+        // [수정 전] let accountId = "", currentFolderAudios = [], playingQueue = [], currentIndex = -1, isShuffle = false, repeatMode = 0, currentFolderId = 'root' ...
+        
+        // [수정 후] (아래 코드로 교체)
+        let accountId = "", currentFolderAudios = [], playingQueue = [], currentIndex = -1;
+        let isShuffle = localStorage.getItem('isShuffle') === 'true';
+        let repeatMode = parseInt(localStorage.getItem('repeatMode') || '0');
+        let currentFolderId = 'root', pathHistory = [{ id: 'root', name: 'My Drive' }], wakeLock = null;
         let folderCache = JSON.parse(localStorage.getItem('folder_cache') || '{}');
-        let nextTrackBlobUrl = null; // 오디오 프리패치용 변수
+        let nextTrackBlobUrl = null; 
         let prefetchIndex = -1;
 
     
@@ -751,8 +757,18 @@
             dot.className = `w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full ${type==='play'?'bg-green-500':type==='load'?'bg-[#0078d4] dark:bg-blue-400 animate-pulse':'bg-gray-300 dark:bg-gray-600'}`; 
         }
         function togglePlayPause() { if(!playingQueue.length) return; if(audio.paused) { if(!audio.src) playTrack(currentIndex); else audio.play(); } else audio.pause(); }
-        function toggleRepeat() { repeatMode = (repeatMode + 1) % 3; audio.loop = (repeatMode === 2); updateRepeatBtnUI(); }
-        function toggleShuffle() { isShuffle = !isShuffle; updateShuffleBtnUI(); }
+        function toggleRepeat() { 
+            repeatMode = (repeatMode + 1) % 3; 
+            audio.loop = (repeatMode === 2); 
+            localStorage.setItem('repeatMode', repeatMode); // 🔥 상태 저장
+            updateRepeatBtnUI(); 
+        }
+        
+        function toggleShuffle() { 
+            isShuffle = !isShuffle; 
+            localStorage.setItem('isShuffle', isShuffle); // 🔥 상태 저장
+            updateShuffleBtnUI(); 
+        }
         function toggleMenu(e, id) { e.stopPropagation(); document.querySelectorAll('.dropdown-content').forEach(d => { if(d.id !== id) d.classList.add('hidden'); }); document.getElementById(id).classList.toggle('hidden'); }
         function updateActiveTrackUI() {
             const currentId = playingQueue[currentIndex]?.id;
@@ -820,7 +836,22 @@
                 requestWakeLock();
             }
         });
-        audio.addEventListener('timeupdate', () => { if(!audio.duration) return; progressBar.value = (audio.currentTime / audio.duration) * 100; currentTimeEl.innerText = formatTime(audio.currentTime); });
+        audio.addEventListener('timeupdate', () => { 
+            if(!audio.duration) return; 
+            progressBar.value = (audio.currentTime / audio.duration) * 100; 
+            currentTimeEl.innerText = formatTime(audio.currentTime); 
+            
+            // 🔥 잠금화면/상태표시줄 진행률 동기화
+            if ('mediaSession' in navigator && !isNaN(audio.duration)) {
+                try {
+                    navigator.mediaSession.setPositionState({
+                        duration: audio.duration,
+                        playbackRate: audio.playbackRate,
+                        position: audio.currentTime
+                    });
+                } catch(e) {}
+            }
+        });
         audio.addEventListener('loadedmetadata', () => { durationTimeEl.innerText = formatTime(audio.duration); progressBar.disabled = false; });
         audio.addEventListener('play', () => { document.getElementById('icon_play').classList.add('hidden'); document.getElementById('icon_pause').classList.remove('hidden'); setStatus('NOW PLAYING', 'play'); updateActiveTrackUI(); requestWakeLock(); });
         audio.addEventListener('pause', () => { 
@@ -845,6 +876,21 @@
         document.addEventListener("DOMContentLoaded", () => {
             const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent), indicator = document.getElementById('wake_lock_indicator');
             if (!isMobile) indicator.remove(); else { indicator.classList.remove('hidden'); indicator.classList.add('flex'); }
+            
+            // 🔥 앱 실행 시 저장된 재생 모드 버튼 UI에 반영
+            updateRepeatBtnUI();
+            updateShuffleBtnUI();
+
+            // 🔥 스페이스바 재생/일시정지 단축키
+            document.addEventListener('keydown', (e) => {
+                // 폴더 만들기, 이름 바꾸기 창 등에 글자를 입력 중일 때는 멈춤 방지
+                if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+                
+                if (e.code === 'Space') {
+                    e.preventDefault(); // 스페이스바 누를 때 화면 내려가는 것 방지
+                    togglePlayPause();
+                }
+            });
         });
     </script>
 </body>
