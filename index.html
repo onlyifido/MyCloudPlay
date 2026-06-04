@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>MyCloudPlay - Free Cloud Music Player</title>
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-S5J5HF7JZV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-S5J5HF7JZV');
+</script>
+    <meta name="google-site-verification" content="Hj93YeFutEwBX2B-3cFP14lI0THIAmr6UajJ29u6S3o" />
+    <meta name="description" content="Play MP3s and local audio files directly from OneDrive without downloading. Zero storage used. No registration, 100% free web-based cloud music player.">
+    <meta name="keywords" content="music file player, cloud music player, onedrive music player, mp3 player web, stream local files, play music from onedrive, zero download music player">
+    
+    <meta property="og:title" content="MyCloudPlay - Free Cloud Music Player">
+    <meta property="og:description" content="Play your audio files directly from OneDrive without taking up device storage. No registration, 100% private and free.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.mycloudplay.com/">
+    <meta property="og:site_name" content="MyCloudPlay">
+    
+    <meta name="apple-mobile-web-app-title" content="MyCloudPlay">
+    <meta property="og:image" content="https://www.mycloudplay.com/미리보기용_이미지_주소.png">
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#f9fafb">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3ClinearGradient id='grad2' x1='0%25' y1='100%25' x2='100%25' y2='0%25'%3E%3Cstop offset='0%25' style='stop-color:%230078d4;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%2360a5fa;stop-opacity:1' /%3E%3C/linearGradient%3E%3CclipPath id='clipRect2'%3E%3Crect width='512' height='512' rx='112' /%3E%3C/clipPath%3E%3C/defs%3E%3Crect width='512' height='512' rx='112' fill='url(%23grad2)' /%3E%3Cg clip-path='url(%23clipRect2)'%3E%3Cg fill='%23ffffff' opacity='0.25'%3E%3Ccircle cx='90' cy='420' r='120' /%3E%3Ccircle cx='260' cy='360' r='160' /%3E%3Ccircle cx='450' cy='420' r='140' /%3E%3Crect x='0' y='360' width='512' height='200' /%3E%3C/g%3E%3C/g%3E%3Cg transform='translate(34, 32) scale(0.85)'%3E%3Cpath d='M200 370V130l210-40v230' fill='none' stroke='%23ffffff' stroke-width='32' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='150' cy='370' r='50' fill='none' stroke='%23ffffff' stroke-width='32'/%3E%3Ccircle cx='360' cy='330' r='50' fill='none' stroke='%23ffffff' stroke-width='32'/%3E%3C/g%3E%3C/svg%3E">
+    <link rel="apple-touch-icon" href="data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3ClinearGradient id='grad2' x1='0%25' y1='100%25' x2='100%25' y2='0%25'%3E%3Cstop offset='0%25' style='stop-color:%230078d4;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%2360a5fa;stop-opacity:1' /%3E%3C/linearGradient%3E%3CclipPath id='clipRect2'%3E%3Crect width='512' height='512' rx='112' /%3E%3C/clipPath%3E%3C/defs%3E%3Crect width='512' height='512' rx='112' fill='url(%23grad2)' /%3E%3Cg clip-path='url(%23clipRect2)'%3E%3Cg fill='%23ffffff' opacity='0.25'%3E%3Ccircle cx='90' cy='420' r='120' /%3E%3Ccircle cx='260' cy='360' r='160' /%3E%3Ccircle cx='450' cy='420' r='140' /%3E%3Crect x='0' y='360' width='512' height='200' /%3E%3C/g%3E%3C/g%3E%3Cg transform='translate(34, 32) scale(0.85)'%3E%3Cpath d='M200 370V130l210-40v230' fill='none' stroke='%23ffffff' stroke-width='32' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='150' cy='370' r='50' fill='none' stroke='%23ffffff' stroke-width='32'/%3E%3Ccircle cx='360' cy='330' r='50' fill='none' stroke='%23ffffff' stroke-width='32'/%3E%3C/g%3E%3C/svg%3E">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'] }, colors: { brand: '#0078d4', gray: { 900: '#121212', 950: '#0a0a0a' } } } } }
+    </script>
+    <script type="text/javascript" src="https://alcdn.msauth.net/browser/2.30.0/js/msal-browser.min.js"></script>
+    
+    <style>
+        html { background-color: #f9fafb; }
+        html.dark { background-color: #000000; }
+        body { touch-action: manipulation; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(156, 163, 175, 0.4); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(107, 114, 128, 0.7); }
+        .dark ::-webkit-scrollbar-thumb { background: rgba(75, 85, 99, 0.4); }
+        .dark ::-webkit-scrollbar-thumb:hover { background: rgba(107, 114, 128, 0.7); }
+
+        .show { display: block !important; }
+        .breadcrumb-item:hover { color: #0078d4; cursor: pointer; }
+        .breadcrumb-separator { color: #6b7280; margin: 0 4px; font-weight: 300; }
+        
+        .glass { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.5); }
+        .dark .glass { background: rgba(18, 18, 18, 0.7); border: 1px solid rgba(255, 255, 255, 0.05); }
+
+        .neumorphic { background: #ffffff; box-shadow: 6px 6px 14px rgba(0, 0, 0, 0.05), -6px -6px 14px rgba(255, 255, 255, 0.8); }
+        .dark .neumorphic { background: #121212; box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.3), -6px -6px 12px rgba(255, 255, 255, 0.04); }
+        .neumorphic:active { box-shadow: inset 4px 4px 10px rgba(0, 0, 0, 0.05), inset -4px -4px 10px rgba(255, 255, 255, 0.8); }
+        .dark .neumorphic:active { box-shadow: inset 4px 4px 10px rgba(0, 0, 0, 0.3), inset -4px -4px 10px rgba(255, 255, 255, 0.04); }
+
+        .marquee-container { width: 100%; overflow: hidden; white-space: nowrap; position: relative; mask-image: linear-gradient(to right, black 90%, transparent 100%); -webkit-mask-image: linear-gradient(to right, black 90%, transparent 100%); }
+        .marquee-content { display: inline-block; padding-left: 100%; animation: marquee 15s linear infinite; }
+        @keyframes marquee { 0% { transform: translate(0, 0); } 100% { transform: translate(-100%, 0); } }
+        .marquee-content.short { padding-left: 0; animation: none; display: block; text-overflow: ellipsis; overflow: hidden; }
+
+        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 12px; width: 12px; border-radius: 50%; background: #0078d4; cursor: pointer; margin-top: -4px; box-shadow: 0 0 4px rgba(0,0,0,0.2); }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: #e5e7eb; border-radius: 2px; }
+        .dark input[type=range]::-webkit-slider-runnable-track { background: #374151; }
+
+        .shimmer-active::before { content: ''; position: absolute; inset: 0; background: rgba(255, 255, 255, 0.3); z-index: 40; pointer-events: none; }
+        .dark .shimmer-active::before { background: rgba(0, 0, 0, 0.5); }
+        .shimmer-active::after { content: ''; position: absolute; top: 0; bottom: 0; left: 0; right: 0; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent); transform: translateX(-100%); animation: shimmerMove 1.2s infinite linear; z-index: 50; pointer-events: none; }
+        .dark .shimmer-active::after { background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12), transparent); }
+        @keyframes shimmerMove { 100% { transform: translateX(100%); } }
+
+        .playing-eq { display: flex; align-items: flex-end; justify-content: center; gap: 3px; width: 16px; height: 14px; }
+        .eq-bar { width: 3px; background-color: #0078d4; border-radius: 2px; transform-origin: bottom; }
+        .dark .eq-bar { background-color: #60a5fa; }
+        .eq-bar-1 { height: 100%; animation: eq-bounce 0.7s infinite alternate ease-in-out; }
+        .eq-bar-2 { height: 100%; animation: eq-bounce 0.7s infinite alternate ease-in-out -0.3s; }
+        .eq-bar-3 { height: 100%; animation: eq-bounce 0.7s infinite alternate ease-in-out -0.5s; }
+        @keyframes eq-bounce { 0% { transform: scaleY(0.2); } 100% { transform: scaleY(1); } }
+        .eq-paused .eq-bar { animation: none; transform: scaleY(0.25); background-color: #9ca3af; }
+        .dark .eq-paused .eq-bar { background-color: #6b7280; }
+        
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body oncontextmenu="return false;" class="select-none fixed inset-0 w-full h-[100dvh] flex flex-col bg-gray-50 text-gray-900 dark:bg-black dark:text-gray-100 font-sans antialiased overflow-hidden transition-colors duration-300">
+    <div id="info_modal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/10 dark:bg-black/50 backdrop-blur-sm opacity-0 transition-opacity duration-300" onclick="closeModal('info_modal')">
+        <div id="info_modal_card" class="bg-white/70 dark:bg-gray-900/70 backdrop-blur-2xl w-[90%] max-w-sm rounded-[2rem] p-6 sm:p-8 shadow-2xl border border-white/60 dark:border-gray-700/50 transform scale-95 transition-transform duration-300 relative" onclick="event.stopPropagation()">
+            <button onclick="closeModal('info_modal')" class="absolute top-4 right-4 p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition rounded-full md:hover:bg-gray-100/50 md:dark:hover:bg-gray-800/50">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            <div class="flex items-center gap-3 mb-5">
+                <div class="w-10 h-10 flex items-center justify-center shrink-0">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="w-full h-full drop-shadow-md">
+        <defs>
+            <linearGradient id="modal_grad" x1="0%" y1="100%" x2="100%" y2="0%">
+                <stop offset="0%" style="stop-color:#0078d4;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#60a5fa;stop-opacity:1" />
+            </linearGradient>
+            <clipPath id="modal_clip">
+                <rect width="512" height="512" rx="112" />
+            </clipPath>
+        </defs>
+        <rect width="512" height="512" rx="112" fill="url(#modal_grad)" />
+        <g clip-path="url(#modal_clip)">
+            <g fill="#ffffff" opacity="0.25">
+                <circle cx="90" cy="420" r="120" />
+                <circle cx="260" cy="360" r="160" />
+                <circle cx="450" cy="420" r="140" />
+                <rect x="0" y="360" width="512" height="200" />
+            </g>
+        </g>
+        <g transform="translate(34, 32) scale(0.85)">
+            <path d="M200 370V130l210-40v230" fill="none" stroke="#ffffff" stroke-width="32" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="150" cy="370" r="50" fill="none" stroke="#ffffff" stroke-width="32"/>
+            <circle cx="360" cy="330" r="50" fill="none" stroke="#ffffff" stroke-width="32"/>
+        </g>
+    </svg>
+</div>
+                <div class="flex flex-col justify-center">
+                    <h3 class="text-xl font-extrabold text-gray-900 dark:text-white leading-tight">MyCloudPlay</h3>
+                    <span class="text-[11px] font-bold text-[#0078d4] dark:text-blue-400 tracking-wider">VERSION 1.0.0</span>
+                </div>
+            </div>
+            <p class="text-sm text-gray-600 dark:text-gray-300 mb-6 leading-relaxed font-medium">
+                Stream your music anytime, anywhere. <br>A fast, lightweight, zero-signup cloud player running instantly in your browser.
+            </p>
+            <div class="bg-blue-50/70 dark:bg-blue-900/20 rounded-2xl p-4 mb-3 border border-blue-100/70 dark:border-blue-800/30">
+                <div class="flex items-start gap-3">
+                    <div class="mt-0.5 shrink-0 text-[#0078d4] dark:text-blue-400">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                    </div>
+                    <div class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+                        <strong class="text-gray-900 dark:text-white">Privacy First</strong><br>
+                        Files stream directly from <a href="https://onedrive.live.com/" target="_blank" class="text-[#0078d4] dark:text-blue-400 font-bold hover:underline">OneDrive</a>. We do not collect or store your personal data.
+                    </div>
+                </div>
+            </div>
+            <div class="bg-gray-50/70 dark:bg-gray-800/40 rounded-2xl p-4 border border-white/60 dark:border-gray-700/50">
+                <div class="flex items-start gap-3">
+                    <div class="mt-0.5 shrink-0 text-gray-500 dark:text-gray-400">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                    </div>
+                    <div class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+                        <strong class="text-gray-900 dark:text-white uppercase tracking-wider text-xs">Install as an App</strong>
+                        <div class="mt-1 space-y-1 text-xs">
+                            <p><strong>iOS:</strong> Share &rarr; Add to Home Screen</p>
+                            <p><strong>Android:</strong> Menu &rarr; Add to Home screen</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="rename_modal" class="fixed inset-0 z-[101] hidden items-center justify-center bg-black/10 dark:bg-black/50 backdrop-blur-sm opacity-0 transition-opacity duration-300" onclick="closeModal('rename_modal')">
+        <div id="rename_modal_card" class="bg-white/70 dark:bg-gray-900/70 backdrop-blur-2xl w-[90%] max-w-sm rounded-[2rem] p-6 sm:p-8 shadow-2xl border border-white/60 dark:border-gray-700/50 transform scale-95 transition-transform duration-300 relative" onclick="event.stopPropagation()">
+            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">Rename Item</h3>
+            <textarea id="rename_textarea" spellcheck="false" class="w-full h-28 bg-white/60 dark:bg-gray-800/40 border border-white/60 dark:border-gray-700/50 rounded-2xl p-4 text-sm font-medium text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#0078d4] transition-all resize-none backdrop-blur-md"></textarea>
+            <div class="flex gap-3 mt-6">
+                <button onclick="closeModal('rename_modal')" class="flex-1 px-4 py-3 rounded-xl bg-gray-100/60 dark:bg-gray-800/50 text-sm font-bold text-gray-600 dark:text-gray-300 transition md:hover:bg-gray-200/60 border border-transparent dark:border-gray-700/30">Cancel</button>
+                <button id="rename_confirm_btn" class="flex-1 px-4 py-3 rounded-xl bg-[#0078d4] text-sm font-bold text-white shadow-lg shadow-blue-500/20 transition md:hover:brightness-110">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="create_folder_modal" class="fixed inset-0 z-[101] hidden items-center justify-center bg-black/10 dark:bg-black/50 backdrop-blur-sm opacity-0 transition-opacity duration-300" onclick="closeModal('create_folder_modal')">
+        <div id="create_folder_modal_card" class="bg-white/70 dark:bg-gray-900/70 backdrop-blur-2xl w-[90%] max-w-sm rounded-[2rem] p-6 sm:p-8 shadow-2xl border border-white/60 dark:border-gray-700/50 transform scale-95 transition-transform duration-300 relative" onclick="event.stopPropagation()">
+            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-4">Create Folder</h3>
+            <input type="text" id="create_folder_input" placeholder="New Folder Name" spellcheck="false" autocomplete="off" class="w-full bg-white/60 dark:bg-gray-800/40 border border-white/60 dark:border-gray-700/50 rounded-2xl p-4 text-sm font-medium text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#0078d4] transition-all backdrop-blur-md">
+            <div class="flex gap-3 mt-6">
+                <button onclick="closeModal('create_folder_modal')" class="flex-1 px-4 py-3 rounded-xl bg-gray-100/60 dark:bg-gray-800/50 text-sm font-bold text-gray-600 dark:text-gray-300 transition md:hover:bg-gray-200/60 border border-transparent dark:border-gray-700/30">Cancel</button>
+                <button id="create_folder_confirm_btn" class="flex-1 px-4 py-3 rounded-xl bg-[#0078d4] text-sm font-bold text-white shadow-lg shadow-blue-500/20 transition md:hover:brightness-110">Create</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="track_info_modal" class="fixed inset-0 z-[101] hidden items-center justify-center bg-black/10 dark:bg-black/50 backdrop-blur-sm opacity-0 transition-opacity duration-300" onclick="closeModal('track_info_modal')">
+        <div id="track_info_modal_card" class="bg-white/70 dark:bg-gray-900/70 backdrop-blur-2xl w-[90%] max-w-sm rounded-[2rem] p-6 sm:p-8 shadow-2xl border border-white/60 dark:border-gray-700/50 transform scale-95 transition-transform duration-300 relative" onclick="event.stopPropagation()">
+            <div class="flex justify-between items-center mb-5">
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                    <svg class="w-5 h-5 text-[#0078d4]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    File Details
+                </h3>
+                <button onclick="closeModal('track_info_modal')" class="p-2 -mr-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition rounded-full md:hover:bg-gray-100/50 md:dark:hover:bg-gray-800/50">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <div class="space-y-4 text-sm" id="track_info_content">
+                </div>
+        </div>
+    </div>
+
+    <div id="wake_modal" class="fixed inset-0 z-[101] hidden items-center justify-center bg-black/10 dark:bg-black/50 backdrop-blur-sm opacity-0 transition-opacity duration-300" onclick="closeModal('wake_modal')">
+        <div id="wake_modal_card" class="bg-white/70 dark:bg-gray-900/70 backdrop-blur-2xl w-[80%] max-w-xs rounded-[2rem] p-6 sm:p-8 shadow-2xl border border-white/60 dark:border-gray-700/50 transform scale-95 transition-transform duration-300 text-center relative" onclick="event.stopPropagation()">
+            <div class="w-14 h-14 mx-auto bg-yellow-50/70 dark:bg-yellow-900/30 text-yellow-500 dark:text-yellow-400 rounded-full flex items-center justify-center mb-4 border border-yellow-100/60 dark:border-yellow-800/30">
+                <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="3"></rect><path d="M12 18h.01"></path></svg>
+            </div>
+            <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">Screen Kept Awake</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-300 mb-6 leading-relaxed font-medium">
+                Screen auto-lock is disabled while playing to prevent playback from stopping.
+            </p>
+            <button onclick="closeModal('wake_modal')" class="w-full px-4 py-3 rounded-xl bg-gray-100/60 dark:bg-gray-800/50 text-sm font-bold text-gray-700 dark:text-gray-200 transition md:hover:bg-gray-200/60 border border-white/40 dark:border-gray-700/30">Got it</button>
+        </div>
+    </div>
+    
+    <div id="recent_history_modal" class="fixed inset-0 z-[101] hidden items-center justify-center bg-black/10 dark:bg-black/50 backdrop-blur-sm opacity-0 transition-opacity duration-300" onclick="closeModal('recent_history_modal')">
+        <div id="recent_history_modal_card" class="bg-white/70 dark:bg-gray-900/70 backdrop-blur-2xl w-[90%] max-w-sm rounded-[2rem] p-6 sm:p-8 shadow-2xl border border-white/60 dark:border-gray-700/50 transform scale-95 transition-transform duration-300 relative max-h-[80vh] flex flex-col" onclick="event.stopPropagation()">
+            <div class="flex justify-between items-center mb-5 shrink-0">
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                    <svg class="w-5 h-5 text-[#0078d4]" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    Recent Tracks
+                </h3>
+                <button onclick="closeModal('recent_history_modal')" class="p-2 -mr-2 text-gray-400 hover:text-gray-900 dark:hover:text-white transition rounded-full md:hover:bg-gray-100/50 md:dark:hover:bg-gray-800/50">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <div class="overflow-y-auto pr-1 no-scrollbar space-y-2" id="recent_history_content">
+                </div>
+        </div>
+    </div>
+    
+    <header class="z-50 glass shrink-0 transition-colors duration-300">
+        <div class="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 max-w-[1400px] w-full mx-auto">
+            <div class="flex items-center gap-3">
+                <div onclick="window.location.reload()" class="font-bold text-lg sm:text-xl tracking-tight flex items-center gap-2.5 text-gray-900 dark:text-white cursor-pointer hover:opacity-70 transition">
+                    <div class="w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center shrink-0">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="w-full h-full drop-shadow-md">
+        <defs>
+            <linearGradient id="header_grad" x1="0%" y1="100%" x2="100%" y2="0%">
+                <stop offset="0%" style="stop-color:#0078d4;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#60a5fa;stop-opacity:1" />
+            </linearGradient>
+            <clipPath id="header_clip">
+                <rect width="512" height="512" rx="112" />
+            </clipPath>
+        </defs>
+        <rect width="512" height="512" rx="112" fill="url(#header_grad)" />
+        <g clip-path="url(#header_clip)">
+            <g fill="#ffffff" opacity="0.25">
+                <circle cx="90" cy="420" r="120" />
+                <circle cx="260" cy="360" r="160" />
+                <circle cx="450" cy="420" r="140" />
+                <rect x="0" y="360" width="512" height="200" />
+            </g>
+        </g>
+        <g transform="translate(34, 32) scale(0.85)">
+            <path d="M200 370V130l210-40v230" fill="none" stroke="#ffffff" stroke-width="32" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="150" cy="370" r="50" fill="none" stroke="#ffffff" stroke-width="32"/>
+            <circle cx="360" cy="330" r="50" fill="none" stroke="#ffffff" stroke-width="32"/>
+        </g>
+    </svg>
+</div>
+                    MyCloudPlay
+                </div>
+                <button onclick="openModal('info_modal')" class="text-gray-400 hover:text-[#0078d4] dark:hover:text-blue-400 transition-colors p-1" title="About"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button>
+            </div>
+            <div class="flex items-center gap-2 sm:gap-4">
+                <div id="wake_lock_indicator" onclick="openModal('wake_modal')" class="hidden opacity-0 scale-95 transition-all duration-500 items-center justify-center p-1 text-yellow-600/60 dark:text-yellow-500/60 cursor-pointer"><svg class="w-5 h-5 sm:w-6 sm:h-6" viewBox="0 0 24 24" fill="none"><rect x="5" y="2" width="14" height="20" rx="3" stroke="currentColor" stroke-width="1.5"/><rect x="7" y="5" width="10" height="13" rx="1" fill="currentColor"/><path d="M11 20h2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+                
+                <button onclick="toggleDarkMode()" class="p-2 rounded-full text-gray-600 dark:text-gray-400 transition md:hover:bg-gray-200 md:dark:hover:bg-gray-800">
+                    <svg id="theme_icon_light" class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                    <svg id="theme_icon_dark" class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                </button>
+                
+                <button id="login_button" onclick="signIn()" class="bg-[#0078d4] text-white px-4 py-1.5 sm:px-5 rounded-full text-sm font-semibold shadow-md transition md:hover:opacity-90">Sign In</button>
+                <button id="logout_button" style="display: none;" onclick="signOut()" class="text-gray-500 md:hover:text-gray-900 dark:text-gray-400 md:dark:hover:text-white px-2 py-1.5 text-sm font-medium transition">Sign Out</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 w-full max-w-[1400px] mx-auto px-4 sm:px-6 pb-6 pt-2 sm:pt-6 flex flex-col lg:flex-row gap-4 sm:gap-6 min-h-0 overflow-hidden">
+        
+        <div class="w-full lg:w-[45%] flex flex-col shrink-0 justify-center h-auto lg:h-full">
+            <div id="player_card" class="isolate border border-gray-100 dark:border-gray-800 rounded-[2.5rem] p-6 sm:p-10 bg-white dark:bg-gray-900 flex flex-col justify-center relative transition-colors duration-300" style="clip-path: inset(0 round 2.5rem);">
+                <div class="absolute -top-32 -right-32 w-64 h-64 bg-blue-400/20 dark:bg-blue-900/20 rounded-full blur-[80px] pointer-events-none -z-10"></div>
+                
+                <div id="file_ext_badge" onclick="event.stopPropagation(); showTrackInfo()" class="absolute z-50 top-6 right-8 px-2.5 py-1 rounded-lg bg-gray-100/80 dark:bg-gray-800/80 text-[10px] font-extrabold text-gray-500 dark:text-gray-400 uppercase tracking-widest hidden cursor-pointer md:hover:bg-gray-200 md:dark:hover:bg-gray-700 transition active:scale-95 border border-gray-150/50 dark:border-gray-700/50 shadow-sm" title="View Track Info">MP3</div>
+
+                <div class="z-10 w-full text-center flex flex-col items-center pt-2 sm:pt-4">
+                    <div class="flex items-center gap-2 mb-3 justify-center">
+                        <span class="w-2 h-2 rounded-full bg-gray-300 dark:bg-gray-600" id="status_dot"></span>
+                        <span class="text-[10px] sm:text-xs font-bold text-gray-500 dark:text-gray-400 tracking-[0.2em] uppercase" id="status_info">STANDBY</span>
+                    </div>
+                    <div class="marquee-container w-full max-w-sm mx-auto text-2xl sm:text-3xl lg:text-4xl font-extrabold text-gray-900 dark:text-white">
+                        <div id="file_info" class="marquee-content short">Select a track</div>
+                    </div>
+                </div>
+
+                <div class="z-10 w-full flex flex-col mt-8 sm:mt-12 max-w-md mx-auto px-2">
+                    <audio id="audio_player" class="hidden"></audio>
+                    
+                    <div class="flex items-center gap-3 sm:gap-4 w-full text-xs font-medium text-gray-400">
+                        <span id="current_time">0:00</span>
+                        <input type="range" id="progress_bar" value="0" step="0.1" min="0" max="100" class="flex-1" disabled>
+                        <span id="duration_time">0:00</span>
+                    </div>
+                    
+                    <div class="relative flex items-center justify-center w-full mt-6 sm:mt-8 h-16 sm:h-20">
+                        <button id="shuffle_btn" onclick="toggleShuffle()" class="absolute left-0 w-10 sm:w-12 h-10 sm:h-12 flex items-center justify-center text-gray-400 dark:text-gray-500 transition active:scale-95 rounded-full shrink-0">
+                            <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2 18h1.4c1.3 0 2.5-.6 3.3-1.7l6.1-8.6c.7-1.1 2-1.7 3.3-1.7H22" /><path d="m18 2 4 4-4 4" /><path d="M2 6h1.9c1.5 0 2.9.9 3.6 2.2" /><path d="M22 18h-5.9c-1.3 0-2.6-.7-3.3-1.8l-.5-.8" /><path d="m18 14 4 4-4 4" /></svg>
+                        </button>
+                        
+                        <div class="flex items-center gap-5 sm:gap-8">
+                            <button onclick="playPrevTrack()" class="w-10 h-10 sm:w-12 sm:h-12 neumorphic rounded-full flex items-center justify-center text-gray-500 transition active:scale-95"><svg class="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg></button>
+                            
+                            <button id="play_pause_btn" onclick="togglePlayPause()" class="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-tr from-[#006cbd] to-[#0078d4] text-white rounded-full flex items-center justify-center shadow-xl shadow-blue-500/20 active:scale-90 transition">
+                                <svg id="icon_play" class="w-8 h-8 sm:w-10 sm:h-10 ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                <svg id="icon_pause" class="w-8 h-8 sm:w-10 sm:h-10 hidden" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                            </button>
+                            
+                            <button onclick="playNextTrack(true)" class="w-10 h-10 sm:w-12 sm:h-12 neumorphic rounded-full flex items-center justify-center text-gray-500 transition active:scale-95"><svg class="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg></button>
+                        </div>
+                        
+                        <button id="repeat_btn" onclick="toggleRepeat()" class="absolute right-0 w-10 sm:w-12 h-10 sm:h-12 flex items-center justify-center text-gray-400 dark:text-gray-500 transition active:scale-95 rounded-full shrink-0">
+                            <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="w-full lg:w-[55%] flex flex-col flex-1 min-h-0">
+            <div id="recent_tracks_wrapper" class="hidden shrink-0 w-full mb-3 px-1">
+                <div class="flex items-center gap-2.5">
+<svg onclick="event.stopPropagation(); openRecentHistoryModal()" class="w-6 h-6 p-0.5 text-gray-400 cursor-pointer md:hover:text-[#0078d4] transition shrink-0 rounded-full md:hover:bg-gray-100 md:dark:hover:bg-gray-800" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <div id="recent_tracks_list" class="flex-1 grid grid-cols-3 gap-2 min-w-0"></div>
+                </div>
+            </div>
+
+            <div class="border border-gray-100 dark:border-gray-800 rounded-[2.5rem] bg-white dark:bg-gray-950 shadow-sm flex flex-col flex-1 min-h-0 overflow-hidden transition-colors duration-300">
+                <div class="bg-gray-50/80 dark:bg-gray-900/80 border-b border-gray-100 dark:border-gray-800 px-5 sm:px-6 py-4 flex items-center justify-between shrink-0">
+                    <div id="breadcrumb_container" class="flex items-center text-sm sm:text-base font-medium text-gray-500 dark:text-gray-400 overflow-hidden whitespace-nowrap w-full pr-4">
+                        <span class="font-semibold text-gray-900 dark:text-white shrink-0">My Drive</span>
+                    </div>
+                    
+                    <div id="action_buttons" style="display: none;" class="flex items-center gap-2 relative shrink-0">
+                        <button id="shuffle_folder_btn" onclick="playRandomFromFolder()" style="display: none;" class="w-9 h-9 flex items-center justify-center text-[#0078d4] bg-blue-50 dark:bg-blue-900/30 rounded-full transition active:scale-90"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M2 18h1.4c1.3 0 2.5-.6 3.3-1.7l6.1-8.6c.7-1.1 2-1.7 3.3-1.7H22" /><path d="m18 2 4 4-4 4" /><path d="M2 6h1.9c1.5 0 2.9.9 3.6 2.2" /><path d="M22 18h-5.9c-1.3 0-2.6-.7-3.3-1.8l-.5-.8" /><path d="m18 14 4 4-4 4" /></svg></button>
+                        
+                        <button onclick="toggleMenu(event, 'main_action_drop')" class="p-2 text-gray-500 md:hover:text-gray-800 md:dark:hover:text-gray-200 bg-gray-100 dark:bg-gray-800 rounded-full transition menu-btn"><svg class="w-5 h-5 pointer-events-none" fill="currentColor" viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg></button>
+                        <div id="main_action_drop" class="dropdown-content absolute right-0 top-12 w-44 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-100 dark:border-gray-700 py-1.5 z-50 hidden">
+                            <a onclick="event.stopPropagation(); createFolder()" class="flex items-center gap-2.5 px-4 py-2 text-sm font-medium cursor-pointer md:hover:bg-gray-100 md:dark:hover:bg-gray-700">Create Folder</a>
+                            <a onclick="event.stopPropagation(); document.getElementById('file_upload').click()" class="flex items-center gap-2.5 px-4 py-2 text-sm font-bold text-[#0078d4] cursor-pointer md:hover:bg-gray-100 md:dark:hover:bg-gray-700">Upload Music</a>
+                        </div>
+                        <input type="file" id="file_upload" accept="audio/*" multiple class="hidden" onchange="handleFileUpload(event)">
+                    </div>
+                </div>
+                
+                <div class="flex-1 overflow-y-auto w-full relative">
+                    <div id="file_list_container" class="p-3 sm:p-5 pb-10 w-full relative min-h-[50%]">
+                        <div class="flex flex-col justify-center items-center text-sm text-gray-400 mt-10">
+                            Please sign in to access music.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function toggleDarkMode() {
+            const doc = document.documentElement;
+            doc.classList.toggle('dark');
+            const isDark = doc.classList.contains('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            
+            const metaTheme = document.querySelector('meta[name="theme-color"]');
+            if (metaTheme) {
+                metaTheme.setAttribute('content', isDark ? '#000000' : '#f9fafb');
+            }
+        }
+        
+        const savedTheme = localStorage.getItem('theme');
+        const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        
+        if (savedTheme === 'dark' || (!savedTheme && systemDark)) {
+            document.documentElement.classList.add('dark');
+            document.querySelector('meta[name="theme-color"]').setAttribute('content', '#000000');
+        } else {
+            document.documentElement.classList.remove('dark');
+            document.querySelector('meta[name="theme-color"]').setAttribute('content', '#f9fafb');
+        }
+        document.querySelector('meta[name="theme-color"]').setAttribute('content', document.documentElement.classList.contains('dark') ? '#000000' : '#f9fafb');
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) document.documentElement.classList.add('dark');
+
+        const audio = document.getElementById('audio_player'), progressBar = document.getElementById('progress_bar'), currentTimeEl = document.getElementById('current_time'), durationTimeEl = document.getElementById('duration_time'), fileInfoEl = document.getElementById('file_info'), extBadge = document.getElementById('file_ext_badge');
+const msalConfig = { auth: { clientId: "8a7108a1-d00c-4f7c-bbed-f4a4df25b81a", authority: "https://login.microsoftonline.com/common", redirectUri: window.location.origin + "/" }, cache: { cacheLocation: "localStorage" } };        const msalInstance = new msal.PublicClientApplication(msalConfig);
+        let accountId = "", currentFolderAudios = [], playingQueue = [], currentIndex = -1;
+        let isShuffle = localStorage.getItem('isShuffle') === 'true';
+        let repeatMode = parseInt(localStorage.getItem('repeatMode') || '0');
+        let currentFolderId = 'root', pathHistory = [{ id: 'root', name: 'My Drive' }], wakeLock = null;
+        let folderCache = JSON.parse(localStorage.getItem('folder_cache') || '{}');
+        let urlCache = {};
+        
+        function formatBytes(bytes, decimals = 2) {
+            if (!+bytes) return '0 Bytes';
+            const k = 1024, dm = decimals < 0 ? 0 : decimals, sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'], i = Math.floor(Math.log(bytes) / Math.log(k));
+            return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
+        }
+        function splitName(name) {
+            if(!name) return { base: '', ext: '' };
+            const lastDot = name.lastIndexOf('.');
+            if (lastDot === -1 || name.startsWith('.')) return { base: name, ext: '' };
+            return { base: name.substring(0, lastDot), ext: name.substring(lastDot + 1).toUpperCase() };
+        }
+        function openModal(id) {
+            const modal = document.getElementById(id), card = modal.firstElementChild;
+            modal.classList.remove('hidden'); modal.classList.add('flex');
+            setTimeout(() => { modal.classList.remove('opacity-0'); card.classList.remove('scale-95'); }, 10);
+        }
+        function closeModal(id) {
+            const modal = document.getElementById(id), card = modal.firstElementChild;
+            modal.classList.add('opacity-0'); card.classList.add('scale-95');
+            setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 300);
+        }
+        window.addEventListener('click', (e) => {
+            if (!e.target.closest('.menu-btn') && !e.target.closest('.dropdown-content')) {
+                document.querySelectorAll('.dropdown-content').forEach(d => d.classList.add('hidden'));
+            }
+            ['info_modal', 'rename_modal', 'wake_modal', 'create_folder_modal', 'track_info_modal', 'recent_history_modal'].forEach(id => {
+                const m = document.getElementById(id);
+                if (m && !m.classList.contains('hidden') && !m.firstElementChild.contains(e.target) && !e.target.closest(`[onclick*="${id}"]`) && !e.target.closest('#file_ext_badge')) closeModal(id);
+            });
+        });
+
+       
+        const sampleTracks = [
+            { id: 'sample_1', name: 'Sample Track 1 - Ambient.mp3', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3', size: 6000000 },
+            { id: 'sample_2', name: 'Sample Track 2 - Upbeat.mp3', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3', size: 7000000 },
+            { id: 'sample_3', name: 'Sample Track 3 - Electronic.mp3', url: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3', size: 5000000 }
+        ];
+
+        function loadSampleTracks() {
+            const container = document.getElementById('file_list_container');
+            container.innerHTML = `
+                <div class="mb-5 p-4 rounded-2xl bg-blue-50/70 dark:bg-blue-900/20 border border-blue-100/70 dark:border-blue-800/30 flex items-start gap-3">
+                    <div class="mt-0.5 text-[#0078d4] dark:text-blue-400">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                    <div class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+                        <strong class="text-gray-900 dark:text-white">Try our sample tracks!</strong><br>
+                        These are royalty-free samples. Sign in to connect your OneDrive and stream your own music.
+                    </div>
+                </div>
+            `;
+            
+            currentFolderAudios = sampleTracks;
+            document.getElementById('shuffle_folder_btn').style.display = 'flex';
+            
+            sampleTracks.forEach((a, i) => {
+                const { base } = splitName(a.name);
+                const el = document.createElement('div'); el.id = `track_row_${a.id}`; 
+                el.className = 'flex items-center justify-between p-3 sm:p-3.5 mb-1.5 cursor-pointer rounded-2xl transition group w-full border border-transparent md:hover:bg-gray-50 md:dark:hover:bg-gray-800/50';
+                const info = document.createElement('div'); info.className = 'flex items-center gap-3 sm:gap-4 flex-1 min-w-0 pr-4';
+                info.onclick = () => { 
+                    if(a.id === playingQueue[currentIndex]?.id && audio.src) togglePlayPause(); 
+                    else { playingQueue = [...currentFolderAudios]; currentIndex = i; playTrack(i); } 
+                };
+                info.innerHTML = `<div id="track_icon_${a.id}" class="w-10 h-10 sm:w-11 sm:h-11 shrink-0 rounded-xl flex items-center justify-center bg-gray-100 dark:bg-gray-900 text-gray-400 font-bold text-sm transition">${i+1}</div><p id="track_text_${a.id}" class="text-sm sm:text-[15px] font-medium truncate text-gray-800 dark:text-gray-200 transition">${base}</p>`;
+                
+                el.append(info); 
+                container.appendChild(el);
+            });
+            updateActiveTrackUI();
+        }
+
+        msalInstance.handleRedirectPromise().then(res => {
+            if (res || msalInstance.getAllAccounts().length > 0) {
+                accountId = res ? res.account.homeAccountId : msalInstance.getAllAccounts()[0].homeAccountId;
+                document.getElementById('login_button').style.display = 'none';
+                document.getElementById('logout_button').style.display = 'inline-block';
+                document.getElementById('action_buttons').style.display = 'flex';
+                fetchMyFolders('root', 'My Drive'); renderRecentUI();
+            } else {
+                loadSampleTracks();
+            }
+        });
+        async function getToken() {
+            try {
+                const account = msalInstance.getAccountByHomeId(accountId) || msalInstance.getAllAccounts()[0];
+                if (!account) { signIn(); return null; }
+                return (await msalInstance.acquireTokenSilent({ scopes: ["Files.ReadWrite.All"], account: account })).accessToken;
+            } catch (e) { msalInstance.acquireTokenRedirect({ scopes: ["Files.ReadWrite.All"] }); return null; }
+        }
+        function signIn() { msalInstance.loginRedirect({ scopes: ["Files.ReadWrite.All"] }); }
+        function signOut() { localStorage.removeItem('folder_cache');
+                            localStorage.removeItem('recent_tracks');
+                            msalInstance.logoutRedirect({ account: msalInstance.getAccountByHomeId(accountId) }); }
+
+        
+        let isRetrying = false; 
+
+        async function playTrack(index, autoPlay = true) {
+            if (index < 0 || index >= playingQueue.length) return;
+            const track = playingQueue[index]; const { base, ext } = splitName(track.name);
+            audio.pause(); audio.removeAttribute('src'); currentIndex = index; 
+            updateActiveTrackUI(); updateMarqueeText(base);
+            if (ext) { extBadge.innerText = ext; extBadge.classList.remove('hidden'); } else { extBadge.classList.add('hidden'); }
+            
+            setTimeout(() => { const activeRow = document.getElementById(`track_row_${track.id}`); if(activeRow) activeRow.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 100);
+            saveRecentTrack(track); setStatus('BUFFERING...', 'load'); 
+            document.getElementById('player_card').classList.add('shimmer-active');
+            
+            const setupMediaSession = () => { if ('mediaSession' in navigator) navigator.mediaSession.metadata = new MediaMetadata({ title: base, artist: 'MyCloudPlay', artwork: [ { src: 'data:image/svg+xml;charset=utf-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 512 512%22%3E%3Cdefs%3E%3ClinearGradient id=%22grad%22 x1=%220%25%22 y1=%22100%25%22 x2=%22100%25%22 y2=%220%25%22%3E%3Cstop offset=%220%25%22 style=%22stop-color:%230078d4;stop-opacity:1%22 /%3E%3Cstop offset=%22100%25%22 style=%22stop-color:%2360a5fa;stop-opacity:1%22 /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width=%22512%22 height=%22512%22 fill=%22url(%23grad)%22 /%3E%3Cpath d=%22M200 370V130l210-40v230%22 fill=%22none%22 stroke=%22%23ffffff%22 stroke-width=%2232%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22/%3E%3Ccircle cx=%22150%22 cy=%22370%22 r=%2250%22 fill=%22none%22 stroke=%22%23ffffff%22 stroke-width=%2232%22/%3E%3Ccircle cx=%22360%22 cy=%22330%22 r=%2250%22 fill=%22none%22 stroke=%22%23ffffff%22 stroke-width=%2232%22/%3E%3C/svg%3E', sizes: '512x512', type: 'image/svg+xml' } ] }); };
+
+            try {
+                if (track.url) {
+                    audio.src = track.url; audio.load();
+                } else if (urlCache[track.id]) {
+                    audio.src = urlCache[track.id]; 
+                    audio.load();
+                } else {
+                    const token = await getToken(); if (!token) throw new Error();
+                    const res = await fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${track.id}`, { headers: { Authorization: `Bearer ${token}` } });
+                    if(!res.ok) throw new Error();
+                    const data = await res.json();
+                    const streamUrl = data['@microsoft.graph.downloadUrl'];
+                    if (!streamUrl) throw new Error("Stream URL missing");
+                    
+                    audio.src = streamUrl; 
+                    audio.load(); 
+                }
+                
+                document.getElementById('player_card').classList.remove('shimmer-active'); 
+                setupMediaSession();
+                
+                if(autoPlay) {
+                    const playPromise = audio.play();
+                    if (playPromise !== undefined) {
+                        playPromise.then(() => { 
+                            isRetrying = false; 
+                            
+                            let nextIdx = isShuffle ? Math.floor(Math.random() * playingQueue.length) : (index + 1 < playingQueue.length ? index + 1 : (repeatMode === 1 ? 0 : -1));
+                            
+                            if (nextIdx !== -1 && !playingQueue[nextIdx].url) {
+                                const nextId = playingQueue[nextIdx].id;
+                                setTimeout(async () => {
+                                    if (urlCache[nextId]) return;
+                                    try {
+                                        const token = await getToken(); if (!token) return;
+                                        const res = await fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${nextId}`, { headers: { Authorization: `Bearer ${token}` } });
+                                        if (res.ok) {
+                                            const data = await res.json();
+                                            if (data['@microsoft.graph.downloadUrl']) urlCache[nextId] = data['@microsoft.graph.downloadUrl'];
+                                        }
+                                    } catch(e) {}
+                                }, 1000);
+                            }
+                        })
+                        .catch(error => { setStatus('READY', 'standby'); });
+                    }
+                } else setStatus('READY', 'standby');
+
+            } catch(e) { 
+                if (!isRetrying) {
+                    isRetrying = true;
+                    console.log("Retrying playback...");
+                    delete urlCache[track.id]; 
+                    playTrack(index, autoPlay);
+                } else {
+                    setStatus('ERROR', 'err'); 
+                    document.getElementById('player_card').classList.remove('shimmer-active');
+                    audio.removeAttribute('src'); audio.load();
+                }
+            }
+        }
+        audio.onerror = () => {
+            if (!isRetrying && currentIndex !== -1) {
+                isRetrying = true;
+                playTrack(currentIndex, true);
+            }
+        };
+        
+        function showTrackInfo() {
+            if (currentIndex < 0 || !playingQueue[currentIndex]) return;
+            const track = playingQueue[currentIndex];
+            const content = document.getElementById('track_info_content');
+            
+            const size = track.size ? formatBytes(track.size) : 'Unknown';
+            const ext = splitName(track.name).ext || 'Unknown';
+            const audioData = track.audio || {};
+            
+            const bitrate = audioData.bitrate ? `${Math.round(audioData.bitrate / 1000)} kbps` : 'Unknown';
+            const title = audioData.title || splitName(track.name).base;
+            const artist = audioData.artist || 'Unknown Artist';
+            const album = audioData.album || 'Unknown Album';
+            
+            content.innerHTML = `
+                <div class="flex flex-col py-2 border-b border-gray-150 dark:border-gray-700/50">
+                    <span class="text-[10px] text-[#0078d4] dark:text-blue-400 font-bold uppercase tracking-widest mb-1">File Name</span>
+                    <span class="text-gray-900 dark:text-gray-100 font-medium break-all leading-snug">${track.name}</span>
+                </div>
+                <div class="flex justify-between items-center py-2.5 border-b border-gray-150 dark:border-gray-700/50">
+                    <span class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Title</span>
+                    <span class="text-gray-900 dark:text-gray-100 font-bold text-right truncate max-w-[65%]">${title}</span>
+                </div>
+                <div class="flex justify-between items-center py-2.5 border-b border-gray-150 dark:border-gray-700/50">
+                    <span class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Artist</span>
+                    <span class="text-gray-900 dark:text-gray-100 font-bold text-right truncate max-w-[65%]">${artist}</span>
+                </div>
+                <div class="flex justify-between items-center py-2.5 border-b border-gray-150 dark:border-gray-700/50">
+                    <span class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Album</span>
+                    <span class="text-gray-900 dark:text-gray-100 font-bold text-right truncate max-w-[65%]">${album}</span>
+                </div>
+                <div class="flex justify-between items-center py-2.5 border-b border-gray-150 dark:border-gray-700/50">
+                    <span class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Format / Size</span>
+                    <span class="text-gray-900 dark:text-gray-100 font-bold">${ext} / ${size}</span>
+                </div>
+                <div class="flex justify-between items-center py-2.5">
+                    <span class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Audio Bitrate</span>
+                    <span class="text-gray-900 dark:text-gray-100 font-bold">${bitrate}</span>
+                </div>
+            `;
+            openModal('track_info_modal');
+        }
+
+        function createFolder() { 
+            document.getElementById('main_action_drop').classList.add('hidden');
+            const input = document.getElementById('create_folder_input'); input.value = '';
+            openModal('create_folder_modal'); setTimeout(() => input.focus(), 50);
+            document.getElementById('create_folder_confirm_btn').onclick = async () => {
+                const n = input.value.trim(); if (n) {
+                    const t = await getToken(); if (!t) return; closeModal('create_folder_modal');
+                    await fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${currentFolderId}/children`, { method:'POST', headers:{'Authorization':`Bearer ${t}`,'Content-Type':'application/json'}, body:JSON.stringify({name:n, folder:{}}) }); 
+                    delete folderCache[currentFolderId];
+                    fetchMyFolders(currentFolderId, pathHistory[pathHistory.length-1].name, false);
+                } else closeModal('create_folder_modal');
+            };
+        }
+
+        async function fetchMyFolders(folderId, folderName, isNewNavigation = true) {
+            const container = document.getElementById('file_list_container');
+            currentFolderId = folderId; 
+            
+            if(isNewNavigation && folderId !== 'root') { 
+                if (pathHistory[pathHistory.length - 1]?.id !== folderId) pathHistory.push({ id: folderId, name: folderName }); 
+            } else if(folderId === 'root') pathHistory = [{id:'root', name:'My Drive'}];
+            renderBreadcrumbs();
+
+            if (folderCache[folderId]) {
+                renderItems(folderCache[folderId]);
+                fetchFromAPI(folderId, true);
+            } else {
+                container.innerHTML = '<div class="w-full pt-1 animate-pulse space-y-3">' + Array(5).fill('<div class="h-16 bg-gray-100 dark:bg-gray-800 rounded-2xl"></div>').join('') + '</div>';
+                fetchFromAPI(folderId, false);
+            }
+
+            async function fetchFromAPI(targetId, isBackground) {
+                try {
+                    const token = await getToken(); if(!token) return;
+                    const res = await fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${targetId}/children`, { headers: { Authorization: `Bearer ${token}` } });
+                    if(!res.ok) throw new Error();
+                    const data = await res.json();
+                    
+                    const oldDataStr = JSON.stringify(folderCache[targetId]?.value || []);
+                    const newDataStr = JSON.stringify(data.value);
+                    
+                    folderCache[targetId] = data;
+                    localStorage.setItem('folder_cache', JSON.stringify(folderCache));
+
+                    if (currentFolderId === targetId && (!isBackground || oldDataStr !== newDataStr)) {
+                        renderItems(data);
+                    }
+
+                    const foldersToPrefetch = data.value.filter(i => i.folder).slice(0, 3);
+                    foldersToPrefetch.forEach(f => {
+                        if(!folderCache[f.id]) {
+                            fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${f.id}/children`, { headers: { Authorization: `Bearer ${token}` } })
+                            .then(r => r.json())
+                            .then(d => { folderCache[f.id] = d; localStorage.setItem('folder_cache', JSON.stringify(folderCache)); });
+                        }
+                    });
+
+                } catch(e) {
+                    if(!isBackground) container.innerHTML = '<div class="w-full flex flex-col justify-center items-center text-red-500 text-sm mt-10"><svg class="w-8 h-8 mb-3 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg><span class="opacity-80">Connection Error.</span></div>';
+                }
+            }
+
+            function renderItems(data) {
+                container.innerHTML = '';
+                const items = data.value.sort((a,b) => a.name.localeCompare(b.name));
+                const folders = items.filter(i => i.folder), audios = items.filter(i => i.file && i.file.mimeType?.includes('audio'));
+                currentFolderAudios = audios; document.getElementById('shuffle_folder_btn').style.display = audios.length ? 'flex' : 'none';
+                
+                folders.forEach(f => {
+                    const el = document.createElement('div'); el.className = 'flex items-center justify-between p-3 sm:p-4 mb-2 border border-gray-100 dark:border-gray-800/80 rounded-[1.2rem] bg-gray-50/50 dark:bg-gray-900/30 group cursor-pointer w-full transition md:hover:bg-gray-100 md:dark:hover:bg-gray-800/50';
+                    const info = document.createElement('div'); info.className = 'flex items-center gap-3 sm:gap-4 flex-1 min-w-0 pr-2';
+                    info.onclick = () => fetchMyFolders(f.id, f.name);
+                    info.innerHTML = `<div class="w-10 h-10 sm:w-12 sm:h-12 shrink-0 rounded-xl bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center text-[#0078d4]"><svg class="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg></div><span id="folder_text_${f.id}" class="text-sm sm:text-base font-semibold truncate text-gray-800 dark:text-gray-200">${f.name}</span>`;
+                    el.append(info, createActionBtn(f.id, f.name, true)); container.appendChild(el);
+                });
+                audios.forEach((a, i) => {
+                    const { base } = splitName(a.name);
+                    const el = document.createElement('div'); el.id = `track_row_${a.id}`; el.className = 'flex items-center justify-between p-3 sm:p-3.5 mb-1.5 cursor-pointer rounded-2xl transition group w-full border border-transparent md:hover:bg-gray-50 md:dark:hover:bg-gray-800/50';
+                    const info = document.createElement('div'); info.className = 'flex items-center gap-3 sm:gap-4 flex-1 min-w-0 pr-4';
+                    info.onclick = () => { if(a.id === playingQueue[currentIndex]?.id && audio.src) togglePlayPause(); else { playingQueue = [...currentFolderAudios]; currentIndex = i; playTrack(i); } };
+                    info.innerHTML = `<div id="track_icon_${a.id}" class="w-10 h-10 sm:w-11 sm:h-11 shrink-0 rounded-xl flex items-center justify-center bg-gray-100 dark:bg-gray-900 text-gray-400 font-bold text-sm transition">${i+1}</div><p id="track_text_${a.id}" class="text-sm sm:text-[15px] font-medium truncate text-gray-800 dark:text-gray-200 transition">${base}</p>`;
+                    el.append(info, createActionBtn(a.id, a.name, false)); container.appendChild(el);
+                });
+                if (!folders.length && !audios.length) container.innerHTML = '<div class="w-full flex flex-col items-center justify-center text-sm text-gray-400 mt-10"><div class="text-3xl mb-2 opacity-50">📁</div>Folder is empty.</div>';
+                updateActiveTrackUI();
+            }
+        }
+        function createActionBtn(id, name, isFolder) {
+            const wrap = document.createElement('div'); wrap.className = 'relative flex items-center shrink-0 opacity-100 lg:opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition';
+            wrap.innerHTML = `<button onclick="toggleMenu(event, 'drop-${id}')" class="w-8 h-8 flex items-center justify-center text-gray-400 md:hover:text-gray-700 md:dark:hover:text-white rounded-full transition font-bold menu-btn">⋮</button><div id="drop-${id}" class="dropdown-content absolute right-0 top-10 w-32 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 py-1.5 z-50 hidden"><a onclick="event.stopPropagation(); requestRename('${id}', '${name.replace(/'/g,"\\'")}', ${isFolder})" class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 cursor-pointer md:hover:bg-gray-100 md:dark:hover:bg-gray-700">Rename</a><a onclick="event.stopPropagation(); deleteItem('${id}', '${name.replace(/'/g,"\\'")}', ${isFolder})" class="block px-4 py-2 text-sm text-red-600 cursor-pointer md:hover:bg-red-50 md:dark:hover:bg-red-900/30">Delete</a></div>`;
+            return wrap;
+        }
+
+        function requestRename(id, fullName, isFolder) {
+            const { base, ext } = splitName(fullName); const textarea = document.getElementById('rename_textarea'); textarea.value = isFolder ? fullName : base; 
+            openModal('rename_modal'); setTimeout(() => textarea.focus(), 50);
+            document.getElementById('rename_confirm_btn').onclick = async () => {
+                const newBase = textarea.value.trim(); 
+                if (newBase && (isFolder ? newBase !== fullName : newBase !== base)) {
+                    const finalName = isFolder ? newBase : (ext ? `${newBase}.${ext.toLowerCase()}` : newBase);
+                    closeModal('rename_modal');
+                    
+                    const textEl = document.getElementById(isFolder ? `folder_text_${id}` : `track_text_${id}`);
+                    const oldText = textEl ? textEl.innerText : '';
+                    if(textEl) textEl.innerText = isFolder ? finalName : newBase;
+
+                    const token = await getToken(); if (!token) return;
+                    const res = await fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${id}`, { method: 'PATCH', headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ name: finalName }) });
+                    
+                    if(res.ok) { 
+                        delete folderCache[currentFolderId]; 
+                        fetchMyFolders(currentFolderId, pathHistory[pathHistory.length-1].name, false); 
+                    } else {
+                        if(textEl) textEl.innerText = oldText;
+                        alert('Rename failed.');
+                    }
+                } else closeModal('rename_modal');
+            };
+        }
+        
+        function renderBreadcrumbs() {
+            const container = document.getElementById('breadcrumb_container'); container.innerHTML = '';
+            if (pathHistory.length > 1) {
+                const btn = document.createElement('button'); btn.className = 'mr-2 p-1 text-gray-400 md:hover:text-[#0078d4] md:dark:hover:text-blue-400 transition active:scale-90 flex items-center justify-center rounded-full md:hover:bg-gray-100 md:dark:hover:bg-gray-800 shrink-0'; 
+                btn.innerHTML = '<svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path></svg>';
+                btn.onclick = () => { if(pathHistory.length <= 1) return; pathHistory.pop(); fetchMyFolders(pathHistory[pathHistory.length-1].id, pathHistory[pathHistory.length-1].name, false); }; container.appendChild(btn);
+            }
+            if (pathHistory.length <= 3) {
+                pathHistory.forEach((s, i) => {
+                    const span = document.createElement('span'); span.innerText = s.name; span.className = (i === pathHistory.length-1) ? 'font-semibold text-gray-900 dark:text-white truncate max-w-[150px] sm:max-w-[250px] shrink-0' : 'breadcrumb-item transition md:hover:text-[#0078d4] truncate max-w-[100px] sm:max-w-[150px] shrink-0'; 
+                    if(i !== pathHistory.length-1) span.onclick = () => { pathHistory = pathHistory.slice(0, i+1); fetchMyFolders(s.id, s.name, false); };
+                    container.appendChild(span); if(i < pathHistory.length-1) { const sep = document.createElement('span'); sep.className = 'breadcrumb-separator shrink-0'; sep.innerText = '/'; container.appendChild(sep); }
+                });
+            } else {
+                const rootSpan = document.createElement('span'); rootSpan.innerText = pathHistory[0].name; rootSpan.className = 'breadcrumb-item transition md:hover:text-[#0078d4] truncate max-w-[80px] shrink-0'; rootSpan.onclick = () => { pathHistory = pathHistory.slice(0, 1); fetchMyFolders(pathHistory[0].id, pathHistory[0].name, false); }; container.appendChild(rootSpan);
+                const sep1 = document.createElement('span'); sep1.className = 'breadcrumb-separator shrink-0'; sep1.innerText = '/'; container.appendChild(sep1);
+                const wrap = document.createElement('div'); wrap.className = 'relative flex items-center shrink-0';
+                const ell = document.createElement('span'); ell.innerText = '...'; ell.className = 'breadcrumb-item font-bold px-1 tracking-widest cursor-pointer md:hover:text-[#0078d4] menu-btn'; ell.onclick = (e) => toggleMenu(e, 'drop-breadcrumb'); wrap.appendChild(ell);
+                const drop = document.createElement('div'); drop.id = 'drop-breadcrumb'; drop.className = 'dropdown-content absolute left-0 top-8 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-100 dark:border-gray-700 py-1.5 z-50 hidden max-h-60 overflow-y-auto';
+                for (let i = 1; i < pathHistory.length - 1; i++) {
+                    const a = document.createElement('a'); a.className = 'block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 md:hover:bg-gray-100 md:dark:hover:bg-gray-700 cursor-pointer truncate'; a.innerText = pathHistory[i].name;
+                    a.onclick = (e) => { e.stopPropagation(); pathHistory = pathHistory.slice(0, i + 1); fetchMyFolders(pathHistory[i].id, pathHistory[i].name, false); drop.classList.add('hidden'); };
+                    drop.appendChild(a);
+                }
+                wrap.appendChild(drop); container.appendChild(wrap);
+                const sep2 = document.createElement('span'); sep2.className = 'breadcrumb-separator shrink-0'; sep2.innerText = '/'; container.appendChild(sep2);
+                const currSpan = document.createElement('span'); currSpan.innerText = pathHistory[pathHistory.length-1].name; currSpan.className = 'font-semibold text-gray-900 dark:text-white truncate max-w-[120px] sm:max-w-[200px] shrink-0'; container.appendChild(currSpan);
+            }
+        }
+            function saveRecentTrack(t) {
+            let recent = JSON.parse(localStorage.getItem('recent_tracks') || '[]'); 
+            recent = recent.filter(x => x.id !== t.id);
+            
+            const fId = t.folderId || currentFolderId;
+            const fName = t.folderName || pathHistory[pathHistory.length-1].name;
+            
+            recent.unshift({ id: t.id, name: t.name, folderId: fId, folderName: fName, url: t.url });
+            
+            if(recent.length > 8) recent = recent.slice(0, 8); 
+            
+            localStorage.setItem('recent_tracks', JSON.stringify(recent)); 
+            renderRecentUI();
+        }
+
+        function renderRecentUI() {
+            const container = document.getElementById('recent_history_content');
+            const chipsContainer = document.getElementById('recent_tracks_list'); 
+            const wrapper = document.getElementById('recent_tracks_wrapper');
+            const recent = JSON.parse(localStorage.getItem('recent_tracks') || '[]');
+            
+            container.innerHTML = ''; 
+            if (chipsContainer) chipsContainer.innerHTML = '';
+            
+            if(!recent.length) {
+                container.innerHTML = '<div class="text-center py-10 text-gray-400 text-sm">No recent history</div>';
+                if (wrapper) wrapper.classList.add('hidden');
+                return;
+            }
+            
+            if (wrapper) wrapper.classList.remove('hidden');
+            
+            recent.forEach(t => {
+                const { base } = splitName(t.name);
+                // 모달 내부 리스트
+                const item = document.createElement('div');
+                item.className = 'p-3 rounded-xl bg-gray-50/50 dark:bg-gray-800/30 border border-gray-100 dark:border-gray-700/30 cursor-pointer transition md:hover:bg-blue-50 md:dark:hover:bg-blue-900/20';
+                
+                // 🔥 통일된 함수 호출 적용
+                item.onclick = () => playRecentTrack(t);
+                
+                item.innerHTML = `<p class="text-sm font-medium text-gray-800 dark:text-gray-200 truncate">${base}</p><p class="text-[10px] text-gray-400 mt-0.5">${t.folderName || 'Unknown Folder'}</p>`;
+                container.appendChild(item);
+
+                // 상단 칩스 (최대 3개)
+                if(chipsContainer && chipsContainer.children.length < 3) {
+                    const chip = document.createElement('button');
+                    chip.className = 'px-4 py-2 rounded-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-xs font-medium text-gray-600 dark:text-gray-300 whitespace-nowrap transition md:hover:border-[#0078d4] truncate';
+                    
+                    // 🔥 통일된 함수 호출 적용
+                    chip.onclick = () => playRecentTrack(t);
+                    
+                    chip.innerText = base;
+                    chipsContainer.appendChild(chip);
+                }
+            });
+        }
+
+        async function playRecentTrack(t) {
+            closeModal('recent_history_modal');
+
+            // 1. 해당 곡의 폴더로 화면 이동
+            if (currentFolderId !== t.folderId) {
+                pathHistory = [{id:'root', name:'My Drive'}];
+                if(t.folderId !== 'root') pathHistory.push({id: t.folderId, name: t.folderName});
+                fetchMyFolders(t.folderId, t.folderName, false);
+            }
+
+            // 🔥 재생 큐(Queue) 완벽 복구 함수
+            const restoreQueue = (folderData) => {
+                // 이름순으로 정렬해서 UI와 순서 맞추기
+                const items = [...folderData.value].sort((a,b) => a.name.localeCompare(b.name));
+                playingQueue = items.filter(i => i.file && i.file.mimeType?.includes('audio'));
+                currentIndex = playingQueue.findIndex(item => item.id === t.id);
+                if(currentIndex === -1) currentIndex = 0;
+            };
+
+            if (folderCache[t.folderId]) {
+                // 2-A. 캐시가 있으면: 즉시 전체 큐를 복구하고 재생
+                restoreQueue(folderCache[t.folderId]);
+                playTrack(currentIndex);
+            } else {
+                // 2-B. 캐시가 없으면: 딜레이 없이 당장 소리가 나게 클릭한 1곡만 먼저 재생
+                playingQueue = [t];
+                currentIndex = 0;
+                playTrack(0);
+
+                // 그리고 뒷단에서 서버에 몰래 접속해 전체 폴더 리스트를 가져와 큐를 꽉 채워넣음
+                try {
+                    const token = await getToken();
+                    if(token) {
+                        const res = await fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${t.folderId}/children`, { headers: { Authorization: `Bearer ${token}` } });
+                        if(res.ok) {
+                            const data = await res.json();
+                            folderCache[t.folderId] = data; // 캐시 업데이트
+                            localStorage.setItem('folder_cache', JSON.stringify(folderCache));
+                            
+                            // 재생 중인 곡이 안 바뀌었을 때만 전체 리스트로 무혈입성 교체
+                            if (playingQueue.length === 1 && playingQueue[0].id === t.id) {
+                                restoreQueue(data);
+                            }
+                        }
+                    }
+                } catch(e) {}
+            }
+        }
+        
+        function openRecentHistoryModal() {
+            const content = document.getElementById('recent_history_content');
+            const recent = JSON.parse(localStorage.getItem('recent_tracks') || '[]');
+            content.innerHTML = '';
+            
+            if (!recent.length) {
+                content.innerHTML = '<div class="text-sm text-gray-400 text-center py-4">No recent tracks.</div>';
+            } else {
+                recent.forEach(t => {
+                    const { base } = splitName(t.name);
+                    const item = document.createElement('div');
+                    item.className = 'flex items-center justify-between p-3 rounded-xl bg-gray-50/50 dark:bg-gray-800/30 border border-gray-100 dark:border-gray-700/50 cursor-pointer active:scale-95 transition md:hover:bg-blue-50 md:dark:hover:bg-blue-900/20 md:hover:border-blue-200 md:dark:hover:border-blue-800/50 group';
+                    item.innerHTML = `<span class="text-sm font-medium text-gray-800 dark:text-gray-200 truncate group-hover:text-[#0078d4] dark:group-hover:text-blue-400 transition">${base}</span>
+                                      <span class="text-[10px] text-gray-400 shrink-0 ml-2 border border-gray-150 dark:border-gray-700 px-2 py-0.5 rounded-md truncate max-w-[80px]">${t.folderName}</span>`;
+                    
+                    // 🔥 변경: 낡은 하드코딩 재생 로직을 버리고 최신 재생 엔진에 연결!
+                    item.onclick = () => playRecentTrack(t);
+                    
+                    content.appendChild(item);
+                });
+            }
+            openModal('recent_history_modal');
+        }
+        
+        function updateMarqueeText(text) {
+            fileInfoEl.innerText = text;
+            setTimeout(() => {
+                const container = fileInfoEl.parentElement;
+                if (fileInfoEl.scrollWidth > container.clientWidth) { fileInfoEl.classList.remove('short'); fileInfoEl.style.animationDuration = `${fileInfoEl.scrollWidth / 20}s`; } else { fileInfoEl.classList.add('short'); fileInfoEl.style.animationDuration = ''; }
+            }, 50);
+        }
+        function setStatus(t, type) { 
+            const el = document.getElementById('status_info'), dot = document.getElementById('status_dot'); el.innerText = t; 
+            el.className = `text-[10px] sm:text-xs font-bold tracking-[0.2em] uppercase ${type==='play'?'text-green-500':type==='load'?'text-[#0078d4] dark:text-blue-400':'text-gray-500 dark:text-gray-400'}`; 
+            dot.className = `w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full ${type==='play'?'bg-green-500':type==='load'?'bg-[#0078d4] dark:bg-blue-400 animate-pulse':'bg-gray-300 dark:bg-gray-600'}`; 
+        }
+        function togglePlayPause() { if(!playingQueue.length) return; if(audio.paused) { if(!audio.src) playTrack(currentIndex); else audio.play(); } else audio.pause(); }
+        function toggleRepeat() { 
+            repeatMode = (repeatMode + 1) % 3; 
+            audio.loop = (repeatMode === 2); 
+            localStorage.setItem('repeatMode', repeatMode); 
+            updateRepeatBtnUI(); 
+        }
+        
+        function toggleShuffle() { 
+            isShuffle = !isShuffle; 
+            localStorage.setItem('isShuffle', isShuffle); 
+            updateShuffleBtnUI(); 
+        }
+        function toggleMenu(e, id) { e.stopPropagation(); document.querySelectorAll('.dropdown-content').forEach(d => { if(d.id !== id) d.classList.add('hidden'); }); document.getElementById(id).classList.toggle('hidden'); }
+        function updateActiveTrackUI() {
+            const currentId = playingQueue[currentIndex]?.id;
+            currentFolderAudios.forEach((a, i) => {
+                const row = document.getElementById(`track_row_${a.id}`), icon = document.getElementById(`track_icon_${a.id}`), text = document.getElementById(`track_text_${a.id}`);
+                if(!row) return;
+                if(a.id === currentId && audio.src) {
+                    row.className = 'flex items-center justify-between p-3 sm:p-3.5 mb-1.5 cursor-pointer rounded-2xl bg-blue-50/80 dark:bg-blue-900/30 border border-blue-100 dark:border-blue-900/40 shadow-sm transition group w-full';
+                    icon.className = 'w-10 h-10 sm:w-11 sm:h-11 shrink-0 rounded-xl flex items-center justify-center transition text-[#0078d4] dark:text-blue-400';
+                    text.className = 'text-sm sm:text-[15px] leading-tight truncate text-[#0078d4] dark:text-blue-300 font-bold transition';
+                    icon.innerHTML = audio.paused ? '<div class="playing-eq eq-paused"><span class="eq-bar eq-bar-1"></span><span class="eq-bar eq-bar-2"></span><span class="eq-bar eq-bar-3"></span></div>' : '<div class="playing-eq"><span class="eq-bar eq-bar-1"></span><span class="eq-bar eq-bar-2"></span><span class="eq-bar eq-bar-3"></span></div>';
+                } else {
+                    row.className = 'flex items-center justify-between p-3 sm:p-3.5 mb-1.5 cursor-pointer rounded-2xl border border-transparent md:hover:bg-gray-50 md:dark:hover:bg-gray-800/50 transition group w-full';
+                    icon.className = 'w-10 h-10 sm:w-11 sm:h-11 shrink-0 rounded-xl flex items-center justify-center bg-gray-100 dark:bg-gray-900 text-gray-400 font-bold text-sm transition';
+                    text.className = 'text-sm sm:text-[15px] font-medium truncate text-gray-800 dark:text-gray-200 transition';
+                    icon.innerHTML = i + 1;
+                }
+            });
+        }
+        function updateRepeatBtnUI() { 
+            const btn = document.getElementById('repeat_btn'); 
+            if (repeatMode > 0) { btn.classList.add('text-[#0078d4]', 'dark:text-blue-400'); btn.classList.remove('text-gray-400', 'dark:text-gray-500'); } 
+            else { btn.classList.add('text-gray-400', 'dark:text-gray-500'); btn.classList.remove('text-[#0078d4]', 'dark:text-blue-400'); }
+            const baseClass = "w-5 h-5 sm:w-6 sm:h-6";
+            if (repeatMode === 2) btn.innerHTML = `<svg class="${baseClass} relative" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path><text x="12" y="15" font-family="sans-serif" font-size="9" font-weight="bold" fill="currentColor" text-anchor="middle" stroke="none">1</text></svg>`;
+            else btn.innerHTML = `<svg class="${baseClass}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>`;
+        }
+        function updateShuffleBtnUI() {
+            const btn = document.getElementById('shuffle_btn'); 
+            if (isShuffle) { btn.classList.add('text-[#0078d4]', 'dark:text-blue-400'); btn.classList.remove('text-gray-400', 'dark:text-gray-500'); } 
+            else { btn.classList.add('text-gray-400', 'dark:text-gray-500'); btn.classList.remove('text-[#0078d4]', 'dark:text-blue-400'); }
+        }
+        function playRandomFromFolder() { if(!currentFolderAudios.length) return; isShuffle = true; updateShuffleBtnUI(); playingQueue = [...currentFolderAudios]; playingFolderId = currentFolderId; currentIndex = Math.floor(Math.random() * playingQueue.length); playTrack(currentIndex); }
+        function playNextTrack(isManual = false) { 
+            if(!playingQueue.length) return; 
+            if(repeatMode === 2 && !isManual) playTrack(currentIndex); 
+            else if(isShuffle) { let n = currentIndex; if(playingQueue.length > 1) while(n === currentIndex) n = Math.floor(Math.random() * playingQueue.length); playTrack(n); } 
+            else if(currentIndex + 1 < playingQueue.length) playTrack(currentIndex + 1); 
+            else if(repeatMode === 1) playTrack(0); 
+            else { setStatus('FINISHED', 'standby'); audio.removeAttribute('src'); audio.load(); if('mediaSession' in navigator) navigator.mediaSession.metadata = null; updateActiveTrackUI(); document.getElementById('icon_pause').classList.add('hidden'); document.getElementById('icon_play').classList.remove('hidden'); } 
+        }
+        function playPrevTrack() { if(!playingQueue.length) return; if(audio.currentTime > 3) audio.currentTime = 0; else if(currentIndex > 0) playTrack(currentIndex - 1); }
+        async function deleteItem(id, n, isF) { if(confirm(`Delete ${isF?'folder':'track'} '${n}'?`)) { const t = await getToken(); if (!t) return; await fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${id}`, { method:'DELETE', headers:{'Authorization':`Bearer ${t}`} }); 
+                                                                                                       delete folderCache[currentFolderId];
+                                                                                                       fetchMyFolders(currentFolderId, '', false); } }
+        async function handleFileUpload(e) { const files = e.target.files; if(!files.length) return; const t = await getToken(); if (!t) return; const container = document.getElementById('file_list_container'); container.innerHTML = '<div class="h-full flex flex-col items-center justify-center text-sm text-[#0078d4] font-medium mt-10"><svg class="animate-spin w-8 h-8 mb-3" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Uploading...</div>';
+            try { for(let f of files) { const res = await fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${currentFolderId}:/${encodeURIComponent(f.name)}:/createUploadSession`, { method:'POST', headers:{'Authorization':`Bearer ${t}`,'Content-Type':'application/json'} }); const s = await res.json(); await fetch(s.uploadUrl, { method:'PUT', headers:{'Content-Length':f.size,'Content-Range':`bytes 0-${f.size-1}/${f.size}`}, body:f }); } } catch(err) { alert(`Upload failed.`); } e.target.value = ''; 
+                                            delete folderCache[currentFolderId];
+                                            fetchMyFolders(currentFolderId, pathHistory[pathHistory.length - 1].name, false); 
+        }
+        async function requestWakeLock() { 
+            try { 
+                if('wakeLock' in navigator) {
+                    wakeLock = await navigator.wakeLock.request('screen'); 
+                    const ind = document.getElementById('wake_lock_indicator');
+                    if(ind) { ind.classList.remove('opacity-0', 'scale-95'); ind.classList.add('opacity-100', 'scale-100'); }
+                }
+            } catch(e) { 
+                console.log("Wake Lock 막힘:", e); 
+            } 
+        }
+
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible' && !audio.paused) {
+                requestWakeLock();
+            }
+        });
+        audio.addEventListener('timeupdate', () => { 
+            if(!audio.duration) return; 
+            progressBar.value = (audio.currentTime / audio.duration) * 100; 
+            currentTimeEl.innerText = formatTime(audio.currentTime); 
+            
+            // 🔥 잠금화면/상태표시줄 진행률 동기화
+            if ('mediaSession' in navigator && !isNaN(audio.duration)) {
+                try {
+                    navigator.mediaSession.setPositionState({
+                        duration: audio.duration,
+                        playbackRate: audio.playbackRate,
+                        position: audio.currentTime
+                    });
+                } catch(e) {}
+            }
+        });
+        audio.addEventListener('loadedmetadata', () => { durationTimeEl.innerText = formatTime(audio.duration); progressBar.disabled = false; });
+        audio.addEventListener('play', () => { document.getElementById('icon_play').classList.add('hidden'); document.getElementById('icon_pause').classList.remove('hidden'); setStatus('NOW PLAYING', 'play'); updateActiveTrackUI(); requestWakeLock(); });
+        audio.addEventListener('pause', () => { 
+            document.getElementById('icon_pause').classList.add('hidden'); 
+            document.getElementById('icon_play').classList.remove('hidden'); 
+            if(document.getElementById('status_info').innerText !== 'BUFFERING...') {
+                setStatus('PAUSED', 'standby'); 
+            }
+            updateActiveTrackUI(); 
+            
+            if(wakeLock) { 
+                wakeLock.release(); 
+                wakeLock = null; 
+            } 
+            const ind = document.getElementById('wake_lock_indicator');
+            if(ind) { ind.classList.add('opacity-0', 'scale-95'); ind.classList.remove('opacity-100', 'scale-100'); }
+        });
+        audio.addEventListener('ended', () => playNextTrack(false));
+        progressBar.addEventListener('input', (e) => audio.currentTime = (e.target.value / 100) * audio.duration);
+        function formatTime(s) { if(isNaN(s)) return "0:00"; const m = Math.floor(s / 60), r = Math.floor(s % 60); return `${m}:${r < 10 ? '0' : ''}${r}`; }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent), indicator = document.getElementById('wake_lock_indicator');
+            if (!isMobile) indicator.remove(); else { indicator.classList.remove('hidden'); indicator.classList.add('flex'); }
+            
+            updateRepeatBtnUI();
+            updateShuffleBtnUI();
+
+            document.addEventListener('keydown', (e) => {
+                if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+                
+                if (e.code === 'Space') {
+                    e.preventDefault(); 
+                    togglePlayPause();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+{
+  "name": "Music",
+  "short_name": "Music",
+  "start_url": "/?mode=standalone",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#0078d4",
+  "description": "Stream your music anytime, anywhere directly from OneDrive.",
+  "icons": [
+    {
+      "src": "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3ClinearGradient id='grad2' x1='0%25' y1='100%25' x2='100%25' y2='0%25'%3E%3Cstop offset='0%25' style='stop-color:%230078d4;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%2360a5fa;stop-opacity:1' /%3E%3C/linearGradient%3E%3CclipPath id='clipRect2'%3E%3Crect width='512' height='512' rx='112' /%3E%3C/clipPath%3E%3C/defs%3E%3Crect width='512' height='512' rx='112' fill='url(%23grad2)' /%3E%3Cg clip-path='url(%23clipRect2)'%3E%3Cg fill='%23ffffff' opacity='0.25'%3E%3Ccircle cx='90' cy='420' r='120' /%3E%3Ccircle cx='260' cy='360' r='160' /%3E%3Ccircle cx='450' cy='420' r='140' /%3E%3Crect x='0' y='360' width='512' height='200' /%3E%3C/g%3E%3C/g%3E%3Cg transform='translate(34, 32) scale(0.85)'%3E%3Cpath d='M200 370V130l210-40v230' fill='none' stroke='%23ffffff' stroke-width='32' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='150' cy='370' r='50' fill='none' stroke='%23ffffff' stroke-width='32'/%3E%3Ccircle cx='360' cy='330' r='50' fill='none' stroke='%23ffffff' stroke-width='32'/%3E%3C/g%3E%3C/svg%3E",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
