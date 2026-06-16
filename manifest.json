@@ -1,6 +1,6 @@
 {
-  "name": "MyCloudPlay",
-  "short_name": "MyCloudPlay",
+  "name": "Music",
+  "short_name": "Music",
   "start_url": "/",
   "id": "/?app=music",
   "display": "standalone",
