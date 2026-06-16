@@ -2,7 +2,6 @@
   "name": "Music",
   "short_name": "Music",
   "start_url": "/?mode=standalone",
-  "start_url": "/",
   "display": "standalone",
   "background_color": "#000000",
   "theme_color": "#0078d4",
