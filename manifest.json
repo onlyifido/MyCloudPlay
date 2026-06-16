@@ -2,6 +2,7 @@
   "name": "MyCloudPlay",
   "short_name": "MyCloudPlay",
   "start_url": "/",
+  "id": "/?app=music",
   "display": "standalone",
   "background_color": "#000000",
   "theme_color": "#0078d4",
