@@ -1,0 +1,13 @@
+{
+  "name": "mycloudplay",
+  "version": "1.1.0",
+  "private": true,
+  "scripts": {
+    "build": "tailwindcss -i ./styles/app.css -o ./styles.css --minify && node scripts/build-site.cjs",
+    "dev:css": "tailwindcss -i ./styles/app.css -o ./styles.css --watch",
+    "test": "python3 -m unittest discover -s tests -p 'test_*.py' -v"
+  },
+  "devDependencies": {
+    "tailwindcss": "3.4.17"
+  }
+}
